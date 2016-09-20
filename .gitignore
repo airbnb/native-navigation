@@ -35,3 +35,92 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# Xcode stuff
+
+.DS_Store
+*.swp
+*~.nib
+
+/build
+
+*.pbxuser
+*.perspective
+*.perspectivev3
+
+*.mode1v3
+*.mode2v3
+
+*.xcodeproj/project.xcworkspace/
+*.xcworkspace/contents.xcworkspacedata
+xcuserdata
+*.xccheckout
+
+xcuserdata/
+*.xcuserstate
+Nitrogen/Nitrogen Demo/Nitrogen Demo.xcodeproj/project.xcworkspace/xcshareddata/
+
+.idea
+atlassian-ide-plugin.xml
+
+# android stuff
+
+.settings/
+
+# built application files
+*.apk
+*.ap_
+*.o
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Butterknife generated code
+airbnb/.apt_generated
+
+.idea/gradle.xml
+.idea/scopes/
+.idea/workspace.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/runConfigurations.xml
+android.iml
+n2/n2.iml
+n2playground/n2playground.iml
+viewmodeladapter/viewmodeladapter.iml
+viewmodeladaptersample/viewmodeladaptersample.iml
+wechat/wechat.iml
+airbnb/airbnb.iml
+jpush/jpush.iml
+build_times.txt
+lib/lib.iml
+
+*/build/
+.gradle
+airbnb/.idea/workspace.xml
+.idea/libraries
+.idea/dictionaries
+airbnb/.idea
+
+scripts/deploy
+scripts/deploy_slow
+scripts/logcat
+
+# Heap Captures
+captures/
+
+# Gradle Autocomplete
+.gradletasknamecache
+.gradle/
