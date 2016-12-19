@@ -88,7 +88,7 @@ local.properties
 
 # Butterknife generated code
 airbnb/.apt_generated
-
+.idea/
 .idea/gradle.xml
 .idea/scopes/
 .idea/workspace.xml

@@ -1,14 +1,14 @@
 {
-  "name": "react-native-navigation",
+  "name": "native-navigation",
   "version": "0.1.0",
-  "description": "Native Navigator for React Native",
-  "main": "index.js",
+  "description": "Native Navigation for React Native",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/airbnb/react-native-navigation.git"
+    "url": "git+https://github.com/airbnb/native-navigation.git"
   },
   "keywords": [
     "react-native",
@@ -19,10 +19,10 @@
   "author": "Leland Richardson <leland.richardson@airbnb.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/airbnb/react-native-navigation/issues"
+    "url": "https://github.com/airbnb/native-navigation/issues"
   },
-  "homepage": "https://github.com/airbnb/react-native-navigation#readme",
+  "homepage": "https://github.com/airbnb/native-navigation#readme",
   "devDependencies": {
-    "react-native": "^0.33.0"
+    "react-native": "^0.38.0"
   }
 }
