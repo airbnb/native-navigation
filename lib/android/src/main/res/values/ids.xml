@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="react_shared_element_transition_name" type="id" />
+    <item name="react_shared_element_screen_instance_id" type="id" />
+    <item name="react_shared_element_group_id" type="id" />
+</resources>
