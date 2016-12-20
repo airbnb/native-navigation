@@ -14,7 +14,7 @@
     "build:ios": "",
     "build:android": "cd example/android; ./gradlew installDebug; cd -;",
     "ci": "npm run lint",
-    "prepublish": "npm run build",
+    "prepublishx": "npm run build",
     "postpublish": "npm run publish:pod && npm run publish:maven",
     "publish:pod": "",
     "publish:maven": "cd lib/android/ && ./gradlew clean check uploadArchives && cd -",

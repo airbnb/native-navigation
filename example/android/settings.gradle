@@ -1,7 +1,6 @@
 rootProject.name = 'example'
 
 include ':app'
-
 include ':native-navigation'
 
 project(':native-navigation').projectDir = new File(rootProject.projectDir, '../../lib/android')

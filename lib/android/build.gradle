@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: 'gradle-maven-push.gradle'
-apply plugin: 'me.tatarka.retrolambda'
+
 
 buildscript {
   repositories {
@@ -14,7 +14,6 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:2.2.3'
-    classpath 'me.tatarka:gradle-retrolambda:3.2.5'
   }
 }
 
@@ -30,15 +29,9 @@ allprojects {
   }
 
   dependencies {
-    compile "com.android.support:appcompat-v7:25.0.1"
-    compile 'com.android.support:support-annotations:25.0.1'
-    compile "com.google.guava:guava:20.0"
+    compile "com.android.support:appcompat-v7:25.1.0"
+    compile 'com.android.support:support-annotations:25.1.0'
     compile "com.fasterxml.jackson.core:jackson-databind:2.8.3"
-    compile "com.google.auto.value:auto-value:1.3"
-    compile "com.ryanharter.auto.value:auto-value-parcel:0.2.5"
-    compile "com.jakewharton.auto.value:auto-value-annotations:1.3"
-    compile "io.reactivex:rxjava:1.2.3"
-    compile "io.reactivex:rxandroid:1.2.1"
     compile "com.facebook.react:react-native:+"
   }
 }
