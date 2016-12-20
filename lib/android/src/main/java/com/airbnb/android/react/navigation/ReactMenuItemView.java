@@ -1,14 +1,9 @@
 package com.airbnb.android.react.navigation;
 
-import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
-import android.util.AttributeSet;
-
-import android.widget.Toolbar;
-
-/** Used in the toolbar on RN screens if you need to show an image that should not be tinted be the default toolbar foreground. */
+/**
+ * Used in the toolbar on RN screens if you need to show an image that should not be tinted be the
+ * default toolbar foreground.
+ */
 //public class ReactMenuItemView extends AppCompatImageView implements Toolbar.TintableMenuItem {
 //    public ReactMenuItemView(Context context) {
 //        super(context);

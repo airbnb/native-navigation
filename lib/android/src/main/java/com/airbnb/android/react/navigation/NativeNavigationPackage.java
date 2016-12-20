@@ -13,9 +13,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class NativeNavigationPackage implements ReactPackage {
   @Override public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Arrays.asList(
-        new NavigatorModule(reactContext, ReactNavigationCoordinator.sharedInstance)
-    );
+    return Collections.<NativeModule>singletonList(
+        new NavigatorModule(reactContext, ReactNavigationCoordinator.sharedInstance));
   }
 
   @Override public List<Class<? extends JavaScriptModule>> createJSModules() {
@@ -24,9 +23,8 @@ public class NativeNavigationPackage implements ReactPackage {
 
   @SuppressWarnings("rawtypes") @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Arrays.asList(
+    return Arrays.<ViewManager>asList(
         new SharedElementGroupManager(),
-        new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance)
-    );
+        new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance));
   }
 }

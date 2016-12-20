@@ -1,6 +1,6 @@
 package com.airbnb.android.react.navigation;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 
-abstract class ReactAwareActivity extends Activity implements ReactAwareActivityFacade {
+abstract class ReactAwareActivity extends AppCompatActivity implements ReactAwareActivityFacade {
 }
