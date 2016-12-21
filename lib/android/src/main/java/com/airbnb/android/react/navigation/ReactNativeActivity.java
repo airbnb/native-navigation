@@ -8,6 +8,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.transition.Slide;
 import android.transition.Transition;
@@ -70,8 +71,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     return new Intent().putExtra(EXTRA_IS_DISMISS, true);
   }
 
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
@@ -84,7 +84,7 @@ public class ReactNativeActivity extends ReactAwareActivity
 //        }
     setContentView(R.layout.activity_react_native);
     toolbar = (ReactToolbar) findViewById(R.id.toolbar);
-    setToolbar(toolbar);
+    setSupportActionBar(toolbar);
 
     if (!isSuccessfullyInitialized()) {
       // TODO(lmr): move to utils
@@ -135,7 +135,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
 
     if (reactRootView == null) {
-      ViewStub reactViewStub = findById(this, R.id.react_root_view_stub);
+      ViewStub reactViewStub = (ViewStub) findViewById(R.id.react_root_view_stub);
       reactViewStub.setLayoutResource(R.layout.view_holder_react_root_view);
       reactRootView = (ReactRootView) reactViewStub.inflate();
     }
@@ -148,7 +148,7 @@ public class ReactNativeActivity extends ReactAwareActivity
 
     int color = reactNavigationCoordinator.getBackgroundColorForModuleName(moduleName);
     reactRootView.setBackgroundColor(color);
-    reactInstanceManager.startReactApplication(reactRootView, moduleName, props);
+    reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
   }
 
   private void setupTransition() {
@@ -194,8 +194,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   @TargetApi(WAITING_TRANSITION_TARGET_API)
   private void attachEnterTransitionListener(Transition transition) {
     transition.addListener(new SimpleTransitionListener() {
-      @Override
-      public void onTransitionEnd(Transition transition) {
+      @Override     public void onTransitionEnd(Transition transition) {
         emitEvent(ON_ENTER_TRANSITION_COMPLETE, null);
       }
     });
@@ -213,8 +212,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     setEnterTransition(makeSlideLeftAnimation());
   }
 
-  @Override
-  public void signalFirstRenderComplete() {
+  @Override public void signalFirstRenderComplete() {
     // For some reason, this "signal" gets sent before the `transitionName` gets set on the shared
     // elements, so if we are doing a "Shared Element Transition", we want to keep waiting before
     // starting the enter transition.
@@ -240,6 +238,10 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
   }
 
+  @Override public FragmentActivity getActivity() {
+    return this;
+  }
+
   private void onFinishWaitingForRender() {
     if (isWaitingForRenderToFinish && !supportIsDestroyed()) {
       isWaitingForRenderToFinish = false;
@@ -247,13 +249,11 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
   }
 
-  @Override
-  public String getInstanceId() {
+  @Override public String getInstanceId() {
     return instanceId;
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  @Override public boolean onCreateOptionsMenu(Menu menu) {
     if (toolbar != null) {
       // 0 will prevent menu from getting inflated, since we are inflating manually
       toolbar.onCreateOptionsMenu(0, menu, getMenuInflater());
@@ -272,8 +272,7 @@ public class ReactNativeActivity extends ReactAwareActivity
 //        }
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == android.R.id.home) {
       emitEvent(ON_LEFT_PRESS, null);
       if (reactNavigationCoordinator.getDismissCloseBehavior(this)) {
@@ -289,16 +288,14 @@ public class ReactNativeActivity extends ReactAwareActivity
     return false;
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (activityManager != null) {
       activityManager.onActivityResult(requestCode, resultCode, data);
     }
   }
 
-  @Override
-  public void onBackPressed() {
+  @Override public void onBackPressed() {
     if (reactNavigationCoordinator.getDismissCloseBehavior(this)) {
       dismiss();
     } else {
@@ -306,13 +303,11 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
   }
 
-  @Override
-  public void invokeDefaultOnBackPressed() {
+  @Override public void invokeDefaultOnBackPressed() {
     super.onBackPressed();
   }
 
-  @Override
-  protected void onPause() {
+  @Override protected void onPause() {
     super.onPause();
     try {
       reactInstanceManager.onHostPause(this);
@@ -327,15 +322,13 @@ public class ReactNativeActivity extends ReactAwareActivity
     emitEvent(ON_DISAPPEAR, null);
   }
 
-  @Override
-  protected void onResume() {
+  @Override protected void onResume() {
     super.onResume();
     reactInstanceManager.onHostResume(this, this);
     emitEvent(ON_APPEAR, null);
   }
 
-  @Override
-  protected void onDestroy() {
+  @Override protected void onDestroy() {
     super.onDestroy();
     reactInstanceManager.onHostDestroy(this);
     reactNavigationCoordinator.unregisterComponent(instanceId);
@@ -350,8 +343,7 @@ public class ReactNativeActivity extends ReactAwareActivity
 //        supportInvalidateOptionsMenu();
 //    }
 
-  @Override
-  public void setLink(String link) {
+  @Override public void setLink(String link) {
     this.link = link;
     supportInvalidateOptionsMenu();
   }
@@ -360,18 +352,15 @@ public class ReactNativeActivity extends ReactAwareActivity
     return reactRootView;
   }
 
-  @Override
-  public ReactToolbar getToolbar() {
+  @Override public ReactToolbar getToolbar() {
     return toolbar;
   }
 
-  @Override
-  public ReactRootView getReactRootView() {
+  @Override public ReactRootView getReactRootView() {
     return reactRootView;
   }
 
-  @Override
-  public boolean isDismissible() {
+  @Override public boolean isDismissible() {
     return reactNavigationCoordinator.getDismissCloseBehavior(
         this) || !(this instanceof ReactNativeModalActivity);
   }
@@ -416,14 +405,8 @@ public class ReactNativeActivity extends ReactAwareActivity
     return slide;
   }
 
-  @Override
-  public ReactAwareActivityFacade getActivity() {
-    return this;
-  }
-
   protected boolean isSuccessfullyInitialized() {
-    // TODO(lmr): move to utils
-    return reactInstanceManager.isSuccessfullyInitialized();
+    return ReactNativeUtils.isSuccessfullyInitialized(reactInstanceManager);
   }
 
   @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
@@ -432,17 +415,13 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   @TargetApi(Build.VERSION_CODES.M)
-  public void requestPermissions(
-      String[] permissions,
-      int requestCode,
+  public void requestPermissions(String[] permissions, int requestCode,
       PermissionListener listener) {
     permissionListener = listener;
     requestPermissions(permissions, requestCode);
   }
 
-  public void onRequestPermissionsResult(
-      int requestCode,
-      String[] permissions,
+  public void onRequestPermissionsResult(int requestCode, String[] permissions,
       int[] grantResults) {
     if (permissionListener != null && permissionListener.onRequestPermissionsResult(requestCode,
         permissions, grantResults)) {

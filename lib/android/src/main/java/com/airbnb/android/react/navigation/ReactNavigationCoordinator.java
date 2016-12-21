@@ -63,14 +63,12 @@ public class ReactNavigationCoordinator {
         String.format("Tried to push Activity with key '%s', but it could not be found", key));
   }
 
-  @Nullable
-  ReactAwareActivityFacade activityFromId(String id) {
+  @Nullable ReactAwareActivityFacade activityFromId(String id) {
     WeakReference<ReactInterface> ref = componentsMap.get(id);
-    return ref == null ? null : ref.get().getActivity();
+    return ref == null ? null : (ReactAwareActivityFacade) ref.get().getActivity();
   }
 
-  @Nullable
-  ReactInterface componentFromId(String id) {
+  @Nullable ReactInterface componentFromId(String id) {
     WeakReference<ReactInterface> ref = componentsMap.get(id);
     return ref == null ? null : ref.get();
   }

@@ -24,7 +24,7 @@ public final class ReactInterfaceManager {
 
   public ReactInterfaceManager(ReactInterface component) {
     this.component = component;
-    activity = component.getActivity();
+    activity = (ReactAwareActivityFacade) component.getActivity();
   }
 
   /**
@@ -97,8 +97,7 @@ public final class ReactInterfaceManager {
     return data != null && data.getBooleanExtra(NavigatorModule.EXTRA_IS_DISMISS, false);
   }
 
-  /*@Nullable*/
-  private Promise getAndRemovePromise(int requestCode) {
+  @Nullable private Promise getAndRemovePromise(int requestCode) {
     if (resultPromises.indexOfKey(requestCode) < 0) {
       return null;
     }

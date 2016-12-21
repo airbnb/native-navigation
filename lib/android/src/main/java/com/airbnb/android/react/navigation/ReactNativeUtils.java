@@ -2,7 +2,9 @@ package com.airbnb.android.react.navigation;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
@@ -43,5 +45,14 @@ public final class ReactNativeUtils {
 
   static void setIsSharedElementTransition(Intent intent, boolean value) {
     intent.putExtra(IS_SHARED_ELEMENT_TRANSITION, value);
+  }
+
+  static boolean isSuccessfullyInitialized(ReactInstanceManager reactInstanceManager) {
+    // TODO
+    return false;
+  }
+
+  static void showAlertBecauseChecksFailed(FragmentActivity activity, Object o) {
+    // TODO
   }
 }

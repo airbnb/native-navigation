@@ -16,8 +16,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
-import com.facebook.react.common.MapBuilder;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +25,6 @@ import static com.airbnb.android.react.navigation.ReactNativeUtils.VERSION_CONST
 
 class NavigatorModule extends ReactContextBaseJavaModule {
   private static final int VERSION = 2;
-
   static final String EXTRA_PAYLOAD = "payload";
   static final String EXTRA_CODE = "code";
   static final String EXTRA_IS_DISMISS = "isDismiss";
@@ -33,32 +32,21 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   private static final String CLOSE_BEHAVIOR_DISMISS = "dismiss";
   private static final String SHARED_ELEMENT_TRANSITION_GROUP_OPTION = "transitionGroup";
   private static final String RESULT_CODE = "resultCode";
-
-  public Map<String, Object> getConstants() {
-    return MapBuilder.<String, Object>builder()
-        .put(VERSION_CONSTANT_KEY, VERSION)
-        .build();
-  }
-
+  private final Handler handler = new Handler(Looper.getMainLooper());
   private final ReactNavigationCoordinator coordinator;
-  private final Handler handler;
-
-  NavigatorModule(ReactApplicationContext reactContext, ReactNavigationCoordinator coordinator,
-      Handler handler) {
-    super(reactContext);
-    this.coordinator = coordinator;
-    this.handler = handler;
-  }
 
   NavigatorModule(ReactApplicationContext reactContext, ReactNavigationCoordinator coordinator) {
-    this(reactContext, coordinator, new Handler(Looper.getMainLooper()));
+    super(reactContext);
+    this.coordinator = coordinator;
   }
 
-  @Override
-  public String getName() {
+  @Override public String getName() {
     return "NativeNavigationModule";
   }
 
+  @Override public Map<String, Object> getConstants() {
+    return Collections.<String, Object>singletonMap(VERSION_CONSTANT_KEY, VERSION);
+  }
 
   @SuppressWarnings("unused")
   @ReactMethod
@@ -96,8 +84,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   public void signalFirstRenderComplete(String id) {
     final ReactInterface component = coordinator.componentFromId(id);
     if (component != null) {
-      ReactAwareActivityFacade activity = component.getActivity();
-      activity.runOnUiThread(new Runnable() {
+      handler.post(new Runnable() {
         @Override public void run() {
           component.signalFirstRenderComplete();
         }
@@ -175,7 +162,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   private void withToolbar(@Nullable final ReactInterface component,
       final ToolbarModifier modifier) {
     if (component != null) {
-      component.getActivity().runOnUiThread(new Runnable() {
+      handler.post(new Runnable() {
         @Override public void run() {
           ReactToolbar toolbar = component.getToolbar();
           if (toolbar != null) {
