@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,14 +46,12 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private String link;
   @Nullable private ReactRootView reactRootView;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
   }
 
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     initReactNative();
   }
@@ -62,6 +61,9 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_react_native, container, false);
+    ReactToolbar toolbar = (ReactToolbar) v.findViewById(R.id.toolbar);
+    AppCompatActivity activity = (AppCompatActivity) getActivity();
+    activity.setSupportActionBar(toolbar);
     initReactNative();
     return v;
   }
@@ -116,36 +118,31 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
       reactViewStub.setLayoutResource(R.layout.view_holder_react_root_view);
       reactRootView = (ReactRootView) reactViewStub.inflate();
     }
-    reactInstanceManager.startReactApplication(reactRootView, moduleName, props);
+    reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     activityManager.onActivityResult(requestCode, resultCode, data);
   }
 
-  @Override
-  public void invokeDefaultOnBackPressed() {
+  @Override public void invokeDefaultOnBackPressed() {
     getActivity().onBackPressed();
   }
 
-  @Override
-  public void onPause() {
+  @Override public void onPause() {
     super.onPause();
     reactInstanceManager.onHostPause(getActivity());
     emitEvent(ON_DISAPPEAR, null);
   }
 
-  @Override
-  public void onResume() {
+  @Override public void onResume() {
     super.onResume();
     reactInstanceManager.onHostResume(getActivity(), this);
     emitEvent(ON_APPEAR, null);
   }
 
-  @Override
-  public void onDestroyView() {
+  @Override public void onDestroyView() {
     super.onDestroyView();
     reactNavigationCoordinator.unregisterComponent(instanceId);
     if (reactRootView != null) {
@@ -153,23 +150,24 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     }
   }
 
-  @Override
-  public boolean isDismissible() {
+  @Override public boolean isDismissible() {
     return reactNavigationCoordinator.getDismissCloseBehavior(this);
   }
 
-  @Override
-  public String getInstanceId() {
+  @Override public String getInstanceId() {
     return instanceId;
   }
 
-  @Override
-  public ReactRootView getReactRootView() {
+  @Override public ReactRootView getReactRootView() {
     return reactRootView;
   }
 
-  @Override
-  public void signalFirstRenderComplete() {
+  @Override public ReactToolbar getToolbar() {
+    // TODO
+    return null;
+  }
+
+  @Override public void signalFirstRenderComplete() {
   }
 
 //    @Override
@@ -178,19 +176,16 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
 //        getActivity().supportInvalidateOptionsMenu();
 //    }
 
-  @Override
-  public void setLink(String link) {
+  @Override public void setLink(String link) {
     this.link = link;
     getActivity().supportInvalidateOptionsMenu();
   }
 
-  @Override
-  public void notifySharedElementAddition() {
+  @Override public void notifySharedElementAddition() {
     // TODO: shared element transitions probably not quite supported with RN fragments just yet.
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     ReactToolbar toolbar = getToolbar();
     if (toolbar != null) {
       // 0 will prevent menu from getting inflated, since we are inflating manually
@@ -209,16 +204,14 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
 //        }
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     // it's the link
     emitEvent(ON_LINK_PRESS, null);
     return false;
   }
 
   protected boolean isSuccessfullyInitialized() {
-    // TODO(lmr): move to utils
-    return reactInstanceManager.isSuccessfullyInitialized();
+    return ReactNativeUtils.isSuccessfullyInitialized(reactInstanceManager);
   }
 
   private void emitEvent(String eventName, Object object) {
