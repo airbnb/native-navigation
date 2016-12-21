@@ -13,6 +13,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		848B097A1E0A2D1100FCAD01 /* EXRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 848B09791E0A2D1100FCAD01 /* EXRootViewController.m */; };
+		848B0A101E0A481E00FCAD01 /* NativeNavigation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 848B0A0F1E0A481E00FCAD01 /* NativeNavigation.framework */; };
 		84CD57521DFFE94600ECC964 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		84CD57531DFFE94600ECC964 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		84CD57541DFFE94600ECC964 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -118,6 +120,20 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		848B0A3F1E0A4B8F00FCAD01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84CD571E1DFFE83200ECC964 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
+		848B0A8B1E0A577800FCAD01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 848B0A411E0A4CD900FCAD01 /* NativeNavigation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 848B09D51E0A462C00FCAD01;
+			remoteInfo = NativeNavigation;
+		};
 		84CD57231DFFE83200ECC964 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 84CD571E1DFFE83200ECC964 /* React.xcodeproj */;
@@ -181,13 +197,6 @@
 			remoteGlobalIDString = 2D2A28131D9B038B00D4039D;
 			remoteInfo = "React-tvOS";
 		};
-		84CD57651DFFEAB400ECC964 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84CD57611DFFEAB400ECC964 /* NativeNavigation.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
-			remoteInfo = NativeNavigation;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -213,8 +222,11 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		848B09781E0A2D1100FCAD01 /* EXRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EXRootViewController.h; path = example/EXRootViewController.h; sourceTree = "<group>"; };
+		848B09791E0A2D1100FCAD01 /* EXRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EXRootViewController.m; path = example/EXRootViewController.m; sourceTree = "<group>"; };
+		848B0A0F1E0A481E00FCAD01 /* NativeNavigation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NativeNavigation.framework; path = "../../../lib/ios/build/Debug-iphoneos/NativeNavigation.framework"; sourceTree = "<group>"; };
+		848B0A411E0A4CD900FCAD01 /* NativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NativeNavigation.xcodeproj; path = ../../lib/ios/NativeNavigation.xcodeproj; sourceTree = "<group>"; };
 		84CD571E1DFFE83200ECC964 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		84CD57611DFFEAB400ECC964 /* NativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NativeNavigation.xcodeproj; path = ../../lib/ios/NativeNavigation.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +242,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				848B0A101E0A481E00FCAD01 /* NativeNavigation.framework in Frameworks */,
 				84CD57521DFFE94600ECC964 /* libRCTActionSheet.a in Frameworks */,
 				84CD57531DFFE94600ECC964 /* libRCTAnimation.a in Frameworks */,
 				84CD57541DFFE94600ECC964 /* libRCTGeolocation.a in Frameworks */,
@@ -334,6 +347,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				848B09781E0A2D1100FCAD01 /* EXRootViewController.h */,
+				848B09791E0A2D1100FCAD01 /* EXRootViewController.m */,
 			);
 			name = example;
 			sourceTree = "<group>";
@@ -414,10 +429,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		848B0A861E0A577800FCAD01 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				848B0A8C1E0A577800FCAD01 /* NativeNavigation.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		84CD571D1DFFE83100ECC964 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				84CD57611DFFEAB400ECC964 /* NativeNavigation.xcodeproj */,
+				848B0A0F1E0A481E00FCAD01 /* NativeNavigation.framework */,
+				848B0A411E0A4CD900FCAD01 /* NativeNavigation.xcodeproj */,
 				84CD571E1DFFE83200ECC964 /* React.xcodeproj */,
 			);
 			name = Frameworks;
@@ -428,14 +452,6 @@
 			children = (
 				84CD57241DFFE83200ECC964 /* libReact.a */,
 				84CD57261DFFE83200ECC964 /* libReact-tvOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		84CD57621DFFEAB400ECC964 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				84CD57661DFFEAB400ECC964 /* libNativeNavigation.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -473,6 +489,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				848B0A401E0A4B8F00FCAD01 /* PBXTargetDependency */,
 			);
 			name = example;
 			productName = "Hello World";
@@ -507,8 +524,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 84CD57621DFFEAB400ECC964 /* Products */;
-					ProjectRef = 84CD57611DFFEAB400ECC964 /* NativeNavigation.xcodeproj */;
+					ProductGroup = 848B0A861E0A577800FCAD01 /* Products */;
+					ProjectRef = 848B0A411E0A4CD900FCAD01 /* NativeNavigation.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
@@ -652,6 +669,13 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		848B0A8C1E0A577800FCAD01 /* NativeNavigation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = NativeNavigation.framework;
+			remoteRef = 848B0A8B1E0A577800FCAD01 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		84CD57241DFFE83200ECC964 /* libReact.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -715,13 +739,6 @@
 			remoteRef = 84CD575F1DFFE94600ECC964 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		84CD57661DFFEAB400ECC964 /* libNativeNavigation.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libNativeNavigation.a;
-			remoteRef = 84CD57651DFFEAB400ECC964 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -774,6 +791,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				848B097A1E0A2D1100FCAD01 /* EXRootViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -785,6 +803,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* example */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		848B0A401E0A4B8F00FCAD01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = 848B0A3F1E0A4B8F00FCAD01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -842,6 +865,7 @@
 					"$(SRCROOT)/../../node_modules/react-native/ReactCommon/**",
 				);
 				INFOPLIST_FILE = example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -864,6 +888,7 @@
 					"$(SRCROOT)/../../node_modules/react-native/ReactCommon/**",
 				);
 				INFOPLIST_FILE = example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -878,6 +903,7 @@
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -924,6 +950,7 @@
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";

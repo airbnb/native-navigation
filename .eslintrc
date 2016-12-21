@@ -1,6 +1,9 @@
 {
   "parser": "babel-eslint",
   "extends": "airbnb",
+  "globals": {
+    "__DEV__": true
+  },
   "plugins": [
     "prefer-object-spread"
   ],

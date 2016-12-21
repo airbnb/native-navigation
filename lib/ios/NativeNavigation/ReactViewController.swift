@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import React
+
 
 // MARK: Public
 
@@ -65,11 +65,11 @@ open class ReactViewController: UIViewController {
 
     super.init(nibName: nil, bundle: nil)
 
-    if let barType = coordinator.getSceneNavigationBarType(moduleName) {
+    if let barType = coordinator.getScreenNavigationBarType(moduleName) {
       self.barType = barType
     }
 
-    if let bgColor = coordinator.getSceneNavigationBarColor(moduleName) {
+    if let bgColor = coordinator.getScreenNavigationBarColor(moduleName) {
       self.backgroundColor = bgColor
     }
 
@@ -110,7 +110,7 @@ open class ReactViewController: UIViewController {
       moduleName: moduleName,
       initialProperties: props)
 
-    if let bgColor = coordinator.getSceneBackgroundColor(moduleName) {
+    if let bgColor = coordinator.getScreenBackgroundColor(moduleName) {
       self.view.backgroundColor = bgColor
     }
   }
@@ -236,7 +236,7 @@ open class ReactViewController: UIViewController {
   }
 
   fileprivate func emitEvent(_ eventName: String, body: AnyObject?) {
-    let name = String(format: "AirbnbNavigatorScene.%@.%@", eventName, self.airbnbInstanceId)
+    let name = String(format: "AirbnbNavigatorScreen.%@.%@", eventName, self.airbnbInstanceId)
     let args: [AnyObject]
     if let payload = body {
       args = [name as AnyObject, payload]
