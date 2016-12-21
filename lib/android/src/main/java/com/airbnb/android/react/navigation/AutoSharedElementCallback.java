@@ -213,7 +213,7 @@ import java.util.Map;
 
       checkForAsyncViewsRunnable = new Runnable() {
         @Override public void run() {
-          AutoSharedElementCallback.this.startPostponedTransitionsIfReady();
+          startPostponedTransitionsIfReady();
         }
       };
       cancelAsyncViewsRunnable = new Runnable() {
