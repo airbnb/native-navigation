@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import React
+
 
 public protocol ReactNavigationCoordinatorDelegate {
   func rootViewController(forCoordinator coordinator: ReactNavigationCoordinator) -> UIViewController?
@@ -129,19 +129,19 @@ open class ReactNavigationCoordinator: NSObject {
 
   var sceneBackgroundColorMap: [String: UIColor] = [:]
 
-  func setSceneBackgroundColor(_ sceneName: String, color: UIColor) {
+  func setScreenBackgroundColor(_ sceneName: String, color: UIColor) {
     sceneBackgroundColorMap[sceneName] = color
   }
 
-  func getSceneBackgroundColor(_ sceneName: String) -> UIColor? {
+  func getScreenBackgroundColor(_ sceneName: String) -> UIColor? {
     return sceneBackgroundColorMap[sceneName]
   }
 
-  func getSceneNavigationBarType(_ sceneName: String) -> String? {
+  func getScreenNavigationBarType(_ sceneName: String) -> String? {
     return sceneNavigationBarTypeMap[sceneName]
   }
 
-  func getSceneNavigationBarColor(_ sceneName: String) -> String? {
+  func getScreenNavigationBarColor(_ sceneName: String) -> String? {
     return sceneNavigationBarColorMap[sceneName]
   }
 

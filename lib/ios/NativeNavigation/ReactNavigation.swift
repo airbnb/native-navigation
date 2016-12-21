@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import React
 
 private let VERSION: Int = 2
 
@@ -25,6 +24,7 @@ class ReactNavigation: NSObject {
     if dirtySet.isEmpty {
       return
     }
+
     let setCopy = dirtySet
     dirtySet.removeAll()
     DispatchQueue.main.async {
@@ -44,28 +44,18 @@ class ReactNavigation: NSObject {
     dirtySet.insert(controller)
   }
 
-  func registerSceneBackgroundColor(_ sceneName: String, withColor color: UIColor) {
-    coordinator.setSceneBackgroundColor(sceneName, color: color)
+  func registerScreenBackgroundColor(_ sceneName: String, withColor color: UIColor) {
+    coordinator.setScreenBackgroundColor(sceneName, color: color)
   }
 
-  func setCloseBehavior(_ closeBehavior: String, withAirbnbInstanceId instanceId: String) {
+  func setNavigationBarProperties(_ props: [String: AnyObject], withInstanceId instanceId: String) {
+
+  }
+
+  func setCloseBehavior(_ closeBehavior: String, withInstanceId instanceId: String) {
     print("setting closeBehavior: \(closeBehavior)")
     if let vc = coordinator.viewControllerForId(instanceId) {
       vc.setCloseBehavior(closeBehavior)
-    }
-  }
-
-  func setSnapToFoldOffset(_ snapToFoldOffset: Bool, withAirbnbInstanceId instanceId: String) {
-    print("setting snapToFoldOffset: \(snapToFoldOffset)")
-    if let vc = coordinator.viewControllerForId(instanceId) {
-      vc.setSnapToFoldOffset(snapToFoldOffset)
-    }
-  }
-
-  func setShowTabBar(_ showTabBar: Bool, withAirbnbInstanceId instanceId: String) {
-    print("setting setShowTabBar: \(showTabBar)")
-    if let vc = coordinator.viewControllerForId(instanceId) {
-      vc.showTabBar = showTabBar
     }
   }
 

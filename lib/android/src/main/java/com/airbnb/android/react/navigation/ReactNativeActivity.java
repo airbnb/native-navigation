@@ -368,7 +368,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   private void emitEvent(String eventName, @Nullable Object object) {
     if (isSuccessfullyInitialized() && !supportIsDestroyed()) {
       String key =
-          String.format(Locale.ENGLISH, "AirbnbNavigatorScene.%s.%s", eventName, instanceId);
+          String.format(Locale.ENGLISH, "AirbnbNavigatorScreen.%s.%s", eventName, instanceId);
       ReactNativeUtils.maybeEmitEvent((ReactContext) reactInstanceManager.getCurrentReactContext(),
           key, object);
     }
