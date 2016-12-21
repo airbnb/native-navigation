@@ -217,7 +217,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private void emitEvent(String eventName, Object object) {
     if (isSuccessfullyInitialized()) {
       String key =
-          String.format(Locale.ENGLISH, "AirbnbNavigatorScene.%s.%s", eventName, instanceId);
+          String.format(Locale.ENGLISH, "AirbnbNavigatorScreen.%s.%s", eventName, instanceId);
       maybeEmitEvent(reactInstanceManager.getCurrentReactContext(), key, object);
     }
   }
