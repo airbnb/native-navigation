@@ -30,7 +30,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
 
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
-  private static final String INSTANCE_ID_PROP = "nativeNavigationScreenInstanceId";
+  private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
   private static final String ON_BUTTON_PRESS = "onButtonPress";
   private static final String ON_LINK_PRESS = "onLinkPress";
 

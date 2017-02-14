@@ -31,9 +31,8 @@ local.properties
 
 # node.js
 #
-node_modules/
+node_modules/*
 npm-debug.log
-Pods/
 
 # BUCK
 buck-out/
@@ -43,3 +42,5 @@ android/app/libs
 
 # Gitbook generated files
 _book
+
+Pods/

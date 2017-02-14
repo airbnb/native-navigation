@@ -65,7 +65,7 @@
     "eslint-plugin-react": "^6.1.2",
     "gitbook-cli": "^1.0.1",
     "react": "^15.4.1",
-    "react-native": "^0.38.1"
+    "react-native": "github:airbnb/react-native#daccc4709c591585b257b0135f7a044a05bcc836"
   },
   "rnpm": {
     "android": {
