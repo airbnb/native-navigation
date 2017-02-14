@@ -1,6 +1,6 @@
 require 'json'
 
-package = JSON.parse(File.read(File.join(__dir__, 'package.json'))
+package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |s|
   s.name         = "native-navigation"
@@ -12,8 +12,11 @@ Pod::Spec.new do |s|
   s.license      = package['license']
   s.platform     = :ios, "8.0"
 
+  s.module_name  = 'NativeNavigation'
+
   s.source       = { :git => "https://github.com/airbnb/native-navigation.git", :tag => "v#{s.version}" }
-  s.source_files  = "lib/ios/**/*.{h,m}"
+  s.source_files  = "lib/ios/native-navigation/*.{h,m,swift}"
 
   s.dependency 'React'
+  s.frameworks = 'UIKit'
 end

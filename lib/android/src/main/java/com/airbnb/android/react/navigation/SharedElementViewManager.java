@@ -47,7 +47,7 @@ public class SharedElementViewManager extends ViewGroupManager<ReactViewGroup> {
     view.setTag(R.id.react_shared_element_transition_name, id);
   }
 
-  @ReactProp(name = "nativeNavigationScreenInstanceId")
+  @ReactProp(name = "nativeNavigationInstanceId")
   public void setInstanceId(ReactViewGroup view, String instanceId) {
     view.setTag(R.id.react_shared_element_screen_instance_id, instanceId);
   }

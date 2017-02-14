@@ -45,7 +45,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   private static final String ON_LINK_PRESS = "onLinkPress";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
-  private static final String INSTANCE_ID_PROP = "nativeNavigationScreenInstanceId";
+  private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
   private static final int RENDER_TIMEOUT_IN_MS = 700;
   private static final int FAKE_ENTER_TRANSITION_TIME_IN_MS = 500;
   private static final String TAG = "ReactNativeActivity";
