@@ -14,6 +14,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:2.2.3'
+    classpath 'de.undercouch:gradle-download-task:3.1.2'
   }
 }
 
@@ -32,7 +33,7 @@ allprojects {
     compile "com.android.support:appcompat-v7:25.1.0"
     compile 'com.android.support:support-annotations:25.1.0'
     compile "com.fasterxml.jackson.core:jackson-databind:2.8.3"
-    compile "com.facebook.react:react-native:+"
+    compile project(':ReactAndroid')
   }
 }
 
