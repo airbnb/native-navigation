@@ -12,15 +12,15 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
   private final ReactNativeHost reactNativeHost = new ReactNativeHost(this) {
-    @Override protected boolean getUseDeveloperSupport() {
+    @Override public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
     }
 
-    protected String getJSMainModuleName() {
+    public String getJSMainModuleName() {
       return "example/index";
     }
 
-    @Override protected List<ReactPackage> getPackages() {
+    @Override public List<ReactPackage> getPackages() {
       return Collections.<ReactPackage>singletonList(new MainReactPackage());
     }
   };
