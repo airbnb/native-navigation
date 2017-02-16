@@ -47,10 +47,10 @@ public final class ReactNativeUtils {
     intent.putExtra(IS_SHARED_ELEMENT_TRANSITION, value);
   }
 
-  static boolean isSuccessfullyInitialized(ReactInstanceManager reactInstanceManager) {
-    // TODO
-    return false;
-  }
+//  static boolean isSuccessfullyInitialized(ReactInstanceManager reactInstanceManager) {
+//    // TODO
+//    return false;
+//  }
 
   static void showAlertBecauseChecksFailed(FragmentActivity activity, Object o) {
     // TODO

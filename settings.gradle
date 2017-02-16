@@ -1,4 +1,4 @@
-rootProject.name = 'react-navigation'
+rootProject.name = 'native-navigation'
 
 include ':example-android'
 project(':example-android').projectDir = new File(rootProject.projectDir, 'example/android/app')

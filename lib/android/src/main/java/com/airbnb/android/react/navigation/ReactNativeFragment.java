@@ -211,7 +211,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   }
 
   protected boolean isSuccessfullyInitialized() {
-    return ReactNativeUtils.isSuccessfullyInitialized(reactInstanceManager);
+    return reactNavigationCoordinator.isSuccessfullyInitialized();
   }
 
   private void emitEvent(String eventName, Object object) {

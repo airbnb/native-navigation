@@ -10,11 +10,20 @@
     android:layout_height="match_parent"
     />
 
-  <com.airbnb.android.react.navigation.ReactToolbar android:id="@+id/toolbar" />
+  <com.airbnb.android.react.navigation.ReactToolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+    android:titleTextColor="#ffffff"
+    android:title=""
+  />
 
   <View
     android:id="@+id/loading_view"
     android:layout_gravity="center"
-    />
-
+    android:layout_height="18dp"
+    android:layout_width="42dp"
+  />
 </FrameLayout>

@@ -2,6 +2,7 @@ package com.airbnb.android.react.navigation;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -13,11 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewStub;
+import android.view.*;
 
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
@@ -38,6 +35,9 @@ public class ReactNativeActivity extends ReactAwareActivity
   private static final int SHARED_ELEMENT_TARGET_API = VERSION_CODES.LOLLIPOP_MR1;
   /** We just need lollipop (not MR1) for the postponed slide in transition */
   private static final int WAITING_TRANSITION_TARGET_API = VERSION_CODES.LOLLIPOP;
+
+  public static final String REACT_MODULE_NAME = "REACT_MODULE_NAME";
+  public static final String REACT_PROPS = "REACT_PROPS";
 
   private static final String ON_LEFT_PRESS = "onLeftPress";
   private static final String ON_ENTER_TRANSITION_COMPLETE = "onEnterTransitionComplete";
@@ -62,7 +62,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   private @Nullable PermissionListener permissionListener;
 
   ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
-  ReactInstanceManager reactInstanceManager;
+  ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
 
   ReactToolbar toolbar;
   @Nullable ReactRootView reactRootView;
@@ -71,8 +71,31 @@ public class ReactNativeActivity extends ReactAwareActivity
     return new Intent().putExtra(EXTRA_IS_DISMISS, true);
   }
 
+  public static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
+    Class<? extends ReactNativeActivity> activityClass =
+            isModal
+                    ? ReactNativeModalActivity.class
+                    : ReactNativeActivity.class;
+    return new Intent(context, activityClass)
+            .putExtra(REACT_MODULE_NAME, moduleName)
+            .putExtra(REACT_PROPS, props);
+  }
+
+  public static Intent intent(Context context, String moduleName, Bundle props) {
+    return intent(context, moduleName, props, false);
+  }
+
+  public static Intent intent(Context context, String moduleName, boolean isModal) {
+    return intent(context, moduleName, null, isModal);
+  }
+
+  public static Intent intent(Context context, String moduleName) {
+    return intent(context, moduleName, null, false);
+  }
+
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Log.d(TAG, "onCreate");
 
     String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
 
@@ -87,21 +110,27 @@ public class ReactNativeActivity extends ReactAwareActivity
     setSupportActionBar(toolbar);
 
     if (!isSuccessfullyInitialized()) {
+      Log.d(TAG, "onCreate: !successfully initialized");
       // TODO(lmr): move to utils
       reactInstanceManager.addReactInstanceEventListener(
           new ReactInstanceManager.ReactInstanceEventListener() {
-            @Override public void onReactContextInitialized(ReactContext context) {
+            @Override
+            public void onReactContextInitialized(ReactContext context) {
+              Log.d(TAG, "onReactContextInitialized");
               onCreateWithReactContext();
             }
           });
     } else {
+      Log.d(TAG, "onCreate: successfully initialized!");
       onCreateWithReactContext();
       setupTransition();
     }
   }
 
   private void onCreateWithReactContext() {
+    Log.d(TAG, "onCreateWithReactContext");
     if (supportIsDestroyed()) {
+      Log.d(TAG, "onCreateWithReactContext: is destroyed");
       return;
     }
     View loadingView = findViewById(R.id.loading_view);
@@ -109,6 +138,7 @@ public class ReactNativeActivity extends ReactAwareActivity
       loadingView.setVisibility(View.GONE);
     }
     if (!isSuccessfullyInitialized()) {
+      Log.d(TAG, "onCreateWithReactContext: is not fully initialized");
       // TODO(lmr): should we do something like this?
 //            ReactNativeUtils.showAlertBecauseChecksFailed(this, dialog -> finish());
       return;
@@ -152,6 +182,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   private void setupTransition() {
+    Log.d(TAG, "setupTransition");
     // Shared element transitions have been unreliable on Lollipop < MR1.
     if (Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API && ReactNativeUtils.isSharedElementTransition(
         getIntent())) {
@@ -213,6 +244,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   @Override public void signalFirstRenderComplete() {
+    Log.d(TAG, "signalFirstRenderComplete");
     // For some reason, this "signal" gets sent before the `transitionName` gets set on the shared
     // elements, so if we are doing a "Shared Element Transition", we want to keep waiting before
     // starting the enter transition.
@@ -253,14 +285,14 @@ public class ReactNativeActivity extends ReactAwareActivity
     return instanceId;
   }
 
-  @Override public boolean onCreateOptionsMenu(Menu menu) {
-    if (toolbar != null) {
-      // 0 will prevent menu from getting inflated, since we are inflating manually
-      toolbar.onCreateOptionsMenu(0, menu, getMenuInflater());
-      createOptionsMenu(menu);
-    }
-    return true;
-  }
+//  @Override public boolean onCreateOptionsMenu(Menu menu) {
+//    if (toolbar != null) {
+//      // 0 will prevent menu from getting inflated, since we are inflating manually
+//      toolbar.onCreateOptionsMenu(0, menu, getMenuInflater());
+//      createOptionsMenu(menu);
+//    }
+//    return true;
+//  }
 
   private void createOptionsMenu(Menu menu) {
     if (link != null) {
@@ -289,6 +321,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.d(TAG, "onActivityResult");
     super.onActivityResult(requestCode, resultCode, data);
     if (activityManager != null) {
       activityManager.onActivityResult(requestCode, resultCode, data);
@@ -296,6 +329,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   @Override public void onBackPressed() {
+    Log.d(TAG, "onBackPressed");
     if (reactNavigationCoordinator.getDismissCloseBehavior(this)) {
       dismiss();
     } else {
@@ -368,7 +402,8 @@ public class ReactNativeActivity extends ReactAwareActivity
   private void emitEvent(String eventName, @Nullable Object object) {
     if (isSuccessfullyInitialized() && !supportIsDestroyed()) {
       String key =
-          String.format(Locale.ENGLISH, "AirbnbNavigatorScreen.%s.%s", eventName, instanceId);
+          String.format(Locale.ENGLISH, "NativeNavigationScreen.%s.%s", eventName, instanceId);
+      Log.d(TAG, key);
       ReactNativeUtils.maybeEmitEvent((ReactContext) reactInstanceManager.getCurrentReactContext(),
           key, object);
     }
@@ -406,7 +441,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   protected boolean isSuccessfullyInitialized() {
-    return ReactNativeUtils.isSuccessfullyInitialized(reactInstanceManager);
+    return reactNavigationCoordinator.isSuccessfullyInitialized();
   }
 
   @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
@@ -419,6 +454,16 @@ public class ReactNativeActivity extends ReactAwareActivity
       PermissionListener listener) {
     permissionListener = listener;
     requestPermissions(permissions, requestCode);
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    if (/* BuildConfig.DEBUG && */keyCode == KeyEvent.KEYCODE_MENU) {
+      // TODO(lmr): disable this in development
+      reactInstanceManager.showDevOptionsDialog();
+      return true;
+    }
+    return super.onKeyUp(keyCode, event);
   }
 
   public void onRequestPermissionsResult(int requestCode, String[] permissions,

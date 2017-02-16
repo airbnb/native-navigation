@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 
+import android.util.Log;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.ReactContext;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -16,7 +19,32 @@ import java.util.Map;
 public class ReactNavigationCoordinator {
   public static ReactNavigationCoordinator sharedInstance = new ReactNavigationCoordinator();
 
+  private ReactInstanceManager reactInstanceManager;
+  private boolean isSuccessfullyInitialized = false;
+
   private ReactNavigationCoordinator() {
+  }
+
+  public ReactInstanceManager getReactInstanceManager() {
+    return reactInstanceManager;
+  }
+
+  public void injectReactInstanceManager(ReactInstanceManager reactInstanceManager) {
+    if (this.reactInstanceManager != null) {
+      // TODO: throw error. can only initialize once.
+    }
+    this.reactInstanceManager = reactInstanceManager;
+    this.reactInstanceManager.addReactInstanceEventListener(
+      new ReactInstanceManager.ReactInstanceEventListener() {
+        @Override
+        public void onReactContextInitialized(ReactContext context) {
+          isSuccessfullyInitialized = true;
+        }
+      });
+  }
+
+  boolean isSuccessfullyInitialized() {
+    return isSuccessfullyInitialized;
   }
 
   public void injectExposedActivities(List<ReactExposedActivityParams> exposedActivities) {
