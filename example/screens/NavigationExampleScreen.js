@@ -7,6 +7,7 @@ import {
   Text,
   Button,
   ScrollView,
+  Platform,
 } from 'react-native';
 
 import Navigator from 'native-navigation';
@@ -18,41 +19,110 @@ const contextTypes = {
 };
 
 export default class NavigationExampleScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      buttons: [
+        {
+          title: 'A',
+        },
+      ],
+    };
+  }
   render() {
-    return (
-      <Navigator.Config
-        title="Title"
-        rightTitle="Foo"
-        onRightPress={() => console.log('onRightPress')}
-        onAppear={() => console.log('onAppear', this.context.nativeNavigationInstanceId)}
-        onDisappear={() => console.log('onDisappear', this.context.nativeNavigationInstanceId)}
-      >
-        <ScrollView>
-          <View style={{ paddingTop: 64 }}>
-            <Text>Navigation</Text>
+    const screen = (
+      <ScrollView>
+        <View style={{ paddingTop: 64 }}>
+          <Text>Navigation</Text>
+        </View>
+        <View>
+          <Text>
+            {this.context.nativeNavigationInstanceId}
+          </Text>
+          <View
+            style={{ marginBottom: 10 }}
+          >
+            <Button
+              title="Add button"
+              onPress={() => this.setState({
+                buttons: this.state.buttons.concat([
+                  {
+                    title: 'B',
+                  },
+                ]),
+              })}
+            />
           </View>
-          <View>
-            <Text>
-              {this.context.nativeNavigationInstanceId}
-            </Text>
+          <View
+            style={{ marginBottom: 10 }}
+          >
             <Button
               title="Present new modal"
               onPress={() => Navigator.present('ScreenOne')}
             />
+          </View>
+          <View
+            style={{ marginBottom: 10 }}
+          >
             <Button
               title="Push new screen"
               onPress={() => Navigator.push('ScreenOne')}
             />
+          </View>
+          <View
+            style={{ marginBottom: 10 }}
+          >
             <Button
               title="Pop"
               onPress={() => Navigator.pop()}
             />
+          </View>
+          <View
+            style={{ marginBottom: 10 }}
+          >
             <Button
               title="Dismiss"
               onPress={() => Navigator.dismiss()}
             />
           </View>
-        </ScrollView>
+        </View>
+      </ScrollView>
+    );
+
+    // return screen;
+
+    return (
+      <Navigator.Config
+        title={this.context.nativeNavigationInstanceId}
+        //prompt="subtitle"
+        //subtitle="Subtitle"
+        rightTitle="Foo"
+        //statusBarHidden={true}
+        statusBarStyle="light"
+
+        hidesBackButton={false}
+        isNavigationBarHidden={false}
+        //backgroundColor="white"
+        //barTintColor="#ccc"
+        leftButtons={this.state.buttons}
+        titleColor="black"
+        foregroundColor="white"
+        rightImage={{
+          uri: Platform.select({
+            ios: 'NavBarButtonPlus',
+            android: 'ic_menu_black_24dp',
+          }),
+          width: 51,
+          height: 51,
+        }}
+        elevation={30}
+        onBackPress={() => console.log('onBackPress')}
+        onLeftPress={() => console.log('onLeftPress')}
+        onRightPress={(x) => console.log('onRightPress', x)}
+        onAppear={() => console.log('onAppear', this.context.nativeNavigationInstanceId)}
+        onDisappear={() => console.log('onDisappear', this.context.nativeNavigationInstanceId)}
+      >
+        {screen}
       </Navigator.Config>
     );
   }

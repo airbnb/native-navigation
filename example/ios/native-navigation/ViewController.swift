@@ -13,7 +13,7 @@ final class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "Root ViewController"
+    title = "Root"
 
     let pushButton1 = UIButton(type: .roundedRect)
     pushButton1.setTitle("Push ScreenOne", for: .normal)
@@ -39,7 +39,7 @@ final class ViewController: UIViewController {
 //    [self.view addSubview:button2];
 
 
-    view.backgroundColor = .blue
+    view.backgroundColor = .white
   }
 
   func pushScreenOne(sender: UIButton) {

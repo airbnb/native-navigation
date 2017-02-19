@@ -2,7 +2,6 @@ package com.airbnb.android.react.navigation;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ abstract class ExtendableBundleBuilder<T extends ExtendableBundleBuilder<?>> {
     return (T) this;
   }
 
-  public T putBundle(String key, @Nullable Bundle value) {
+  public T putBundle(String key, Bundle value) {
     bundle.putBundle(key, value);
     return (T) this;
   }

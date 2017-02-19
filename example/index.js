@@ -2,4 +2,8 @@
 import Navigator from 'native-navigation';
 
 Navigator.registerScreen('Example', () => require('./screens/Example'));
-Navigator.registerScreen('ScreenOne', () => require('./screens/NavigationExampleScreen'));
+Navigator.registerScreen('ScreenOne', () => require('./screens/NavigationExampleScreen'), {
+  initialConfig: {
+    title: 'FooBar',
+  },
+});

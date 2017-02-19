@@ -15,30 +15,20 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionSet;
+import android.transition.*;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Shared element helper which will automatically find and coordinate shared element transitions.
@@ -69,8 +59,8 @@ import java.util.Map;
       "sharedElement:snapshot:imageScaleType";
   public static final String BUNDLE_SNAPSHOT_IMAGE_MATRIX = "sharedElement:snapshot:imageMatrix";
 
-  @Nullable private static Transition sDefaultEnterTransition;
-  @Nullable private static Transition sDefaultReturnTransition;
+  private static Transition sDefaultEnterTransition;
+  private static Transition sDefaultReturnTransition;
 
   /**
    * @see #getActivityOptions(Activity, String, long)
@@ -175,7 +165,7 @@ import java.util.Map;
   private final List<TransitionName> asyncTransitionViews;
   private Transition sharedElementEnterTransition;
   private Transition sharedElementReturnTransition;
-  @Nullable private AutoSharedElementCallbackDelegate delegate;
+  private AutoSharedElementCallbackDelegate delegate;
   /**
    * Whether or not onSharedElementEnd has been called since the last onMapSharedElements. In an
    * entering transition, onSharedElementStart will be called before onSharedElementEnd. In a
@@ -314,8 +304,7 @@ import java.util.Map;
     return this;
   }
 
-  public AutoSharedElementCallback setDelegate(
-      @Nullable AutoSharedElementCallbackDelegate delegate) {
+  public AutoSharedElementCallback setDelegate(AutoSharedElementCallbackDelegate delegate) {
     this.delegate = delegate;
     return this;
   }

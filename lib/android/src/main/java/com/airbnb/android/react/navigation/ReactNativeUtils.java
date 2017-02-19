@@ -1,10 +1,7 @@
 package com.airbnb.android.react.navigation;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
@@ -16,7 +13,7 @@ public final class ReactNativeUtils {
   }
 
   /** Emits a JS event with the provided name and data if the rect context is initialized */
-  static void maybeEmitEvent(@Nullable ReactContext context, String name, @Nullable Object data) {
+  static void maybeEmitEvent(ReactContext context, String name, Object data) {
     if (context == null) {
       throw new IllegalArgumentException(
           String.format("reactContext is null (calling event: %s)", name));

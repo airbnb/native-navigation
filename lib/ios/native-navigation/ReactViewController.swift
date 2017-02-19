@@ -62,14 +62,20 @@ open class ReactViewController: UIViewController {
     self.moduleName = moduleName
     self.props = propsWithMetadata(props, nativeNavigationInstanceId: nativeNavigationInstanceId)
     self.coordinator = ReactNavigationCoordinator.sharedInstance
+    self.initialConfig = [:]
+    self.renderedConfig = [:]
 
     super.init(nibName: nil, bundle: nil)
 
-    // TODO: perhaps we should also have a "getRegisteredScreenNavigationProps"
-    if let bgColor = coordinator.getScreenNavigationBarColor(moduleName) {
-      self.backgroundColor = bgColor
+    if let initialConfig = coordinator.getScreenProperties(moduleName) {
+      self.initialConfig = initialConfig
     }
 
+    // I'm all ears for a better way to solve this, but just setting this to false seems to be the best way to attain
+    // consistency across screens and platforms. If we don't do this, then scrollview insets will be set differently
+    // after popping to a screen. Also, android and ios logic will have to be different. Just opting out of the
+    // behavior seems like a better approach at the moment.
+    self.automaticallyAdjustsScrollViewInsets = false
   }
 
   // MARK: Public
@@ -108,7 +114,7 @@ open class ReactViewController: UIViewController {
       moduleName: moduleName,
       initialProperties: props)
 
-    if let bgColor = coordinator.getScreenBackgroundColor(moduleName) {
+    if let bgColor = colorForKey("backgroundColor", initialConfig) {
       self.view.backgroundColor = bgColor
     }
   }
@@ -119,6 +125,10 @@ open class ReactViewController: UIViewController {
 
   override open func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+
+    if (!self.isMovingToParentViewController) {
+      reconcileScreenConfig()
+    }
 
     handleLeadingButtonVisibleChange()
   }
@@ -153,33 +163,26 @@ open class ReactViewController: UIViewController {
         finish(.ok, payload: dismissPayload)
         transition = nil
       }
-      // TODO(lmr): removed if let parent = navController.parent as? FullSheetModalManager
     }
   }
 
-  /**
-   * This will get called by the ReactStatusBarBridge module, so that React Native JS
-   * code can toggle the status bar style dynamically
-   */
-  open func setStatusBarStyle(_ style: UIStatusBarStyle, animated: Bool) {
-    statusBarStyle = style
-    updateStatusBar(animated)
+  open func setStatusBarStyle(_ style: UIStatusBarStyle) {
+    if (statusBarStyle != style) {
+      statusBarStyle = style
+      statusBarIsDirty = true
+    }
   }
 
-  /**
-   * This will get called by the ReactStatusBarBridge module, so that React Native JS
-   * code can toggle the hidden state of the status bar dynamically
-   */
-  open func setStatusBarHidden(_ hidden: Bool, animation: UIStatusBarAnimation) {
-    statusBarHidden = hidden
+  open func setStatusBarHidden(_ hidden: Bool) {
+    if (statusBarHidden != hidden) {
+      statusBarHidden = hidden
+      statusBarIsDirty = true
+    }
+  }
+
+  open func setStatusBarAnimation(_ animation: UIStatusBarAnimation) {
     statusBarAnimation = animation
-    updateStatusBar(animation != UIStatusBarAnimation.none)
   }
-
-//  open func attachScrollView(_ scrollView: RCTScrollView) {
-    // TODO
-//    scrollView.addScrollListener(self)
-//  }
 
   // MARK: Internal
 
@@ -195,14 +198,6 @@ open class ReactViewController: UIViewController {
     return coordinator.navigation.makeNavigationController(rootViewController: self)
   }
 
-//  func setScrollFoldOffset(_ offset: CGFloat) {
-//    scrollFoldOffset = offset
-//  }
-
-//  func setHideStatusBarUntilFoldOffset(_ hideStatusBar: Bool) {
-//    hideStatusBarUntilFoldOffset = hideStatusBar
-//  }
-
   func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
     self.leadingButtonVisible = leadingButtonVisible
     handleLeadingButtonVisibleChange()
@@ -212,20 +207,11 @@ open class ReactViewController: UIViewController {
     // TODO(spike)
   }
 
-//  func setSnapToFoldOffset(_ snapToFoldOffset: Bool) {
-//    self.snapToFoldOffset = snapToFoldOffset
-//  }
-
   let nativeNavigationInstanceId: String
   var sharedElementsById: [String: WeakViewHolder] = [:]
   var sharedElementGroupsById: [String: WeakViewHolder] = [:]
   var dismissResultCode: ReactFlowResultCode?
   var dismissPayload: [String: AnyObject]?
-  // TODO(lmr): removed var barType: String = "overlay"
-  var backgroundColor: String?
-  // TODO(lmr): removed var navigationTitle: String?
-  // TODO(lmr): removed var link: String?
-  // TODO(lmr): removed var buttons: [String] = []
 
   // MARK: Private
 
@@ -257,38 +243,43 @@ open class ReactViewController: UIViewController {
     }
   }
 
-  fileprivate func updateStatusBar(_ animate: Bool) {
-    let duration = animate ? 0.2 : 0
-    UIView.animate(withDuration: duration, animations: {
-      self.setNeedsStatusBarAppearanceUpdate()
-    })
+  func updateStatusBarIfNeeded() {
+    if (statusBarIsDirty) {
+      statusBarIsDirty = false
+      let duration = statusBarAnimation != .none ? 0.2 : 0
+      UIView.animate(withDuration: duration, animations: {
+        self.setNeedsStatusBarAppearanceUpdate()
+      })
+    }
   }
 
   fileprivate let moduleName: String
   fileprivate let props: [String: AnyObject]
   fileprivate let coordinator: ReactNavigationCoordinator
+  fileprivate var initialConfig: [String: AnyObject]
+  fileprivate var renderedConfig: [String: AnyObject]
   fileprivate var reactView: UIView!
   fileprivate var statusBarAnimation: UIStatusBarAnimation = .fade
   fileprivate var statusBarHidden: Bool = false
   fileprivate var statusBarStyle: UIStatusBarStyle = UIStatusBarStyle.default
-  // TODO(lmr): removed  fileprivate var _navigationBarType: NavigationBarType = .overlay([])
-  // TODO(lmr): removed  fileprivate var scrollContentOffset: CGFloat = 0
-  // TODO(lmr): removed  fileprivate var scrollFoldOffset: CGFloat? = nil
-  // TODO(lmr): removed  fileprivate var hideStatusBarUntilFoldOffset: Bool = false
-  // TODO(lmr): removed fileprivate weak var _navScrollingDelegate: NavigationControllerScrollingDelegate?
+  fileprivate var statusBarIsDirty: Bool = false
   fileprivate var isPendingNavigationTransition: Bool = false
   fileprivate var isCurrentlyTransitioning: Bool = false
   fileprivate var onTransitionCompleted: (() -> Void)?
   fileprivate var onNavigationBarTypeUpdated: (() -> Void)?
   fileprivate var leadingButtonVisible: Bool = true
-  // TODO(lmr): removed  fileprivate var snapToFoldOffset: Bool = false
   fileprivate var transition: ReactSharedElementTransition?
   fileprivate var eagerNavigationController: UINavigationController?
 
-  private func updateNavigationImpl(props: [String: AnyObject]) {
-    // TODO(lmr): should we handle this through a coordinator delegate method???
-    var nav = navigationController ?? eagerNavigationController
+  fileprivate func reconcileScreenConfig() {
+    let nav = navigationController ?? eagerNavigationController
+    let props = initialConfig.combineWith(values: renderedConfig)
     coordinator.navigation.reconcileScreenConfig(viewController: self, navigationController: nav, props: props)
+  }
+
+  private func updateNavigationImpl(props: [String: AnyObject]) {
+    renderedConfig = props
+    reconcileScreenConfig()
   }
 
   func setNavigationBarProperties(props: [String: AnyObject]) {
@@ -308,39 +299,28 @@ open class ReactViewController: UIViewController {
     }
   }
 
-  func barButtonPressed(sender: UIBarButtonItem) {
+  func back(sender: UIBarButtonItem) {
+    print("onBackPress")
+    emitEvent("onBackPress", body: nil)
+  }
+
+  // this gets fired right after the first real navigation action gets called (push or present)
+  fileprivate func realNavigationDidHappen() {
 
   }
 
+  // this gets fired after things are set up and we are now waiting for the first navigation config from JS
+  // to get passed back
+  fileprivate func startedWaitingForRealNavigation() {
+    reconcileScreenConfig()
+    if let waitForRender = boolForKey("waitForRender", initialConfig) {
+      if (!waitForRender && isPendingNavigationTransition) {
+        onNavigationBarTypeUpdated?()
+      }
+    }
+  }
+
 }
-
-// TODO(lmr): removed scrollview delegate code
-
-// TODO(lmr): removed NavigationConfigurer code
-
-
-// MARK: NavigationBarDelegate
-
-// TODO(lmr): need to implement these callbacks etc.
-//extension ReactViewController : NavigationBarDelegate {
-//  public func navigationBarDidTriggerLeadingButtonAction() {
-//    emitEvent("onLeftPress", body: nil)
-//  }
-//
-//  public func navigationBarDidTriggerTrailingButtonsActionForButtonAtIndex(_ index: Int) {
-//    emitEvent("onButtonPress", body: index as AnyObject?)
-//  }
-//
-//  public func navigationBarDidTriggerTrailingLinkAction() {
-//    emitEvent("onLinkPress", body: nil)
-//  }
-//
-//  public func navigationBarDidTriggerTitleLinkAction() {
-//    emitEvent("onTitlePress", body: nil)
-//  }
-//}
-
-
 
 // MARK: ReactFlowCoordinator
 
@@ -424,8 +404,6 @@ extension ReactViewController : ReactAnimationToContentVendor {
   }
 }
 
-// MARK: AIRNavigationController extension
-
 // we will wait a maximum of 200ms for the RN view to tell us what the navigation bar should look like.
 // should normally happen much quicker than this... This is just to make sure it transitions in a reasonable
 // time frame even if the react thread takes an extra long time.
@@ -443,14 +421,14 @@ extension UINavigationController {
     delay: Int64 = DELAY,
     makeTransition: (() -> ReactSharedElementTransition)?) {
 
+    // TODO(lmr): we need to debounce this
+
     viewController.eagerNavigationController = self
 
     // this should never evaluate true, but is here just to trigger loadView()
     guard (viewController.view != nil) else {
       return
     }
-
-
 
     let realPush: () -> Void = { [weak self] in
       viewController.onNavigationBarTypeUpdated = nil
@@ -460,14 +438,11 @@ extension UINavigationController {
       if let transition = makeTransition?() {
         viewController.transition = transition
         self?.transitioningDelegate = transition
-        // TODO(lmr): is something similar to this needed?
-//        if let airNav = self as? AIRNavigationController {
-//          airNav.navigationDelegate = transition
-//        }
       }
 
       self?.pushViewController(viewController, animated: animated)
       viewController.eagerNavigationController = nil
+      viewController.realNavigationDidHappen()
       self?.transitionCoordinator?.animate(alongsideTransition: nil, completion: { context in
         viewController.isCurrentlyTransitioning = false
         // The completion handler of the AIRNavigationController will be called
@@ -483,6 +458,7 @@ extension UINavigationController {
 
     viewController.isPendingNavigationTransition = true
     viewController.onNavigationBarTypeUpdated = realPush
+    viewController.startedWaitingForRealNavigation()
 
     // we delay pushing the view controller just a little bit (50ms) so that the react view can render
     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)) {
@@ -496,24 +472,29 @@ extension UINavigationController {
 
 extension UIViewController {
   public func presentReactViewController(_ viewControllerToPresent: ReactViewController, animated: Bool, completion: (() -> Void)?) {
+
+    // TODO(lmr): we need to debounce this
+
+    // we wrap the vc in a navigation controller early on so that when reconcileScreenConfig happens, it has a navigation
+    // controller
+    guard let nav = viewControllerToPresent.wrapInNavigationController() else { return }
+
     // set this so we know which nav it should operate on before getting presented
-    viewControllerToPresent.eagerNavigationController = self.navigationController
+    viewControllerToPresent.eagerNavigationController = nav
 
     // this should never evaluate to true, but is here just to trigger loadView()
     if (viewControllerToPresent.view == nil) {
       return
     }
 
-    let realPresent = { [weak self, weak viewControllerToPresent] in
+    let realPresent = { [weak self, weak viewControllerToPresent, weak nav] in
       guard let viewControllerToPresent = viewControllerToPresent else { return }
-      guard let nav = viewControllerToPresent.wrapInNavigationController() else { return }
+      guard let nav = nav else { return }
 
       let identifier = viewControllerToPresent.nativeNavigationInstanceId
       viewControllerToPresent.onNavigationBarTypeUpdated = nil
       viewControllerToPresent.isPendingNavigationTransition = false
       viewControllerToPresent.isCurrentlyTransitioning = true
-
-//      nav.presentationMethod = .custom(identifier, ReactNavigationCoordinator.DismissHandler)
 
       self?.present(nav, animated: animated, completion: {
         viewControllerToPresent.isCurrentlyTransitioning = false
@@ -529,10 +510,12 @@ extension UIViewController {
       })
       // viewController should have a navigationController now. nil out to prevent retain cycles
       viewControllerToPresent.eagerNavigationController = nil
+      viewControllerToPresent.realNavigationDidHappen()
     }
 
     viewControllerToPresent.isPendingNavigationTransition = true
     viewControllerToPresent.onNavigationBarTypeUpdated = realPresent
+    viewControllerToPresent.startedWaitingForRealNavigation()
 
     // we delay pushing the view controller just a little bit (50ms) so that the react view can render
     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(DELAY) / Double(NSEC_PER_SEC)) {

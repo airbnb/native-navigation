@@ -19,15 +19,14 @@ class ReactNavigation: NSObject {
     coordinator = ReactNavigationCoordinator.sharedInstance
   }
 
-
   func constantsToExport() -> [String: Any] {
     return [
       "VERSION": VERSION
     ]
   }
 
-  func registerScreenBackgroundColor(_ sceneName: String, withColor color: UIColor) {
-    coordinator.setScreenBackgroundColor(sceneName, color: color)
+  func registerScreenProperties(_ sceneName: String, withProperties properties: [String: AnyObject]) {
+    coordinator.registerScreenProperties(sceneName, properties: properties)
   }
 
   func setNavigationBarProperties(_ props: [String: AnyObject], withInstanceId instanceId: String) {

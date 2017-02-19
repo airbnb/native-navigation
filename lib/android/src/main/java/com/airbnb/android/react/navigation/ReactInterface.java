@@ -3,6 +3,9 @@ package com.airbnb.android.react.navigation;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.ReadableMap;
+
+import java.util.Map;
 
 public interface ReactInterface {
   // @formatter:off
@@ -11,8 +14,10 @@ public interface ReactInterface {
   ReactToolbar getToolbar();
   boolean isDismissible();
   void signalFirstRenderComplete();
-  void setLink(String link);
   void notifySharedElementAddition();
   FragmentActivity getActivity();
+  void emitEvent(String eventName, Object object);
+//  void receiveNavigationProperties(Map<String, Object> properties);
+  void receiveNavigationProperties(ReadableMap properties);
   // @formatter:on
 }
