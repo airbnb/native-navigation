@@ -44,7 +44,11 @@ final class ConversionUtil {
           result.put(key, readableMap.getBoolean(key));
           break;
         case Number:
-          result.put(key, readableMap.getDouble(key));
+          try {
+            result.put(key, readableMap.getInt(key));
+          } catch (Exception e) {
+            result.put(key, readableMap.getDouble(key));
+          }
           break;
         case String:
           result.put(key, readableMap.getString(key));

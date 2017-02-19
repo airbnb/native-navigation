@@ -2,24 +2,20 @@ package com.airbnb.android.react.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewStub;
-
+import android.view.*;
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_MODULE_NAME;
 import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_PROPS;
@@ -42,28 +38,28 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
 
   private String instanceId;
   private ReactInterfaceManager activityManager;
-  //    private List<MenuButton> menuButtons;
-  private String link;
-  @Nullable private ReactRootView reactRootView;
+//  private Map<String, Object> navigationProperties = new HashMap<>();
+  private ReadableMap navigationProperties = new WritableNativeMap();
+  private ReactRootView reactRootView;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
   }
 
-  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+  @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     initReactNative();
   }
 
-  @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_react_native, container, false);
     ReactToolbar toolbar = (ReactToolbar) v.findViewById(R.id.toolbar);
     AppCompatActivity activity = (AppCompatActivity) getActivity();
-    activity.setSupportActionBar(toolbar);
+// TODO:    activity.setSupportActionBar(toolbar);
+    activity.setActionBar(toolbar);
     initReactNative();
     return v;
   }
@@ -170,17 +166,6 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   @Override public void signalFirstRenderComplete() {
   }
 
-//    @Override
-//    public void setMenuButtons(List<MenuButton> buttons) {
-//        menuButtons = buttons;
-//        getActivity().supportInvalidateOptionsMenu();
-//    }
-
-  @Override public void setLink(String link) {
-    this.link = link;
-    getActivity().supportInvalidateOptionsMenu();
-  }
-
   @Override public void notifySharedElementAddition() {
     // TODO: shared element transitions probably not quite supported with RN fragments just yet.
   }
@@ -190,18 +175,13 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     if (toolbar != null) {
       // 0 will prevent menu from getting inflated, since we are inflating manually
       toolbar.onCreateOptionsMenu(0, menu, inflater);
-      createOptionsMenu(menu);
+      getImplementation().createOptionsMenu(
+          this,
+          getToolbar(),
+          this.navigationProperties,
+          menu
+      );
     }
-  }
-
-  private void createOptionsMenu(Menu menu) {
-    if (link != null) {
-      menu.add(link).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    }
-//        else if (menuButtons != null) {
-    // TODO(lmr): fix this
-//            NavigatorModule.addButtonsToMenu(getContext(), menu, menuButtons, (button, index) -> emitEvent(ON_BUTTON_PRESS, index));
-//        }
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -214,11 +194,20 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     return reactNavigationCoordinator.isSuccessfullyInitialized();
   }
 
-  private void emitEvent(String eventName, Object object) {
+  private NavigationImplementation getImplementation() {
+    return reactNavigationCoordinator.getImplementation();
+  }
+
+  public void emitEvent(String eventName, Object object) {
     if (isSuccessfullyInitialized()) {
       String key =
           String.format(Locale.ENGLISH, "AirbnbNavigatorScreen.%s.%s", eventName, instanceId);
       maybeEmitEvent(reactInstanceManager.getCurrentReactContext(), key, object);
     }
+  }
+
+  @Override
+  public void receiveNavigationProperties(ReadableMap properties) {
+    // TODO
   }
 }

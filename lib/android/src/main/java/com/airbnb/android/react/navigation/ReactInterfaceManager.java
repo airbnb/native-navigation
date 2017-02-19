@@ -3,10 +3,8 @@ package com.airbnb.android.react.navigation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.SparseArray;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.common.MapBuilder;
 
@@ -35,7 +33,7 @@ public final class ReactInterfaceManager {
    * resolve/reject it.
    */
   public static void startActivityWithPromise(final Activity activity, final Intent intent,
-      Promise promise, @Nullable final Bundle options) {
+      Promise promise, final Bundle options) {
     final int requestCode = puuid++;
     resultPromises.put(requestCode, promise);
     if (AndroidVersion.isAtLeastLollipop() && ReactNativeUtils.isReactNativeIntent(intent)) {
@@ -97,7 +95,7 @@ public final class ReactInterfaceManager {
     return data != null && data.getBooleanExtra(NavigatorModule.EXTRA_IS_DISMISS, false);
   }
 
-  @Nullable private Promise getAndRemovePromise(int requestCode) {
+  private Promise getAndRemovePromise(int requestCode) {
     if (resultPromises.indexOfKey(requestCode) < 0) {
       return null;
     }

@@ -12,7 +12,6 @@ import UIKit
 public protocol ReactNavigationCoordinatorDelegate {
   func rootViewController(forCoordinator coordinator: ReactNavigationCoordinator) -> UIViewController?
   func flowCoordinatorForId(_ name: String) -> ReactFlowCoordinator?
-  // TODO(lmr): removed defaultComponentLibraryTheme
   func registerReactDeepLinkUrl(_ deepLinkUrl: String)
 }
 
@@ -60,10 +59,6 @@ open class ReactNavigationCoordinator: NSObject {
   open var bridge: RCTBridge?
   open var navigation: ReactNavigationImplementation = DefaultReactNavigationImplementation()
 
-//  open func defaultComponentLibraryTheme() -> ComponentLibraryTheme? {
-//    return delegate?.defaultComponentLibraryTheme()
-//  }
-
   open func topViewController() -> UIViewController? {
     guard let a = delegate?.rootViewController(forCoordinator: self) else {
       return nil
@@ -110,8 +105,6 @@ open class ReactNavigationCoordinator: NSObject {
 
   // MARK: Internal
 
-  // TODO(lmr): removed static let DismissHandler: PresentationDismissHandler
-
   func registerFlow(_ viewController: ReactViewController, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     let newId = getUuid()
     viewController.reactFlowId = newId
@@ -127,24 +120,14 @@ open class ReactNavigationCoordinator: NSObject {
     viewControllers[nativeNavigationInstanceId] = nil
   }
 
-  var sceneBackgroundColorMap: [String: UIColor] = [:]
+  var sceneInitialPropertiesMap: [String: [String: AnyObject]] = [:]
 
-  func setScreenBackgroundColor(_ sceneName: String, color: UIColor) {
-    sceneBackgroundColorMap[sceneName] = color
+  func registerScreenProperties(_ sceneName: String, properties: [String: AnyObject]) {
+    sceneInitialPropertiesMap[sceneName] = properties
   }
 
-  func getScreenBackgroundColor(_ sceneName: String) -> UIColor? {
-    return sceneBackgroundColorMap[sceneName]
-  }
-
-  func getScreenNavigationBarType(_ sceneName: String) -> String? {
-//    return sceneNavigationBarTypeMap[sceneName]
-    return ""
-  }
-
-  func getScreenNavigationBarColor(_ sceneName: String) -> String? {
-//    return sceneNavigationBarColorMap[sceneName]
-    return ""
+  func getScreenProperties(_ sceneName: String) -> [String: AnyObject]? {
+    return sceneInitialPropertiesMap[sceneName]
   }
 
   func dismissViewController(_ nativeNavigationInstanceId: String, payload: [String: AnyObject]) {

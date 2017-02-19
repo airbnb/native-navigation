@@ -5,17 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup;
-
 import com.airbnb.android.R;
 import com.facebook.react.ReactRootView;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,28 +48,28 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     // backgroundColor
   }
 
-  @SuppressWarnings("unused")
-  @ReactMethod
-  public void registerScreenNavigatorProperties(String sceneName, ReadableMap properties) {
-    // TODO(lmr):
-    // theme
-    // bar color
-    // bar type
-    // title
-    // link
-    // leftIcon
-  }
+//  @SuppressWarnings("unused")
+//  @ReactMethod
+//  public void registerScreenNavigatorProperties(String sceneName, ReadableMap properties) {
+//    // TODO(lmr):
+//    // theme
+//    // bar color
+//    // bar type
+//    // title
+//    // link
+//    // leftIcon
+//  }
 
   @SuppressWarnings("unused")
   @ReactMethod
-  public void setNavigatorProperties(ReadableMap properties, String instanceId) {
-    // TODO(lmr):
-    // theme
-    // bar color
-    // bar type
-    // title
-    // link
-    // leftIcon
+  public void setNavigationBarProperties(final ReadableMap properties, final String instanceId) {
+//    final Map<String, Object> props = payloadToMap(properties);
+    withToolbar(instanceId, new NavigationModifier() {
+      @Override
+      public void call(ReactInterface component, ReactToolbar toolbar) {
+        component.receiveNavigationProperties(properties);
+      }
+    });
   }
 
   @SuppressWarnings({"UnusedParameters", "unused"})
@@ -106,8 +99,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
 
   @SuppressWarnings({"UnusedParameters", "unused"})
   @ReactMethod
-  public void pushNative(String name, ReadableMap props, @Nullable ReadableMap options,
-      Promise promise) {
+  public void pushNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
@@ -129,8 +121,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
 
   @SuppressWarnings({"UnusedParameters", "unused"})
   @ReactMethod
-  public void presentNative(String name, ReadableMap props, @Nullable ReadableMap options,
-      Promise promise) {
+  public void presentNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
@@ -155,18 +146,18 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     }
   }
 
-  private interface ToolbarModifier {
-    void call(ReactToolbar toolbar);
+  private interface NavigationModifier {
+    void call(ReactInterface component, ReactToolbar toolbar);
   }
 
-  private void withToolbar(@Nullable final ReactInterface component,
-      final ToolbarModifier modifier) {
+  private void withToolbar(String id, final NavigationModifier modifier) {
+    final ReactInterface component = coordinator.componentFromId(id);
     if (component != null) {
       handler.post(new Runnable() {
         @Override public void run() {
           ReactToolbar toolbar = component.getToolbar();
           if (toolbar != null) {
-            modifier.call(toolbar);
+            modifier.call(component, toolbar);
           }
         }
       });
@@ -174,7 +165,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   }
 
   private void startActivityWithPromise(final Activity activity, final Intent intent,
-      final Promise promise, @Nullable final ReadableMap options) {
+      final Promise promise, final ReadableMap options) {
     handler.post(new Runnable() {
       @Override public void run() {
         if (ActivityUtils.hasActivityStopped(activity)) {
@@ -200,7 +191,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     });
   }
 
-  private void dismiss(Activity activity, @Nullable ReadableMap payload) {
+  private void dismiss(Activity activity, ReadableMap payload) {
     Intent intent = new Intent()
         .putExtra(EXTRA_PAYLOAD, payloadToMap(payload));
     if (activity instanceof ReactInterface) {
@@ -211,7 +202,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     activity.finish();
   }
 
-  private void pop(Activity activity, @Nullable ReadableMap payload) {
+  private void pop(Activity activity, ReadableMap payload) {
     Intent intent = new Intent().putExtra(EXTRA_PAYLOAD, payloadToMap(payload));
     activity.setResult(getResultCodeFromPayload(payload), intent);
     activity.finish();
@@ -221,7 +212,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
    * Returns the result_code from the ReadableMap payload or RESULT_OK if none found. <p> Throws
    * IllegalArgumentException if the resultCode is not a number.
    */
-  private static int getResultCodeFromPayload(@Nullable ReadableMap payload) {
+  private static int getResultCodeFromPayload(ReadableMap payload) {
     if (payload == null) {
       return Activity.RESULT_OK;
     }
@@ -234,43 +225,9 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     return payload.getInt(RESULT_CODE);
   }
 
-  private static HashMap<String, Object> payloadToMap(@Nullable ReadableMap payload) {
+  private static HashMap<String, Object> payloadToMap(ReadableMap payload) {
     return payload == null
         ? new HashMap<String, Object>()
         : new HashMap<>(ConversionUtil.toMap(payload));
   }
-
-//    interface OnMenuButtonClickListener {
-//        /**
-//         * @param button The selected button.
-//         * @param index  The position of the button in the toolbar.
-//         */
-//        void onClick(MenuButton button, int index);
-//    }
-
-  /** Adds all the buttons to the given menu. Uses the given click listener as a callback for when any button is selected. */
-//    static void addButtonsToMenu(Context context, Menu menu, List<MenuButton> buttons, OnMenuButtonClickListener onClickListener) {
-//        for (int i = 0; i < buttons.size(); i++) {
-//            MenuButton button = buttons.get(i);
-//            MenuItem item = menu.add(button.title);
-//            item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-//
-//            final int buttonIndex = i;
-//            if (button.useForegroundColor) {
-//                item.setIcon(button.icon);
-//                item.setOnMenuItemClickListener(menuItem -> {
-//                    onClickListener.onClick(button, buttonIndex);
-//                    return true;
-//                });
-//            } else {
-//                // Uses a linear layout to provide layout bounds. This is copied from what MenuButton does internally if a layout resource is set.
-//                ReactMenuItemView itemView =
-//                        (ReactMenuItemView) LayoutInflater.from(context).inflate(R.layout.menu_item_view, new LinearLayout(context), false);
-//                itemView.setImageResource(button.icon);
-//                itemView.setOnClickListener(v -> onClickListener.onClick(button, buttonIndex));
-//                itemView.setContentDescription(context.getString(button.title));
-//                item.setActionView(itemView);
-//            }
-//        }
-//    }
 }

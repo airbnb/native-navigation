@@ -10,7 +10,7 @@
 
 @interface RCT_EXTERN_REMAP_MODULE(NativeNavigationModule, ReactNavigation, NSObject)
 
-RCT_EXTERN_METHOD(registerScreenBackgroundColor:(NSString *)sceneName withColor:(UIColor *)color)
+RCT_EXTERN_METHOD(registerScreenProperties:(NSString *)sceneName withProperties:(NSDictionary *)properties)
 RCT_EXTERN_METHOD(signalFirstRenderComplete:(NSString *)instanceId)
 RCT_EXTERN_METHOD(setNavigationBarProperties:(NSDictionary *)props withInstanceId:(NSString *)instanceId)
 RCT_EXTERN_METHOD(push:(NSString *)screenName

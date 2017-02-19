@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
-
-import android.util.Log;
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -20,6 +17,7 @@ public class ReactNavigationCoordinator {
   public static ReactNavigationCoordinator sharedInstance = new ReactNavigationCoordinator();
 
   private ReactInstanceManager reactInstanceManager;
+  private NavigationImplementation navigationImplementation = new DefaultNavigationImplementation();
   private boolean isSuccessfullyInitialized = false;
 
   private ReactNavigationCoordinator() {
@@ -29,7 +27,7 @@ public class ReactNavigationCoordinator {
     return reactInstanceManager;
   }
 
-  public void injectReactInstanceManager(ReactInstanceManager reactInstanceManager) {
+  public void injectReactInstanceManager(final ReactInstanceManager reactInstanceManager) {
     if (this.reactInstanceManager != null) {
       // TODO: throw error. can only initialize once.
     }
@@ -38,9 +36,20 @@ public class ReactNavigationCoordinator {
       new ReactInstanceManager.ReactInstanceEventListener() {
         @Override
         public void onReactContextInitialized(ReactContext context) {
+          reactInstanceManager.removeReactInstanceEventListener(this);
           isSuccessfullyInitialized = true;
         }
       });
+  }
+  public void injectImplementation(NavigationImplementation implementation) {
+    if (this.navigationImplementation != null) {
+      // TODO: throw error. can only initialize once.
+    }
+    this.navigationImplementation = implementation;
+  }
+
+  public NavigationImplementation getImplementation() {
+    return this.navigationImplementation;
   }
 
   boolean isSuccessfullyInitialized() {
@@ -91,12 +100,12 @@ public class ReactNavigationCoordinator {
         String.format("Tried to push Activity with key '%s', but it could not be found", key));
   }
 
-  @Nullable ReactAwareActivityFacade activityFromId(String id) {
+  ReactAwareActivityFacade activityFromId(String id) {
     WeakReference<ReactInterface> ref = componentsMap.get(id);
     return ref == null ? null : (ReactAwareActivityFacade) ref.get().getActivity();
   }
 
-  @Nullable ReactInterface componentFromId(String id) {
+  ReactInterface componentFromId(String id) {
     WeakReference<ReactInterface> ref = componentsMap.get(id);
     return ref == null ? null : ref.get();
   }

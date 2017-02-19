@@ -16,6 +16,19 @@ extension Dictionary {
     }
   }
 
+  public mutating func merge(values: [Key: Value]) -> [Key: Value] {
+    for (key, value) in values {
+      self[key] = value
+    }
+    return self
+  }
+
+  public func combineWith(values: [Key: Value]) -> [Key: Value] {
+    var out = [Key: Value]()
+    out.merge(values: self);
+    out.merge(values: values);
+    return out;
+  }
 
   public func filterValues(predicate: (Value) throws -> Bool) rethrows -> [Key: Value] {
     var dict = [Key: Value]()
