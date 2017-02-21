@@ -1,33 +1,34 @@
 package com.airbnb.android.react.navigation;
 
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.facebook.react.bridge.ReadableMap;
-
-import java.util.Map;
 
 interface NavigationImplementation {
   void reconcileNavigationProperties(
       ReactInterface component,
       ReactToolbar toolbar,
-//      Map<String, Object> properties
-      ReadableMap properties
+      ActionBar bar,
+      ReadableMap previous,
+      ReadableMap next,
+      boolean firstCall
   );
 
-  void createOptionsMenu(
+  void prepareOptionsMenu(
       ReactInterface component,
       ReactToolbar toolbar,
-//      Map<String, Object> properties,
-      ReadableMap properties,
-      Menu menu
+      ActionBar bar,
+      Menu menu,
+      ReadableMap previous,
+      ReadableMap next
   );
 
   boolean onOptionsItemSelected(
       ReactInterface component,
       ReactToolbar toolbar,
-//      Map<String, Object> properties,
-      ReadableMap properties,
-      MenuItem item
+      ActionBar bar,
+      MenuItem item,
+      ReadableMap config
   );
 }
-

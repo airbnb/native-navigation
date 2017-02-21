@@ -14,7 +14,6 @@ import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.*;
-import com.airbnb.android.BuildConfig;
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
@@ -26,9 +25,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
 
@@ -42,24 +39,23 @@ public class ReactNativeActivity extends ReactAwareActivity
   public static final String REACT_MODULE_NAME = "REACT_MODULE_NAME";
   public static final String REACT_PROPS = "REACT_PROPS";
 
-  private static final String ON_LEFT_PRESS = "onLeftPress";
   private static final String ON_ENTER_TRANSITION_COMPLETE = "onEnterTransitionComplete";
-  private static final String ON_BUTTON_PRESS = "onButtonPress";
-  private static final String ON_LINK_PRESS = "onLinkPress";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
   private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
-  private static final int RENDER_TIMEOUT_IN_MS = 1700;
+  private static final int RENDER_TIMEOUT_IN_MS = 1700; // TODO(lmr): put this back down when done debugging
   private static final int FAKE_ENTER_TRANSITION_TIME_IN_MS = 500;
   private static final String TAG = "ReactNativeActivity";
   // An incrementing ID to identify each ReactNativeActivity instance (used in `instanceId`)
   private static int UUID = 1;
 
   private String instanceId;
-//  private Map<String, Object> navigationProperties = new HashMap<>();
-  private ReadableMap navigationProperties = new WritableNativeMap();
+  private ReadableMap initialConfig = ConversionUtil.EMPTY_MAP;
+  private ReadableMap previousConfig = ConversionUtil.EMPTY_MAP;
+  private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
   private ReactInterfaceManager activityManager;
   private final Handler transitionHandler = new Handler();
+  private final Handler handler = new Handler();
   private boolean isWaitingForRenderToFinish = false;
   private boolean isSharedElementTransition = false;
   private PermissionListener permissionListener;
@@ -102,16 +98,21 @@ public class ReactNativeActivity extends ReactAwareActivity
 
     String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
 
-    int color = reactNavigationCoordinator.getBackgroundColorForModuleName(moduleName);
-    // TODO(lmr): create a style for this...
-//        if (color == Color.TRANSPARENT) {
+    initialConfig = reactNavigationCoordinator.getInitialConfigForModuleName(moduleName);
+    // for reconciliation, we save this in "renderedConfig" until the real one comes down
+    renderedConfig = initialConfig;
+
+    if (initialConfig.hasKey("screenColor")) {
+      int backgroundColor = initialConfig.getInt("screenColor");
+    // TODO(lmr): do we need to create a style for this?...
+//        if (backgroundColor == Color.TRANSPARENT) {
 //            // This needs to happen before setContentView gets called
 //            setTheme(R.style.Theme_Airbnb_ReactTranslucent);
 //        }
+    }
     setContentView(R.layout.activity_react_native);
     toolbar = (ReactToolbar) findViewById(R.id.toolbar);
-// TODO:    setSupportActionBar(toolbar);
-    setActionBar(toolbar);
+    setSupportActionBar(toolbar);
 
     if (!isSuccessfullyInitialized()) {
       Log.d(TAG, "onCreate: !successfully initialized");
@@ -122,7 +123,12 @@ public class ReactNativeActivity extends ReactAwareActivity
             public void onReactContextInitialized(ReactContext context) {
               Log.d(TAG, "onReactContextInitialized");
               reactInstanceManager.removeReactInstanceEventListener(this);
-              onCreateWithReactContext();
+              handler.post(new Runnable() {
+                @Override
+                public void run() {
+                  ReactNativeActivity.this.onCreateWithReactContext();
+                }
+              });
             }
           });
     } else {
@@ -144,7 +150,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
     if (!isSuccessfullyInitialized()) {
       Log.d(TAG, "onCreateWithReactContext: is not fully initialized");
-      // TODO(lmr): should we do something like this?
+      // TODO(lmr): should we do something like this in OSS?
 //            ReactNativeUtils.showAlertBecauseChecksFailed(this, dialog -> finish());
       return;
     }
@@ -154,20 +160,6 @@ public class ReactNativeActivity extends ReactAwareActivity
 
     instanceId = String.format(Locale.ENGLISH, "%1s_%2$d", moduleName, UUID++);
     reactNavigationCoordinator.registerComponent(this, instanceId);
-
-//        @AirToolbar.Theme int toolbarTheme = reactNavigationCoordinator.getToolbarThemeForModuleName(moduleName);
-//        toolbar.setTheme(toolbarTheme);
-
-    Integer toolbarBgColor =
-        reactNavigationCoordinator.getToolbarBackgroundColorForModuleName(moduleName);
-    if (toolbarBgColor != null) {
-      toolbar.setBackgroundColor(ContextCompat.getColor(this, toolbarBgColor));
-    }
-    Integer toolbarFgColor =
-        reactNavigationCoordinator.getToolbarForegroundColorForModuleName(moduleName);
-    if (toolbarFgColor != null) {
-      toolbar.setForegroundColor(ContextCompat.getColor(this, toolbarFgColor));
-    }
 
     if (reactRootView == null) {
       ViewStub reactViewStub = (ViewStub) findViewById(R.id.react_root_view_stub);
@@ -181,13 +173,23 @@ public class ReactNativeActivity extends ReactAwareActivity
     }
     props.putString(INSTANCE_ID_PROP, instanceId);
 
-    int color = reactNavigationCoordinator.getBackgroundColorForModuleName(moduleName);
-    reactRootView.setBackgroundColor(color);
+    getImplementation().reconcileNavigationProperties(
+        this,
+        getToolbar(),
+        getSupportActionBar(),
+        ConversionUtil.EMPTY_MAP,
+        initialConfig,
+        true
+    );
+
     reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
   }
 
   private void setupTransition() {
     Log.d(TAG, "setupTransition");
+    if (initialConfig.hasKey("waitForRender") && !initialConfig.getBoolean("waitForRender")) {
+      return;
+    }
     // Shared element transitions have been unreliable on Lollipop < MR1.
     if (Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API && ReactNativeUtils.isSharedElementTransition(
         getIntent())) {
@@ -200,11 +202,11 @@ public class ReactNativeActivity extends ReactAwareActivity
       Log.d(TAG, "setupTransition: postDelayed");
       // if we don't have the ability to use a `TransitionListener`, we do the poor man's approach of
       // just emitting the event after some amount of time has expired. :facepalm:
-      transitionHandler.postDelayed(new Runnable() {
+      handler.postDelayed(new Runnable() {
         @Override public void run() {
-          // TODO(lmr): do we need to check for activity being null here?
-          ReactNativeActivity.this.emitEvent(
-              ON_ENTER_TRANSITION_COMPLETE, null);
+          if (!supportIsDestroyed()) {
+            ReactNativeActivity.this.emitEvent(ON_ENTER_TRANSITION_COMPLETE, null);
+          }
         }
       }, FAKE_ENTER_TRANSITION_TIME_IN_MS);
     }
@@ -236,7 +238,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   @TargetApi(WAITING_TRANSITION_TARGET_API)
   private void attachEnterTransitionListener(Transition transition) {
     transition.addListener(new SimpleTransitionListener() {
-      @Override     public void onTransitionEnd(Transition transition) {
+      @Override public void onTransitionEnd(Transition transition) {
         emitEvent(ON_ENTER_TRANSITION_COMPLETE, null);
       }
     });
@@ -251,6 +253,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   @TargetApi(WAITING_TRANSITION_TARGET_API)
   private void setupDefaultWaitingForRenderTransition() {
     Log.d(TAG, "supportPostponeEnterTransition");
+    // TODO(lmr): it seems like this isn't actually quite working on the first push.
     supportPostponeEnterTransition();
     setEnterTransition(makeSlideLeftAnimation());
   }
@@ -261,11 +264,13 @@ public class ReactNativeActivity extends ReactAwareActivity
     // elements, so if we are doing a "Shared Element Transition", we want to keep waiting before
     // starting the enter transition.
     if (!isSharedElementTransition && isWaitingForRenderToFinish) {
-//      transitionHandler.post(new Runnable() {
-//        @Override public void run() {
-//          ReactNativeActivity.this.onFinishWaitingForRender();
-//        }
-//      });
+      transitionHandler.removeCallbacksAndMessages(null);
+      transitionHandler.post(new Runnable() {
+        @Override public void run() {
+          Log.d(TAG, "signalFirstRenderComplete: onRun");
+          ReactNativeActivity.this.onFinishWaitingForRender();
+        }
+      });
     }
   }
 
@@ -292,7 +297,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     if (isWaitingForRenderToFinish && !supportIsDestroyed()) {
       isWaitingForRenderToFinish = false;
       Log.d(TAG, "onFinishWaitingForRender: supportStartPostponedEnterTransition");
-      supportStartPostponedEnterTransition();
+      scheduleStartPostponedTransition();
     }
   }
 
@@ -301,26 +306,61 @@ public class ReactNativeActivity extends ReactAwareActivity
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
+    Log.d(TAG, "onCreateOptionsMenu");
     if (toolbar != null) {
       // 0 will prevent menu from getting inflated, since we are inflating manually
       toolbar.onCreateOptionsMenu(0, menu, getMenuInflater());
-      getImplementation().createOptionsMenu(
-          this,
-          toolbar,
-          this.navigationProperties,
-          menu
-      );
     }
     return true;
   }
 
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    Log.d(TAG, "onPrepareOptionsMenu");
+    getImplementation().prepareOptionsMenu(
+        this,
+        toolbar,
+        getSupportActionBar(),
+        menu,
+        this.previousConfig,
+        this.renderedConfig
+    );
+    return super.onPrepareOptionsMenu(menu);
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
+    Log.d(TAG, "onOptionsItemSelected");
     return getImplementation().onOptionsItemSelected(
         this,
         toolbar,
-        this.navigationProperties,
-        item
+        getSupportActionBar(),
+        item,
+        this.renderedConfig
     );
+  }
+
+  @Override
+  public boolean onSupportNavigateUp() {
+    Log.d(TAG, "onSupportNavigateUp");
+    return super.onSupportNavigateUp();
+  }
+
+  @Override
+  public boolean onMenuOpened(int featureId, Menu menu) {
+    Log.d(TAG, "onMenuOpened");
+    return super.onMenuOpened(featureId, menu);
+  }
+
+  @Override
+  public void onLowMemory() {
+    Log.d(TAG, "onLowMemory");
+    super.onLowMemory();
+  }
+
+  @Override
+  public void onActivityReenter(int resultCode, Intent data) {
+    Log.d(TAG, "onActivityReenter");
+    super.onActivityReenter(resultCode, data);
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -336,7 +376,8 @@ public class ReactNativeActivity extends ReactAwareActivity
     if (reactNavigationCoordinator.getDismissCloseBehavior(this)) {
       dismiss();
     } else {
-      reactInstanceManager.onBackPressed();
+      super.onBackPressed();
+//      reactInstanceManager.onBackPressed();
     }
   }
 
@@ -363,7 +404,10 @@ public class ReactNativeActivity extends ReactAwareActivity
   @Override protected void onResume() {
     Log.d(TAG, "onResume");
     super.onResume();
+    // TODO(lmr): i wonder if we really actually want to do this...
     reactInstanceManager.onHostResume(this, this);
+    // TODO(lmr): onResume might not actually be the right place to do this, since we are
+    // postponing the enter transition, this gets called at the wrong time technically.
     emitEvent(ON_APPEAR, null);
   }
 
@@ -371,6 +415,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     Log.d(TAG, "onDestroy");
     // TODO(lmr): should super.onDestroy go after or before we unmount?
     super.onDestroy();
+    // TODO(lmr): i wonder if we really actually want to do this...
     reactInstanceManager.onHostDestroy(this);
     reactNavigationCoordinator.unregisterComponent(instanceId);
     if (reactRootView != null) {
@@ -407,16 +452,25 @@ public class ReactNativeActivity extends ReactAwareActivity
 
   @Override
   public void receiveNavigationProperties(ReadableMap properties) {
-    // TODO: should we coallesce here or does it matter?
-    this.navigationProperties = properties;
+    Log.d(TAG, "receiveNavigationProperties");
+    this.previousConfig = this.renderedConfig;
+    this.renderedConfig = ConversionUtil.combine(this.initialConfig, properties);
+    reconcileNavigationProperties();
+  }
+
+  private void reconcileNavigationProperties() {
+    Log.d(TAG, "reconcileNavigationProperties");
     getImplementation().reconcileNavigationProperties(
         this,
-        this.toolbar,
-        this.navigationProperties
+        toolbar,
+        getSupportActionBar(),
+        this.previousConfig,
+        this.renderedConfig,
+        false
     );
   }
 
-  private void dismiss() {
+  public void dismiss() {
     Intent intent = new Intent()
         .putExtra(EXTRA_IS_DISMISS, isDismissible());
     setResult(Activity.RESULT_OK, intent);

@@ -44,21 +44,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @SuppressWarnings("unused")
   @ReactMethod
   public void registerScreenProperties(String sceneName, ReadableMap properties) {
-    // TODO(lmr):
-    // backgroundColor
+    coordinator.setInitialConfigForModuleName(sceneName, properties);
   }
-
-//  @SuppressWarnings("unused")
-//  @ReactMethod
-//  public void registerScreenNavigatorProperties(String sceneName, ReadableMap properties) {
-//    // TODO(lmr):
-//    // theme
-//    // bar color
-//    // bar type
-//    // title
-//    // link
-//    // leftIcon
-//  }
 
   @SuppressWarnings("unused")
   @ReactMethod

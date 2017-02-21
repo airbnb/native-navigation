@@ -4,11 +4,12 @@ import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 import com.facebook.react.views.toolbar.DrawableWithIntrinsicSize;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -28,7 +29,32 @@ import com.facebook.react.uimanager.PixelUtil;
 // TODO(lmr): we might want to make this an abstract class and have a default implementation
 public class ReactToolbar extends Toolbar {
 
-  private abstract class IconControllerListener extends BaseControllerListener<ImageInfo> {
+//  private static final String PROP_ACTION_ICON = "icon";
+//  private static final String PROP_ACTION_SHOW = "show";
+//  private static final String PROP_ACTION_SHOW_WITH_TEXT = "showWithText";
+  private static final String TAG = "ReactToolbar";
+
+  private static final String PROP_ICON_URI = "uri";
+  private static final String PROP_ICON_WIDTH = "width";
+  private static final String PROP_ICON_HEIGHT = "height";
+
+  private final DraweeHolder mLogoHolder;
+  private final DraweeHolder mNavIconHolder;
+  private final DraweeHolder mOverflowIconHolder;
+  private final MultiDraweeHolder<GenericDraweeHierarchy> mActionsHolder =
+      new MultiDraweeHolder<>();
+
+  private IconControllerListener mLogoControllerListener;
+  private IconControllerListener mNavIconControllerListener;
+  private IconControllerListener mOverflowIconControllerListener;
+
+  private int foregroundColor;
+
+  /**
+   * Attaches specific icon width & height to a BaseControllerListener which will be used to
+   * create the Drawable
+   */
+  public abstract class IconControllerListener extends BaseControllerListener<ImageInfo> {
 
     private final DraweeHolder mHolder;
 
@@ -54,7 +80,7 @@ public class ReactToolbar extends Toolbar {
 
   }
 
-  private class ActionIconControllerListener extends IconControllerListener {
+  public class ActionIconControllerListener extends IconControllerListener {
     private final MenuItem mItem;
 
     ActionIconControllerListener(MenuItem item, DraweeHolder holder) {
@@ -98,27 +124,6 @@ public class ReactToolbar extends Toolbar {
 
   }
 
-  private int foregroundColor;
-
-  private static final String PROP_ACTION_ICON = "icon";
-  private static final String PROP_ACTION_SHOW = "show";
-  private static final String PROP_ACTION_SHOW_WITH_TEXT = "showWithText";
-  private static final String PROP_ACTION_TITLE = "title";
-
-  private static final String PROP_ICON_URI = "uri";
-  private static final String PROP_ICON_WIDTH = "width";
-  private static final String PROP_ICON_HEIGHT = "height";
-
-
-  private final DraweeHolder mLogoHolder;
-  private final DraweeHolder mNavIconHolder;
-  private final DraweeHolder mOverflowIconHolder;
-  private final MultiDraweeHolder<GenericDraweeHierarchy> mActionsHolder =
-      new MultiDraweeHolder<>();
-
-  private IconControllerListener mLogoControllerListener;
-  private IconControllerListener mNavIconControllerListener;
-  private IconControllerListener mOverflowIconControllerListener;
 
   public ReactToolbar(Context context, AttributeSet attributeSet) {
     super(context, attributeSet);
@@ -159,7 +164,27 @@ public class ReactToolbar extends Toolbar {
         setOverflowIcon(d);
       }
     };
+
   }
+
+//  private final Runnable mLayoutRunnable = new Runnable() {
+//    @Override
+//    public void run() {
+//      measure(
+//          MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+//          MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+//      layout(getLeft(), getTop(), getRight(), getBottom());
+//    }
+//  };
+//
+//  @Override
+//  public void requestLayout() {
+//    super.requestLayout();
+//
+//    // The toolbar relies on a measure + layout pass happening after it calls requestLayout().
+//    // Without this, certain calls (e.g. setLogo) only take effect after a second invalidation.
+//    post(mLayoutRunnable);
+//  }
 
   @Override
   public void onDetachedFromWindow() {
@@ -199,40 +224,52 @@ public class ReactToolbar extends Toolbar {
     mActionsHolder.onAttach();
   }
 
-  public boolean onCreateOptionsMenu(int menuRes, Menu menu, MenuInflater inflater) {
-    menu.clear();
-
-    if (menuRes != 0) {
-      inflater.inflate(menuRes, menu);
-      refreshForegroundColor();
-    }
-
-    return true;
-  }
-
-  private void refreshForegroundColor() {
-    setForegroundColor(foregroundColor);
-  }
-
-  public void setForegroundColor(int color) {
-    if (color == 0) {
-      return;
-    }
-    foregroundColor = color;
-    setTitleTextColor(color);
-    setSubtitleTextColor(color);
-  }
-
-  void setLogoSource(ReadableMap source) {
+  /* package */ void setLogoSource(ReadableMap source) {
     setIconSource(source, mLogoControllerListener, mLogoHolder);
   }
 
-  void setNavIconSource(ReadableMap source) {
+  /* package */ void setNavIconSource(ReadableMap source) {
     setIconSource(source, mNavIconControllerListener, mNavIconHolder);
   }
 
-  void setOverflowIconSource(ReadableMap source) {
+  /* package */ void setOverflowIconSource(ReadableMap source) {
     setIconSource(source, mOverflowIconControllerListener, mOverflowIconHolder);
+  }
+
+  /* package */ void setRightButtons(Menu menu, ReadableArray buttons, final ReactInterface component) {
+    Log.d(TAG, "");
+    mActionsHolder.clear();
+    for (int i = 0; i < buttons.size(); i++) {
+      ReadableMap button = buttons.getMap(i);
+
+      MenuItem item = menu.add(Menu.NONE, Menu.NONE, i, button.getString("title"));
+
+      if (button.hasKey("image")) {
+        setMenuItemIcon(item, button.getMap("image"));
+      }
+      item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+      final Object data = i;
+      item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+          component.emitEvent("onRightPress", data);
+          return false;
+        }
+      });
+    }
+  }
+
+  private void setMenuItemIcon(final MenuItem item, ReadableMap iconSource) {
+
+    DraweeHolder<GenericDraweeHierarchy> holder =
+        DraweeHolder.create(createDraweeHierarchy(), getContext());
+    ActionIconControllerListener controllerListener = new ActionIconControllerListener(item, holder);
+    controllerListener.setIconImageInfo(getIconImageInfo(iconSource));
+
+    setIconSource(iconSource, controllerListener, holder);
+
+    mActionsHolder.add(holder);
+
   }
 
   /**
@@ -293,6 +330,30 @@ public class ReactToolbar extends Toolbar {
     } else {
       return null;
     }
+  }
+
+  public boolean onCreateOptionsMenu(int menuRes, Menu menu, MenuInflater inflater) {
+    menu.clear();
+
+    if (menuRes != 0) {
+      inflater.inflate(menuRes, menu);
+//      refreshForegroundColor();
+    }
+
+    return true;
+  }
+
+  private void refreshForegroundColor() {
+    setForegroundColor(foregroundColor);
+  }
+
+  public void setForegroundColor(int color) {
+    if (color == 0) {
+      return;
+    }
+    foregroundColor = color;
+//    setTitleTextColor(color);
+//    setSubtitleTextColor(color);
   }
 
 }

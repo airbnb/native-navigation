@@ -67,12 +67,9 @@ public class ReactNavigationCoordinator {
    * work well enough in the interim.
    */
   private List<ReactExposedActivityParams> exposedActivities;
-  private final Map<String, WeakReference<ReactInterface>> componentsMap = new HashMap<>();
-  private final Map<String, Integer> sceneBackgroundColorMap = new HashMap<>();
-  private final Map<String, Integer> sceneToolbarForegroundColorMap = new HashMap<>();
-  private final Map<String, Integer> sceneToolbarBackgroundColorMap = new HashMap<>();
-  private final Map<String, Integer> sceneToolbarThemeMap = new HashMap<>();
-  private final Map<String, Boolean> dismissCloseBehaviorMap = new HashMap<>();
+  private final Map<String /* instance id */, WeakReference<ReactInterface>> componentsMap = new HashMap<>();
+  private final Map<String /* instance id */, Boolean> dismissCloseBehaviorMap = new HashMap<>();
+  private final Map<String /* name */, ReadableMap> screenInitialConfigMap = new HashMap<>();
 
   public void registerComponent(ReactInterface component, String name) {
     componentsMap.put(name, new WeakReference<>(component));
@@ -122,45 +119,15 @@ public class ReactNavigationCoordinator {
     return dismissClose != null && dismissClose;
   }
 
-  public void setBackgroundColorForModuleName(String sceneName, Integer color) {
-    sceneBackgroundColorMap.put(sceneName, color);
+  public void setInitialConfigForModuleName(String sceneName, ReadableMap config) {
+    screenInitialConfigMap.put(sceneName, config);
   }
 
-  public int getBackgroundColorForModuleName(String sceneName) {
-    if (sceneBackgroundColorMap.containsKey(sceneName)) {
-      return sceneBackgroundColorMap.get(sceneName);
+  public ReadableMap getInitialConfigForModuleName(String sceneName) {
+    if (screenInitialConfigMap.containsKey(sceneName)) {
+      return screenInitialConfigMap.get(sceneName);
     } else {
-      return Color.WHITE;
+      return ConversionUtil.EMPTY_MAP;
     }
-  }
-
-  // TODO(lmr):
-//    public void setToolbarThemeForModuleName(String sceneName, Integer theme) {
-//        sceneToolbarThemeMap.put(sceneName, theme);
-//    }
-//
-//    public @AirToolbar.Theme int getToolbarThemeForModuleName(String sceneName) {
-//        if (sceneToolbarThemeMap.containsKey(sceneName)) {
-//            @AirToolbar.Theme int result = sceneToolbarThemeMap.get(sceneName);
-//            return result;
-//        } else {
-//            return AirToolbar.THEME_TRANSPARENT_DARK_FOREGROUND;
-//        }
-//    }
-
-  public void setToolbarForegroundColorForModuleName(String sceneName, Integer color) {
-    sceneToolbarForegroundColorMap.put(sceneName, color);
-  }
-
-  public Integer getToolbarForegroundColorForModuleName(String sceneName) {
-    return sceneToolbarForegroundColorMap.get(sceneName);
-  }
-
-  public void setToolbarBackgroundColorForModuleName(String sceneName, Integer color) {
-    sceneToolbarBackgroundColorMap.put(sceneName, color);
-  }
-
-  public Integer getToolbarBackgroundColorForModuleName(String sceneName) {
-    return sceneToolbarBackgroundColorMap.get(sceneName);
   }
 }
