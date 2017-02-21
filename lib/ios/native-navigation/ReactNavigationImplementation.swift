@@ -20,6 +20,8 @@ public protocol ReactNavigationImplementation {
     navigationController: UINavigationController?,
     props: [String: AnyObject]
   )
+
+  func getBarHeight(viewController: ReactViewController, navigationController: UINavigationController?, config: [String: AnyObject]) -> CGFloat;
 }
 
 // this is a convenience class to allow us to easily assign lambdas as press handlers
@@ -236,6 +238,31 @@ func configureBarButtonArrayForKey(_ key: String, _ props: [String: AnyObject]) 
 }
 
 open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
+
+  public func getBarHeight(
+    viewController: ReactViewController,
+    navigationController: UINavigationController?,
+    config: [String: AnyObject]
+  ) -> CGFloat {
+    var statusBarHidden = false
+    var navBarHidden = false
+    var hasPrompt = false;
+    if let hidden = boolForKey("statusBarHidden", config) {
+      statusBarHidden = hidden
+    }
+    if let hidden = boolForKey("hidden", config) {
+      navBarHidden = hidden
+    }
+    if let prompt = stringForKey("prompt", config) {
+      hasPrompt = true
+    }
+    if let navController = navigationController {
+      return navController.navigationBar.frame.height + (statusBarHidden ? 0 : 20)
+    }
+    // make a best guess based on config
+    return (statusBarHidden ? 0 : 20) + (navBarHidden ? 0 : 40) + (hasPrompt ? 30 : 0)
+  }
+
   public func makeNavigationController(rootViewController: UIViewController) -> UINavigationController {
     // TODO(lmr): pass initialConfig
     // TODO(lmr): do we want to provide a way to customize the NavigationBar class?

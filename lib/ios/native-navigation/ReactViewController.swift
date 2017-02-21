@@ -33,17 +33,25 @@ import UIKit
 // MARK: Private
 
 private let kNativeNavigationInstanceId = "nativeNavigationInstanceId"
+private let kNativeNavigationBarHeight = "nativeNavigationInitialBarHeight"
 private let kViewControllerId = "viewControllerId"
 private var index = 0
+private let EMPTY_MAP = [String: AnyObject]()
 
 private func generateId(_ moduleName: String) -> String {
   index += 1
   return "\(moduleName)_\(index)"
 }
 
-private func propsWithMetadata(_ props: [String: AnyObject], nativeNavigationInstanceId: String) -> [String: AnyObject] {
+private func propsWithMetadata(
+  _ props: [String: AnyObject],
+  _ nativeNavigationInstanceId: String,
+  _ barHeight: CGFloat
+) -> [String: AnyObject] {
+  // TODO(lmr): make this non mutative?
   var newProps = props
   newProps[kNativeNavigationInstanceId] = nativeNavigationInstanceId as AnyObject?
+  newProps[kNativeNavigationBarHeight] = barHeight as AnyObject?
   return newProps
 }
 
@@ -60,16 +68,27 @@ open class ReactViewController: UIViewController {
   public init(moduleName: String, props: [String: AnyObject] = [:]) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
-    self.props = propsWithMetadata(props, nativeNavigationInstanceId: nativeNavigationInstanceId)
     self.coordinator = ReactNavigationCoordinator.sharedInstance
-    self.initialConfig = [:]
-    self.renderedConfig = [:]
+
+    self.barHeight = -1;
+    self.props = EMPTY_MAP
+
+    self.initialConfig = EMPTY_MAP
+    self.renderedConfig = EMPTY_MAP
 
     super.init(nibName: nil, bundle: nil)
 
     if let initialConfig = coordinator.getScreenProperties(moduleName) {
       self.initialConfig = initialConfig
+      self.renderedConfig = initialConfig
     }
+
+    self.barHeight = coordinator.navigation.getBarHeight(
+      viewController: self,
+      navigationController: navigationController,
+      config: renderedConfig
+    )
+    self.props = propsWithMetadata(props, nativeNavigationInstanceId, barHeight)
 
     // I'm all ears for a better way to solve this, but just setting this to false seems to be the best way to attain
     // consistency across screens and platforms. If we don't do this, then scrollview insets will be set differently
@@ -135,6 +154,7 @@ open class ReactViewController: UIViewController {
 
   override open func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    updateBarHeightIfNeeded()
     emitEvent("onAppear", body: nil)
   }
 
@@ -199,11 +219,13 @@ open class ReactViewController: UIViewController {
   }
 
   func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
+    // TODO(lmr): does this belong in navigation implementation
     self.leadingButtonVisible = leadingButtonVisible
     handleLeadingButtonVisibleChange()
   }
 
   func setCloseBehavior(_ closeBehavior: String) {
+    // TODO(lmr): does this belong in navigation implementation?
     // TODO(spike)
   }
 
@@ -216,6 +238,7 @@ open class ReactViewController: UIViewController {
   // MARK: Private
 
   fileprivate func handleLeadingButtonVisibleChange() {
+    // TODO(lmr): does this belong in navigation implementation?
     navigationItem.setHidesBackButton(!leadingButtonVisible, animated: false)
     navigationController?.interactivePopGestureRecognizer!.isEnabled = leadingButtonVisible
   }
@@ -229,8 +252,7 @@ open class ReactViewController: UIViewController {
       args = [name as AnyObject]
     }
     // TODO(lmr): there's a more appropriate way to do this now???
-    ReactNavigationCoordinator.sharedInstance.bridge?.enqueueJSCall("RCTDeviceEventEmitter.emit",
-                              args: args)
+    coordinator.bridge?.enqueueJSCall("RCTDeviceEventEmitter.emit", args: args)
   }
 
   // TODO(spike): This method isn't currently used anywhere. Find out where to use it to
@@ -254,7 +276,7 @@ open class ReactViewController: UIViewController {
   }
 
   fileprivate let moduleName: String
-  fileprivate let props: [String: AnyObject]
+  fileprivate var props: [String: AnyObject]
   fileprivate let coordinator: ReactNavigationCoordinator
   fileprivate var initialConfig: [String: AnyObject]
   fileprivate var renderedConfig: [String: AnyObject]
@@ -280,6 +302,7 @@ open class ReactViewController: UIViewController {
   private func updateNavigationImpl(props: [String: AnyObject]) {
     renderedConfig = props
     reconcileScreenConfig()
+    updateBarHeightIfNeeded()
   }
 
   func setNavigationBarProperties(props: [String: AnyObject]) {
@@ -317,6 +340,22 @@ open class ReactViewController: UIViewController {
       if (!waitForRender && isPendingNavigationTransition) {
         onNavigationBarTypeUpdated?()
       }
+    }
+  }
+
+
+  private var barHeight: CGFloat
+
+  func updateBarHeightIfNeeded() {
+
+    let newHeight = coordinator.navigation.getBarHeight(
+      viewController: self,
+      navigationController: navigationController ?? eagerNavigationController,
+      config: renderedConfig
+    )
+    if newHeight != barHeight {
+      barHeight = newHeight
+      emitEvent("onBarHeightChanged", body: barHeight as AnyObject)
     }
   }
 
@@ -450,7 +489,6 @@ extension UINavigationController {
         // get around this, we call it async.
         DispatchQueue.main.async(execute: {
           viewController.onTransitionCompleted?()
-//          viewController.setStatusBarHidden(viewController.hideStatusBarUntilFoldOffset, animation: UIStatusBarAnimation.fade)
           viewController.emitEvent("onEnterTransitionComplete", body: nil)
         })
       })
@@ -504,7 +542,6 @@ extension UIViewController {
         // get around this, we call it async.
         DispatchQueue.main.async {
           viewControllerToPresent.onTransitionCompleted?()
-//          viewControllerToPresent.setStatusBarHidden(viewControllerToPresent.hideStatusBarUntilFoldOffset, animation: UIStatusBarAnimation.fade)
           viewControllerToPresent.emitEvent("onEnterTransitionComplete", body: nil)
         }
       })
