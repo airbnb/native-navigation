@@ -1,16 +1,15 @@
 package com.example;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
 import com.airbnb.android.react.navigation.ReactNativeActivity;
-import com.airbnb.android.react.navigation.ReactAwareActivity;
-import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     toolbar.setTitle("App Toolbar");
     toolbar.setBackgroundColor(Color.BLUE);
-    setActionBar(toolbar);
+    setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(
       new View.OnClickListener() {
         @Override
