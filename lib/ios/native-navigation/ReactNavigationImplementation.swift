@@ -140,13 +140,19 @@ func statusBarAnimationFromString(_ string: String?) -> UIStatusBarAnimation {
   }
 }
 
-func textAttributesFromPrefix(_ prefix: String, _ props: [String: AnyObject]) -> [String: Any]? {
+func textAttributesFromPrefix(
+  _ prefix: String,
+  _ props: [String: AnyObject]
+) -> [String: Any]? {
   var attributes: [String: Any] = [:]
   if let color = colorForKey("\(prefix)Color", props) {
+    attributes[NSForegroundColorAttributeName] = color
+  } else if let color = colorForKey("foregroundColor", props) {
     attributes[NSForegroundColorAttributeName] = color
   }
   let fontName = stringForKey("\(prefix)FontName", props)
   let fontSize = floatForKey("\(prefix)FontSize", props)
+  // TODO(lmr): use system font if no fontname is given
   if let name = fontName, let size = fontSize {
     if let font = UIFont(name: name, size: size) {
       attributes[NSFontAttributeName] = font
@@ -242,7 +248,6 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     navigationController: UINavigationController?,
     props: [String: AnyObject]
   ) {
-
     // status bar
     if let statusBarHidden = boolForKey("statusBarHidden", props) {
       viewController.setStatusBarHidden(statusBarHidden)
@@ -264,19 +269,22 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
     viewController.updateStatusBarIfNeeded()
 
-
     let navItem = viewController.navigationItem
 
-    if let title = stringForKey("title", props) {
+
+    if let titleView = titleAndSubtitleViewFromProps(props) {
+      if let title = stringForKey("title", props) {
+        // set the title anyway, for accessibility
+        viewController.title = title
+      }
+      navItem.titleView = titleView
+    } else if let title = stringForKey("title", props) {
+      navItem.titleView = nil
       viewController.title = title
     }
 
-    if let subtitle = stringForKey("subtitle", props) {
-      // TODO(lmr): we should implement a customView for this...
-    }
-
-    if let backgroundColor = colorForKey("backgroundColor", props) {
-      viewController.view.backgroundColor = backgroundColor
+    if let screenColor = colorForKey("screenColor", props) {
+      viewController.view.backgroundColor = screenColor
     }
 
     if let prompt = stringForKey("prompt", props) {
@@ -333,8 +341,8 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         navController.hidesBarsWhenKeyboardAppears = hidesBarsWhenKeyboardAppears
       }
 
-      if let isNavigationBarHidden = boolForKey("isNavigationBarHidden", props) {
-        navController.setNavigationBarHidden(isNavigationBarHidden, animated: true)
+      if let hidden = boolForKey("hidden", props) {
+        navController.setNavigationBarHidden(hidden, animated: true)
       }
 
       if let isToolbarHidden = boolForKey("isToolbarHidden", props) {
@@ -355,8 +363,8 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         navBar.backIndicatorTransitionMaskImage = backIndicatorTransitionMaskImage
       }
 
-      if let barTintColor = colorForKey("barTintColor", props) {
-        navBar.barTintColor = barTintColor
+      if let backgroundColor = colorForKey("backgroundColor", props) {
+        navBar.barTintColor = backgroundColor
       }
 
       if let tintColor = colorForKey("tintColor", props) {
@@ -385,4 +393,94 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     // right button(s)
     // statusbar stuff
   }
+}
+
+
+func getFont(_ name: String, _ size: CGFloat) -> UIFont {
+  guard let font = UIFont(name: name, size: size) else {
+    return UIFont.systemFont(ofSize: size)
+  }
+  return font
+
+}
+
+func buildFontFromProps(nameKey: String, sizeKey: String, defaultSize: CGFloat, props: [String: AnyObject]) -> UIFont {
+  let name = stringForKey(nameKey, props)
+  let size = floatForKey(sizeKey, props)
+  if let name = name, let size = size {
+    return getFont(name, size)
+  } else if let name = name {
+    return getFont(name, defaultSize)
+  } else if let size = size {
+    return UIFont.systemFont(ofSize: size)
+  } else {
+    return UIFont.systemFont(ofSize: defaultSize)
+  }
+}
+
+func titleAndSubtitleViewFromProps(_ props: [String: AnyObject]) -> UIView? {
+  guard let title = stringForKey("title", props) else { return nil }
+  guard let subtitle = stringForKey("subtitle", props) else { return nil }
+
+  let titleHeight = 18
+  let subtitleHeight = 12
+
+  let foregroundColor = colorForKey("foregroundColor", props)
+
+  let titleLabel = UILabel(frame: CGRect(x:0, y:-5, width:0, height:0))
+
+  titleLabel.backgroundColor = UIColor.clear
+
+  if let titleColor = colorForKey("titleColor", props) {
+    titleLabel.textColor = titleColor
+  } else if let titleColor = foregroundColor {
+    titleLabel.textColor = titleColor
+  } else {
+    titleLabel.textColor = UIColor.gray
+  }
+
+  titleLabel.font = buildFontFromProps(nameKey: "titleFontName", sizeKey: "titleFontSize", defaultSize: 17, props: props)
+  titleLabel.text = title
+  titleLabel.sizeToFit()
+
+  let subtitleLabel = UILabel(frame: CGRect(x:0, y:titleHeight, width:0, height:0))
+  subtitleLabel.backgroundColor = UIColor.clear
+
+
+  if let subtitleColor = colorForKey("subtitleColor", props) {
+    subtitleLabel.textColor = subtitleColor
+  } else if let titleColor = foregroundColor {
+    subtitleLabel.textColor = titleColor
+  } else {
+    subtitleLabel.textColor = UIColor.black
+  }
+
+  subtitleLabel.font = buildFontFromProps(nameKey: "subtitleFontName", sizeKey: "subtitleFontSize", defaultSize: 12, props: props)
+  subtitleLabel.text = subtitle
+  subtitleLabel.sizeToFit()
+
+  let titleView = UIView(
+    frame: CGRect(
+      x: 0,
+      y:0,
+      width: max(Int(titleLabel.frame.size.width), Int(subtitleLabel.frame.size.width)),
+      height: titleHeight + subtitleHeight
+    )
+  )
+  titleView.addSubview(titleLabel)
+  titleView.addSubview(subtitleLabel)
+
+  let widthDiff = subtitleLabel.frame.size.width - titleLabel.frame.size.width
+
+  if widthDiff > 0 {
+    var frame = titleLabel.frame
+    frame.origin.x = widthDiff / 2
+    titleLabel.frame = frame
+  } else {
+    var frame = subtitleLabel.frame
+    frame.origin.x = abs(widthDiff) / 2
+    subtitleLabel.frame = frame
+  }
+
+  return titleView
 }

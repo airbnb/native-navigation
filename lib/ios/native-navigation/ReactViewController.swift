@@ -114,8 +114,8 @@ open class ReactViewController: UIViewController {
       moduleName: moduleName,
       initialProperties: props)
 
-    if let bgColor = colorForKey("backgroundColor", initialConfig) {
-      self.view.backgroundColor = bgColor
+    if let screenColor = colorForKey("screenColor", initialConfig) {
+      self.view.backgroundColor = screenColor
     }
   }
 
