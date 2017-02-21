@@ -1,0 +1,10 @@
+rootProject.name = 'native-navigation'
+
+include ":example-android"
+project(":example-android").projectDir = file("./app")
+
+//include ':ReactAndroid'
+//project(':ReactAndroid').projectDir = file("node_modules/react-native/ReactAndroid")
+
+include ":native-navigation-lib"
+project(":native-navigation-lib").projectDir = file("../../lib/android")
