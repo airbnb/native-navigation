@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.*;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -80,6 +82,32 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       default:
         return View.TEXT_ALIGNMENT_VIEW_START;
     }
+  }
+
+//  private static int getActionBarHeight(Activity activity) {
+//    TypedValue typedValue = new TypedValue();
+//
+//    int attributeResourceId = android.R.attr.actionBarSize;
+//    if (activity instanceof AppCompatActivity) {
+//      attributeResourceId = R.attr.actionBarSize;
+//    }
+//
+//    if (activity.getTheme().resolveAttribute(attributeResourceId, typedValue, true)) {
+//      return TypedValue.complexToDimensionPixelSize(typedValue.data, activity.getResources().getDisplayMetrics());
+//    }
+//
+//    return (int) Math.floor(activity.getResources()
+//        .getDimension(R.dimen.my_default_value));
+//  }
+
+  public float getBarHeight(
+      ReactInterface component,
+      ReactToolbar toolbar,
+      ActionBar actionBar,
+      ReadableMap config,
+      boolean firstCall
+  ) {
+    return 40.0f;
   }
 
   @TargetApi(Build.VERSION_CODES.M)

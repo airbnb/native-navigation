@@ -43,6 +43,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
   private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
+  private static final String INITIAL_BAR_HEIGHT_PROP = "nativeNavigationInitialBarHeight";
   private static final int RENDER_TIMEOUT_IN_MS = 1700; // TODO(lmr): put this back down when done debugging
   private static final int FAKE_ENTER_TRANSITION_TIME_IN_MS = 500;
   private static final String TAG = "ReactNativeActivity";
@@ -60,8 +61,8 @@ public class ReactNativeActivity extends ReactAwareActivity
   private boolean isSharedElementTransition = false;
   private PermissionListener permissionListener;
 
-  ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
-  ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
+  private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
+  private ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
 
   ReactToolbar toolbar;
   ReactRootView reactRootView;
@@ -178,9 +179,19 @@ public class ReactNativeActivity extends ReactAwareActivity
         getToolbar(),
         getSupportActionBar(),
         ConversionUtil.EMPTY_MAP,
-        initialConfig,
+        renderedConfig,
         true
     );
+
+    float barHeight = getImplementation().getBarHeight(
+        this,
+        getToolbar(),
+        getSupportActionBar(),
+        renderedConfig,
+        true
+    );
+
+    props.putFloat(INITIAL_BAR_HEIGHT_PROP, barHeight);
 
     reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
   }
