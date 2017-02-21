@@ -48,7 +48,6 @@ type NavigatorConfigProps = {
   statusBarStyle: 'light' | 'default';
   
   // ios-only-but-should-share
-  tintColor: Color;
   backIndicatorImage: Image;
   titleFontName: string;
   titleFontSize: number;
@@ -56,8 +55,6 @@ type NavigatorConfigProps = {
   subtitleFontSize: number;
   
   // android-only-but-should-share
-  statusBarColor: Color;
-  statusBarTranslucent: boolean;
   navIcon: Image;
   logo: Image;
   textAlign: 'left' | 'center' | 'right';
@@ -74,6 +71,8 @@ type NavigatorConfigProps = {
   translucent: boolean;
   
   // android-only
+  statusBarColor: Color;
+  statusBarTranslucent: boolean;
   windowTitle: string;
   elevation: number;
   overflowIcon: Image;

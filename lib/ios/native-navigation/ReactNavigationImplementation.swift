@@ -367,8 +367,8 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         navBar.barTintColor = backgroundColor
       }
 
-      if let tintColor = colorForKey("tintColor", props) {
-        navBar.tintColor = tintColor
+      if let foregroundColor = colorForKey("foregroundColor", props) {
+        navBar.tintColor = foregroundColor
       }
 
       if let alpha = floatForKey("alpha", props) {
