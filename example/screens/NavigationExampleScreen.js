@@ -32,7 +32,8 @@ export default class NavigationExampleScreen extends Component {
   render() {
     const screen = (
       <ScrollView>
-        <View style={{ paddingTop: 64 }}>
+        <Navigator.Spacer animated />
+        <View style={{ borderTopWidth: 1, borderTopColor: 'red' }}>
           <Text>Navigation</Text>
         </View>
         <View>
@@ -94,10 +95,13 @@ export default class NavigationExampleScreen extends Component {
     return (
       <Navigator.Config
         title={this.context.nativeNavigationInstanceId}
-        //prompt="subtitle"
+        statusBarHidden={Math.random() > 0.5}
         subtitle={this.context.nativeNavigationInstanceId}
+        //statusBarStyle="light"
+        //statusBarColor="transparent"
         //rightTitle="Foo"
         //statusBarHidden={true}
+        //statusBarTranslucent={true}
         //statusBarStyle="light"
 
         //hidesBackButton={false}
@@ -120,7 +124,6 @@ export default class NavigationExampleScreen extends Component {
           width: 51,
           height: 51,
         }}
-
         navIcon={{
           uri: Platform.select({
             ios: 'NavBarButtonPlus',
@@ -131,6 +134,7 @@ export default class NavigationExampleScreen extends Component {
         }}
         //elevation={30}
         onBackPress={() => console.log('onBackPress')}
+        //onBarHeightChanged={(x) => console.log('onBarHeightChanged', x)}
         onLeftPress={() => console.log('onLeftPress')}
         onRightPress={(x) => console.log('onRightPress', x)}
         onAppear={() => console.log('onAppear', this.context.nativeNavigationInstanceId)}
