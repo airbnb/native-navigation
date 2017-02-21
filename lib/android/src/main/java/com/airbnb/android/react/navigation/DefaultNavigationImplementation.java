@@ -1,12 +1,16 @@
 package com.airbnb.android.react.navigation;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
@@ -21,6 +25,8 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     int foregroundColor;
     int screenColor;
     int backgroundColor;
+    int statusBarColor;
+    boolean statusBarTranslucent;
     float elevation;
     float alpha;
     Drawable overflowIconSource;
@@ -47,6 +53,8 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     defaults.foregroundColor = Color.BLACK;
     defaults.screenColor = Color.WHITE;
     defaults.backgroundColor = Color.GRAY;
+    defaults.statusBarColor = Color.BLACK;
+    defaults.statusBarTranslucent = false;
     defaults.elevation = 4.0f;
     defaults.alpha = 1.0f;
     defaults.overflowIconSource = null;
@@ -71,6 +79,130 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       case "left":
       default:
         return View.TEXT_ALIGNMENT_VIEW_START;
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.M)
+  private void reconcileStatusBarStyleOnM(
+      Activity activity,
+      ReadableMap prev,
+      ReadableMap next,
+      boolean firstCall
+  ) {
+    if (firstCall || stringHasChanged("statusBarStyle", prev, next)) {
+      View decorView = activity.getWindow().getDecorView();
+      if (next.hasKey("statusBarStyle")) {
+        String style = next.getString("statusBarStyle");
+        decorView.setSystemUiVisibility(
+            style.equals("default") ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : 0);
+      } else {
+        decorView.setSystemUiVisibility(0);
+      }
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  private void reconcileStatusBarStyleOnLollipop(
+      final Activity activity,
+      ReadableMap prev,
+      ReadableMap next,
+      boolean firstCall
+  ) {
+    if (firstCall || numberHasChanged("statusBarColor", prev, next)) {
+      boolean animated = false;
+      if (next.hasKey("statusBarAnimation")) {
+        animated = !("none".equals(next.getString("statusBarAnimation")));
+      }
+
+      Integer color = defaults.statusBarColor;
+      if (next.hasKey("statusBarColor")) {
+        color = next.getInt("statusBarColor");
+      }
+
+      if (animated) {
+        int curColor = activity.getWindow().getStatusBarColor();
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(
+            new ArgbEvaluator(), curColor, color);
+
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+          @Override
+          public void onAnimationUpdate(ValueAnimator animator) {
+            activity.getWindow().setStatusBarColor((Integer) animator.getAnimatedValue());
+          }
+        });
+        colorAnimation
+            .setDuration(300)
+            .setStartDelay(0);
+        colorAnimation.start();
+      } else {
+        activity.getWindow().setStatusBarColor(color);
+      }
+    }
+
+    if (firstCall || boolHasChanged("statusBarTranslucent", prev, next)) {
+      boolean translucent = defaults.statusBarTranslucent;
+      if (next.hasKey("statusBarTranslucent")) {
+        translucent = next.getBoolean("statusBarTranslucent");
+      }
+      View decorView = activity.getWindow().getDecorView();
+      // If the status bar is translucent hook into the window insets calculations
+      // and consume all the top insets so no padding will be added under the status bar.
+      if (translucent) {
+        decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+          @Override
+          public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+            WindowInsets defaultInsets = v.onApplyWindowInsets(insets);
+            return defaultInsets.replaceSystemWindowInsets(
+                defaultInsets.getSystemWindowInsetLeft(),
+                0,
+                defaultInsets.getSystemWindowInsetRight(),
+                defaultInsets.getSystemWindowInsetBottom());
+          }
+        });
+      } else {
+        decorView.setOnApplyWindowInsetsListener(null);
+      }
+
+      ViewCompat.requestApplyInsets(decorView);
+    }
+  }
+
+  private void reconcileStatusBarStyle(
+      Activity activity,
+      ReadableMap prev,
+      ReadableMap next,
+      boolean firstCall
+  ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      reconcileStatusBarStyleOnM(
+          activity,
+          prev,
+          next,
+          firstCall
+      );
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      reconcileStatusBarStyleOnLollipop(
+          activity,
+          prev,
+          next,
+          firstCall
+      );
+    }
+
+    if (firstCall || boolHasChanged("statusBarHidden", prev, next)) {
+      boolean hidden = false;
+      if (next.hasKey("statusBarHidden")) {
+        hidden = next.getBoolean("statusBarHidden");
+      }
+      if (hidden) {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+      } else {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      }
     }
   }
 
@@ -295,6 +427,13 @@ public class DefaultNavigationImplementation implements NavigationImplementation
         bar.setHideOffset(defaults.hideOffset);
       }
     }
+
+    reconcileStatusBarStyle(
+      component.getActivity(),
+      prev,
+      next,
+      firstCall
+    );
 
     // TODO(lmr): this doesnt appear to work like i think it should.
 //    if (firstCall || stringHasChanged("textAlign", prev, next)) {
