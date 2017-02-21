@@ -43,11 +43,11 @@ type NavigatorConfigProps = {
   hidden: boolean;
   backgroundColor: Color; 
   foregroundColor: Color;
+  statusBarHidden: boolean;
+  statusBarAnimation: 'slide' | 'none' | 'fade'; // 'fade' is default
+  statusBarStyle: 'light' | 'default';
   
   // ios-only-but-should-share
-  statusBarHidden: boolean;
-  statusBarStyle: 'light' | 'default';
-  statusBarAnimation: 'slide' | 'none' | 'fade'; // 'fade' is default
   tintColor: Color;
   backIndicatorImage: Image;
   titleFontName: string;
@@ -56,6 +56,8 @@ type NavigatorConfigProps = {
   subtitleFontSize: number;
   
   // android-only-but-should-share
+  statusBarColor: Color;
+  statusBarTranslucent: boolean;
   navIcon: Image;
   logo: Image;
   textAlign: 'left' | 'center' | 'right';
