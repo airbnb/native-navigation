@@ -33,7 +33,7 @@ final class AndroidVersion {
   }
 
   static boolean isAtLeastNougat() {
-    return false; //return VERSION.SDK_INT >= VERSION_CODES.N;
+    return VERSION.SDK_INT >= VERSION_CODES.N;
   }
 
   private AndroidVersion() {

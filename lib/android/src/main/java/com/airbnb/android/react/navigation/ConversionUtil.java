@@ -3,14 +3,7 @@ package com.airbnb.android.react.navigation;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableMapKeySetIterator;
-import com.facebook.react.bridge.ReadableType;
-import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeArray;
-import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -29,6 +22,8 @@ final class ConversionUtil {
 
   private ConversionUtil() {
   }
+
+  static final ReadableMap EMPTY_MAP = new WritableNativeMap();
 
   static Map<String, Object> toMap(ReadableMap readableMap) {
     ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
@@ -190,6 +185,87 @@ final class ConversionUtil {
           Log.e(TAG, "Could not convert object with key: " + key + ".");
       }
     }
+    return result;
+  }
+
+  static void merge(WritableMap target, ReadableMap map) {
+    ReadableMapKeySetIterator iterator = map.keySetIterator();
+    while (iterator.hasNextKey()) {
+      String key = iterator.nextKey();
+      ReadableType type = map.getType(key);
+      switch (type) {
+        case Null:
+          target.putNull(key);
+          break;
+        case Boolean:
+          target.putBoolean(key, map.getBoolean(key));
+          break;
+        case Number:
+          try {
+            target.putInt(key, map.getInt(key));
+          } catch (Exception e) {
+            target.putDouble(key, map.getDouble(key));
+          }
+          break;
+        case String:
+          target.putString(key, map.getString(key));
+          break;
+        case Map:
+          target.putMap(key, cloneMap(map.getMap(key)));
+          break;
+        case Array:
+          target.putArray(key, cloneArray(map.getArray(key)));
+          break;
+        default:
+          Log.e(TAG, "Could not convert object with key: " + key + ".");
+      }
+    }
+  }
+
+  static WritableMap cloneMap(ReadableMap map) {
+    WritableNativeMap target = new WritableNativeMap();
+    merge(target, map);
+    return target;
+  }
+
+  static WritableArray cloneArray(ReadableArray source) {
+    WritableNativeArray result = new WritableNativeArray();
+    for (int i = 0; i < source.size(); i++) {
+      ReadableType indexType = source.getType(i);
+      switch (indexType) {
+        case Null:
+          result.pushNull();
+          break;
+        case Boolean:
+          result.pushBoolean(source.getBoolean(i));
+          break;
+        case Number:
+          try {
+            result.pushInt(source.getInt(i));
+          } catch (Exception e) {
+            result.pushDouble(source.getDouble(i));
+          }
+          break;
+        case String:
+          result.pushString(source.getString(i));
+          break;
+        case Map:
+          result.pushMap(cloneMap(source.getMap(i)));
+          break;
+        case Array:
+          result.pushArray(cloneArray(source.getArray(i)));
+          break;
+        default:
+          Log.e(TAG, "Could not convert object at index " + i + ".");
+      }
+    }
+    return result;
+  }
+
+  static ReadableMap combine(ReadableMap a, ReadableMap b) {
+    WritableMap result = new WritableNativeMap();
+    merge(result, a);
+    merge(result, b);
     return result;
   }
 

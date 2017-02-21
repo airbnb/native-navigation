@@ -17,7 +17,7 @@ public interface ReactInterface {
   void notifySharedElementAddition();
   FragmentActivity getActivity();
   void emitEvent(String eventName, Object object);
-//  void receiveNavigationProperties(Map<String, Object> properties);
   void receiveNavigationProperties(ReadableMap properties);
+  void dismiss();
   // @formatter:on
 }

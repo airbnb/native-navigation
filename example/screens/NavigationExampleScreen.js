@@ -95,18 +95,23 @@ export default class NavigationExampleScreen extends Component {
       <Navigator.Config
         title={this.context.nativeNavigationInstanceId}
         //prompt="subtitle"
-        //subtitle="Subtitle"
-        rightTitle="Foo"
+        subtitle={this.context.nativeNavigationInstanceId}
+        //rightTitle="Foo"
         //statusBarHidden={true}
-        statusBarStyle="light"
+        //statusBarStyle="light"
 
-        hidesBackButton={false}
-        isNavigationBarHidden={false}
-        //backgroundColor="white"
+        //hidesBackButton={false}
+        //isNavigationBarHidden={false}
+
+        //homeButtonEnabled={false}
+        //displayHomeAsUp={false}
+
+        //backgroundColor="blue"
+        //foregroundColor="white"
+        //backgroundColor="red"
         //barTintColor="#ccc"
-        leftButtons={this.state.buttons}
-        titleColor="black"
-        foregroundColor="white"
+        rightButtons={this.state.buttons}
+        //titleColor="black"
         rightImage={{
           uri: Platform.select({
             ios: 'NavBarButtonPlus',
@@ -115,7 +120,16 @@ export default class NavigationExampleScreen extends Component {
           width: 51,
           height: 51,
         }}
-        elevation={30}
+
+        navIcon={{
+          uri: Platform.select({
+            ios: 'NavBarButtonPlus',
+            android: 'ic_menu_black_24dp',
+          }),
+          rrwidth: 51,
+          height: 51,
+        }}
+        //elevation={30}
         onBackPress={() => console.log('onBackPress')}
         onLeftPress={() => console.log('onLeftPress')}
         onRightPress={(x) => console.log('onRightPress', x)}

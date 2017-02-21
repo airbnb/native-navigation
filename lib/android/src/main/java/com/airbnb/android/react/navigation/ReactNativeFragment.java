@@ -1,5 +1,6 @@
 package com.airbnb.android.react.navigation;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
 import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_MODULE_NAME;
 import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_PROPS;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.maybeEmitEvent;
@@ -38,8 +40,9 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
 
   private String instanceId;
   private ReactInterfaceManager activityManager;
-//  private Map<String, Object> navigationProperties = new HashMap<>();
-  private ReadableMap navigationProperties = new WritableNativeMap();
+  private ReadableMap initialConfig = ConversionUtil.EMPTY_MAP;
+  private ReadableMap previousConfig = ConversionUtil.EMPTY_MAP;
+  private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
   private ReactRootView reactRootView;
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     View v = inflater.inflate(R.layout.fragment_react_native, container, false);
     ReactToolbar toolbar = (ReactToolbar) v.findViewById(R.id.toolbar);
     AppCompatActivity activity = (AppCompatActivity) getActivity();
-// TODO:    activity.setSupportActionBar(toolbar);
-    activity.setActionBar(toolbar);
+    activity.setSupportActionBar(toolbar);
     initReactNative();
     return v;
   }
@@ -150,6 +152,13 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     return reactNavigationCoordinator.getDismissCloseBehavior(this);
   }
 
+  public void dismiss() {
+    Intent intent = new Intent()
+        .putExtra(EXTRA_IS_DISMISS, isDismissible());
+    getActivity().setResult(Activity.RESULT_OK, intent);
+    getActivity().finish();
+  }
+
   @Override public String getInstanceId() {
     return instanceId;
   }
@@ -175,13 +184,20 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     if (toolbar != null) {
       // 0 will prevent menu from getting inflated, since we are inflating manually
       toolbar.onCreateOptionsMenu(0, menu, inflater);
-      getImplementation().createOptionsMenu(
-          this,
-          getToolbar(),
-          this.navigationProperties,
-          menu
-      );
     }
+  }
+
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    getImplementation().prepareOptionsMenu(
+        this,
+        getToolbar(),
+        null,
+        menu,
+        this.previousConfig,
+        this.renderedConfig
+    );
+    super.onPrepareOptionsMenu(menu);
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -206,8 +222,21 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     }
   }
 
+  private void reconcileNavigationProperties() {
+    getImplementation().reconcileNavigationProperties(
+        this,
+        getToolbar(),
+        null,
+        this.previousConfig,
+        this.renderedConfig,
+        false
+    );
+  }
+
   @Override
   public void receiveNavigationProperties(ReadableMap properties) {
-    // TODO
+    this.previousConfig = this.renderedConfig;
+    this.renderedConfig = ConversionUtil.combine(this.initialConfig, properties);
+    reconcileNavigationProperties();
   }
 }
