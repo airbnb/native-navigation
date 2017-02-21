@@ -30,20 +30,36 @@ allprojects {
   }
 
   dependencies {
-    compile "com.android.support:appcompat-v7:25.1.0"
-    compile 'com.android.support:support-annotations:25.1.0'
+    compile "com.android.support:appcompat-v7:25.+"
+    compile 'com.android.support:support-annotations:25.+'
     compile "com.fasterxml.jackson.core:jackson-databind:2.8.3"
-    compile project(':ReactAndroid')
+    compile 'com.facebook.fresco:fresco:0.11.0'
+    compile 'com.facebook.fresco:imagepipeline-okhttp3:0.11.0'
+    compile "com.facebook.react:react-native:0.41.101"
+//    compile project(':ReactAndroid')
   }
 }
 
 android {
   compileSdkVersion 25
-  buildToolsVersion "25.0.1"
+  buildToolsVersion "25.0.2"
 
   defaultConfig {
     minSdkVersion 16
     targetSdkVersion 25
+  }
+
+  packagingOptions {
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/DEPENDENCIES.txt'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/notice.txt'
+    exclude 'META-INF/license.txt'
+    exclude 'META-INF/dependencies.txt'
+    exclude 'META-INF/LGPL2.1'
   }
 
   lintOptions {

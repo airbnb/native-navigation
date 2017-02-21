@@ -31,4 +31,12 @@ interface NavigationImplementation {
       MenuItem item,
       ReadableMap config
   );
+
+  float getBarHeight(
+      ReactInterface component,
+      ReactToolbar toolbar,
+      ActionBar actionBar,
+      ReadableMap config,
+      boolean firstCall
+  );
 }
