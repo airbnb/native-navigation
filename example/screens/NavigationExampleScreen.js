@@ -95,7 +95,7 @@ export default class NavigationExampleScreen extends Component {
     return (
       <Navigator.Config
         title={this.context.nativeNavigationInstanceId}
-        statusBarHidden={Math.random() > 0.5}
+        //statusBarTranslucent={Math.random() > 0.5}
         subtitle={this.context.nativeNavigationInstanceId}
         //statusBarStyle="light"
         //statusBarColor="transparent"
