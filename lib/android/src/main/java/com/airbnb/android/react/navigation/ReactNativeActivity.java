@@ -55,6 +55,7 @@ public class ReactNativeActivity extends ReactAwareActivity
   private static int UUID = 1;
 
   private String instanceId;
+  private float barHeight;
   private ReadableMap initialConfig = ConversionUtil.EMPTY_MAP;
   private ReadableMap previousConfig = ConversionUtil.EMPTY_MAP;
   private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
@@ -187,7 +188,7 @@ public class ReactNativeActivity extends ReactAwareActivity
         true
     );
 
-    float barHeight = getImplementation().getBarHeight(
+    barHeight = getImplementation().getBarHeight(
         this,
         getToolbar(),
         getSupportActionBar(),
@@ -423,6 +424,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     reactInstanceManager.onHostResume(this, this);
     // TODO(lmr): onResume might not actually be the right place to do this, since we are
     // postponing the enter transition, this gets called at the wrong time technically.
+    updateBarHeightIfNeeded();
     emitEvent(ON_APPEAR, null);
   }
 
@@ -435,6 +437,22 @@ public class ReactNativeActivity extends ReactAwareActivity
     reactNavigationCoordinator.unregisterComponent(instanceId);
     if (reactRootView != null) {
       reactRootView.unmountReactApplication();
+    }
+  }
+
+
+
+  private void updateBarHeightIfNeeded() {
+    float newHeight = getImplementation().getBarHeight(
+        this,
+        getToolbar(),
+        getSupportActionBar(),
+        renderedConfig,
+        false
+    );
+    if (newHeight != barHeight) {
+      barHeight = newHeight;
+      emitEvent("onBarHeightChanged", (Object)barHeight);
     }
   }
 
@@ -471,6 +489,7 @@ public class ReactNativeActivity extends ReactAwareActivity
     this.previousConfig = this.renderedConfig;
     this.renderedConfig = ConversionUtil.combine(this.initialConfig, properties);
     reconcileNavigationProperties();
+    updateBarHeightIfNeeded();
   }
 
   private void reconcileNavigationProperties() {

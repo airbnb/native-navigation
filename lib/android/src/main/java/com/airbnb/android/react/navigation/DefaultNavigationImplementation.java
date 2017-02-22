@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
+import com.airbnb.android.R;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
@@ -84,22 +86,6 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
   }
 
-//  private static int getActionBarHeight(Activity activity) {
-//    TypedValue typedValue = new TypedValue();
-//
-//    int attributeResourceId = android.R.attr.actionBarSize;
-//    if (activity instanceof AppCompatActivity) {
-//      attributeResourceId = R.attr.actionBarSize;
-//    }
-//
-//    if (activity.getTheme().resolveAttribute(attributeResourceId, typedValue, true)) {
-//      return TypedValue.complexToDimensionPixelSize(typedValue.data, activity.getResources().getDisplayMetrics());
-//    }
-//
-//    return (int) Math.floor(activity.getResources()
-//        .getDimension(R.dimen.my_default_value));
-//  }
-
   public float getBarHeight(
       ReactInterface component,
       ReactToolbar toolbar,
@@ -107,7 +93,22 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       ReadableMap config,
       boolean firstCall
   ) {
-    return 40.0f;
+
+    Activity activity = component.getActivity();
+    TypedValue typedValue = new TypedValue();
+
+    int attributeResourceId = android.R.attr.actionBarSize;
+    if (activity instanceof AppCompatActivity) {
+      attributeResourceId = R.attr.actionBarSize;
+    }
+
+    if (activity.getTheme().resolveAttribute(attributeResourceId, typedValue, true)) {
+      float px = TypedValue.complexToDimension(typedValue.data, activity.getResources().getDisplayMetrics());
+      float pixelDensity = Resources.getSystem().getDisplayMetrics().density;
+      return px / pixelDensity;
+    }
+    // if we've made it here, we need to guess...
+    return 10.0f;
   }
 
   @TargetApi(Build.VERSION_CODES.M)
