@@ -1,15 +1,68 @@
 package com.airbnb.android.react.navigation;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
+
+import com.airbnb.android.R;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
 public final class ReactNativeUtils {
   static final String VERSION_CONSTANT_KEY = "VERSION";
   private static final String IS_SHARED_ELEMENT_TRANSITION = "isSharedElementTransition";
+  private static final int SHARED_ELEMENT_TARGET_API = Build.VERSION_CODES.LOLLIPOP_MR1;
 
   private ReactNativeUtils() {
+  }
+
+  public static void pushScreen(Context context, String moduleName) {
+    pushScreen(context, moduleName, null);
+  }
+
+  public static void pushScreen(Context context, String moduleName, @Nullable Bundle props) {
+    Bundle options = ActivityOptionsCompat
+            .makeCustomAnimation(context, R.anim.slide_in_right, R.anim.delay)
+            .toBundle();
+    showScreen(context, moduleName, props, options, false);
+  }
+
+  public static void presentScreen(Context context, String moduleName) {
+    presentScreen(context, moduleName, null);
+  }
+
+  public static void presentScreen(Context context, String moduleName, @Nullable Bundle props) {
+    Bundle options = ActivityOptionsCompat
+            .makeCustomAnimation(context, R.anim.slide_up, R.anim.delay)
+            .toBundle();
+    showScreen(context, moduleName, props, options, true);
+  }
+
+  private static void showScreen(
+          Context context, String moduleName, Bundle props, Bundle options, boolean isModal) {
+    Intent intent = intent(context, moduleName, props, isModal);
+    context.startActivity(intent, options);
+  }
+
+  // TODO: delete this?
+  public static Intent intentWithDismissFlag() {
+    return new Intent().putExtra(ReactNativeIntents.EXTRA_IS_DISMISS, true);
+  }
+
+  private static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
+    Class<? extends ReactNativeActivity> activityClass =
+            isModal
+                    ? ReactNativeModalActivity.class
+                    : ReactNativeActivity.class;
+    return new Intent(context, activityClass)
+            .putExtra(ReactNativeFragment.EXTRA_IS_MODAL, isModal)
+            .putExtra(ReactNativeFragment.EXTRA_REACT_MODULE_NAME, moduleName)
+            .putExtra(ReactNativeFragment.EXTRA_REACT_PROPS, props);
   }
 
   /** Emits a JS event with the provided name and data if the rect context is initialized */
@@ -36,12 +89,21 @@ public final class ReactNativeUtils {
         || ReactNativeActivity.class.getName().equals(className);
   }
 
-  static boolean isSharedElementTransition(Intent intent) {
-    return intent.getBooleanExtra(IS_SHARED_ELEMENT_TRANSITION, false);
+  static boolean isSharedElementTransition(Activity activity) {
+    return isSharedElementTransition(activity.getIntent().getExtras());
   }
 
-  static void setIsSharedElementTransition(Intent intent, boolean value) {
-    intent.putExtra(IS_SHARED_ELEMENT_TRANSITION, value);
+  static boolean isSharedElementTransition(Intent intent) {
+    return isSharedElementTransition(intent.getExtras());
+  }
+
+  static boolean isSharedElementTransition(Bundle args) {
+    return Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API &&
+            args.getBoolean(IS_SHARED_ELEMENT_TRANSITION, false);
+  }
+
+  static void setIsSharedElementTransition(Intent intent) {
+    intent.putExtra(IS_SHARED_ELEMENT_TRANSITION, true);
   }
 
 //  static boolean isSuccessfullyInitialized(ReactInstanceManager reactInstanceManager) {
