@@ -15,7 +15,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
 import android.transition.Transition;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.ViewTreeObserver;
+
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
@@ -23,19 +29,17 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.PermissionListener;
 
-import java.util.*;
-
-import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
-import static com.airbnb.android.react.navigation.ReactNativeActivity.makeSlideLeftAnimation;
-import static com.airbnb.android.react.navigation.ReactNativeIntents.*;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Stack;
 
 public class ReactNativeTabActivity extends ReactAwareActivity implements ReactInterface, BottomNavigationView.OnNavigationItemSelectedListener {
 
 
   public static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
     return new Intent(context, ReactNativeTabActivity.class)
-        .putExtra(EXTRA_MODULE_NAME, moduleName)
-        .putExtra(EXTRA_PROPS, props);
+        .putExtra(ReactNativeIntents.EXTRA_MODULE_NAME, moduleName)
+        .putExtra(ReactNativeIntents.EXTRA_PROPS, props);
   }
 
   public static Intent intent(Context context, String moduleName, Bundle props) {
@@ -140,7 +144,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 //      return;
 //    }
 
-    String moduleName = getIntent().getStringExtra(EXTRA_MODULE_NAME);
+    String moduleName = getIntent().getStringExtra(ReactNativeIntents.EXTRA_MODULE_NAME);
     activityManager = new ReactInterfaceManager(this);
 
     instanceId = String.format(Locale.ENGLISH, "%1s_%2$d", moduleName, UUID++);
@@ -148,15 +152,14 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 
     if (reactRootView == null) {
       ViewStub reactViewStub = (ViewStub) findViewById(R.id.react_root_view_stub);
-      reactViewStub.setLayoutResource(R.layout.view_holder_react_root_view);
       reactRootView = (ReactRootView) reactViewStub.inflate();
     }
 
-    Bundle props = getIntent().getBundleExtra(EXTRA_PROPS);
+    Bundle props = getIntent().getBundleExtra(ReactNativeIntents.EXTRA_PROPS);
     if (props == null) {
       props = new Bundle();
     }
-    props.putString(INSTANCE_ID_PROP, instanceId);
+    props.putString(ReactNativeIntents.INSTANCE_ID_PROP, instanceId);
 
     getImplementation().reconcileNavigationProperties(
         this,
@@ -177,7 +180,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
         true
     );
 
-    props.putFloat(INITIAL_BAR_HEIGHT_PROP, barHeight);
+    props.putFloat(ReactNativeIntents.INITIAL_BAR_HEIGHT_PROP, barHeight);
 
     reactRootView.startReactApplication(reactInstanceManager, moduleName, props);
 
@@ -195,8 +198,8 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
       return;
     }
     // Shared element transitions have been unreliable on Lollipop < MR1.
-    if (Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API && ReactNativeUtils.isSharedElementTransition(
-        getIntent())) {
+    if (Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API &&
+            ReactNativeUtils.isSharedElementTransition(getIntent())) {
       Log.d(TAG, "setupTransition: sharedElementTransition");
       setupSharedElementTransition();
     } else if (isSuccessfullyInitialized() && Build.VERSION.SDK_INT >= WAITING_TRANSITION_TARGET_API) {
@@ -259,7 +262,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
     Log.d(TAG, "supportPostponeEnterTransition");
     // TODO(lmr): it seems like this isn't actually quite working on the first push.
     supportPostponeEnterTransition();
-    setEnterTransition(makeSlideLeftAnimation());
+//    setEnterTransition(makeSlideLeftAnimation());
   }
 
   private void setupBottomNavigation() {
@@ -512,7 +515,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
   @Override
   public void dismiss() {
     Intent intent = new Intent()
-        .putExtra(EXTRA_IS_DISMISS, isDismissible());
+        .putExtra(ReactNativeIntents.EXTRA_IS_DISMISS, isDismissible());
     setResult(Activity.RESULT_OK, intent);
     finish();
   }
