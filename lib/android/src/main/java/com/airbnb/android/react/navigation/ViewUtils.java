@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
@@ -347,7 +348,8 @@ public final class ViewUtils {
    * @param object - The object to test for
    * @return - The first matching view
    */
-  public static ViewGroup findViewGroupWithTag(ViewGroup root, int key, Object object) {
+  @Nullable
+  static ViewGroup findViewGroupWithTag(ViewGroup root, int key, Object object) {
     Stack<ViewGroup> stack = new Stack<>();
     stack.push(root);
 

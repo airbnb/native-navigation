@@ -102,9 +102,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Bundle propsBundle = ConversionUtil.toBundle(props);
-      // TODO: handle modal/non-modal intents here
       Intent intent = ReactNativeIntents.presentIntent(
-              getReactApplicationContext(), screenName, propsBundle, true);
+              getReactApplicationContext(), screenName, propsBundle);
       startActivityWithPromise(activity, intent, promise, options);
     }
   }
@@ -161,9 +160,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         if (ActivityUtils.hasActivityStopped(activity)) {
           return;
         }
-        Bundle optionsBundle =
-                ReactNativeIntents.getSharedElementOptionsBundle(activity, intent, options);
-        ReactInterfaceManager.startActivityWithPromise(activity, intent, promise, optionsBundle);
+        ReactInterfaceManager.startActivityWithPromise(activity, intent, promise, options);
       }
     });
   }
