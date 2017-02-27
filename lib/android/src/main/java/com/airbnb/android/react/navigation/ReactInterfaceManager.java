@@ -3,9 +3,10 @@ package com.airbnb.android.react.navigation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.util.SparseArray;
+
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 
 import java.util.Collections;
@@ -32,21 +33,17 @@ public final class ReactInterfaceManager {
    * in a dictionary with an id, then on onActivityResult we pull out the promise object by id and
    * resolve/reject it.
    */
-  public static void startActivityWithPromise(final Activity activity, final Intent intent,
-      Promise promise, final Bundle options) {
+  static void startActivityWithPromise(final Activity activity, final Intent intent,
+          Promise promise, final ReadableMap options) {
     final int requestCode = puuid++;
     resultPromises.put(requestCode, promise);
     if (AndroidVersion.isAtLeastLollipop() && ReactNativeUtils.isReactNativeIntent(intent)) {
       activity.runOnUiThread(new Runnable() {
-        @Override public void run() {
-          if (options != null) {
-            activity.startActivityForResult(intent, requestCode, options);
-          } else {
-            //noinspection unchecked
-            ActivityOptionsCompat customOptions =
-                ActivityOptionsCompat.makeSceneTransitionAnimation(activity);
-            activity.startActivityForResult(intent, requestCode, customOptions.toBundle());
-          }
+        @Override
+        public void run() {
+          Bundle optionsBundle =
+                  ReactNativeIntents.getSharedElementOptionsBundle(activity, intent, options);
+          activity.startActivityForResult(intent, requestCode, optionsBundle);
         }
       });
     } else {
@@ -77,8 +74,8 @@ public final class ReactInterfaceManager {
    */
   private Intent getResultIntent(Intent data) {
     return new Intent()
-        .putExtras(data.getExtras())
-        .putExtra(NavigatorModule.EXTRA_IS_DISMISS, component.isDismissible());
+            .putExtras(data.getExtras())
+            .putExtra(NavigatorModule.EXTRA_IS_DISMISS, component.isDismissible());
   }
 
   private void deliverPromise(int requestCode, int resultCode, Intent data) {
@@ -86,7 +83,7 @@ public final class ReactInterfaceManager {
     if (promise != null) {
       Map<String, Object> payload = getPayloadFromIntent(data);
       Map<String, Object> newPayload =
-          MapBuilder.of(EXTRA_CODE, resultCode, EXTRA_PAYLOAD, payload);
+              MapBuilder.of(EXTRA_CODE, resultCode, EXTRA_PAYLOAD, payload);
       promise.resolve(ConversionUtil.toWritableMap(newPayload));
     }
   }
