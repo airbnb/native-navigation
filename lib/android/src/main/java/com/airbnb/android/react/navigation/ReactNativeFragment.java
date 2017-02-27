@@ -5,22 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
-import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_MODULE_NAME;
-import static com.airbnb.android.react.navigation.ReactNativeIntents.REACT_PROPS;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.maybeEmitEvent;
 
 public class ReactNativeFragment extends Fragment implements ReactInterface,
@@ -103,9 +105,9 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
       ReactNativeUtils.showAlertBecauseChecksFailed(getActivity(), null);
       return;
     }
-    String moduleName = getArguments().getString(REACT_MODULE_NAME);
+    String moduleName = getArguments().getString(ReactNativeIntents.EXTRA_MODULE_NAME);
     instanceId = String.format(Locale.ENGLISH, "%1s_fragment_%2$d", moduleName, UUID++);
-    Bundle props = getArguments().getBundle(REACT_PROPS);
+    Bundle props = getArguments().getBundle(ReactNativeIntents.EXTRA_PROPS);
     if (props == null) {
       props = new Bundle();
     }

@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.ViewGroup;
-import com.airbnb.android.R;
-import com.facebook.react.ReactRootView;
-import com.facebook.react.bridge.*;
+
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +26,6 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   static final String EXTRA_IS_DISMISS = "isDismiss";
 
   private static final String CLOSE_BEHAVIOR_DISMISS = "dismiss";
-  private static final String SHARED_ELEMENT_TRANSITION_GROUP_OPTION = "transitionGroup";
   private static final String RESULT_CODE = "resultCode";
   private final Handler handler = new Handler(Looper.getMainLooper());
   private final ReactNavigationCoordinator coordinator;
@@ -79,7 +81,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     if (activity != null) {
       Bundle propsBundle = ConversionUtil.toBundle(props);
       Intent intent =
-          ReactNativeIntents.intent(getReactApplicationContext(), screenName, propsBundle);
+          ReactNativeIntents.pushIntent(getReactApplicationContext(), screenName, propsBundle);
       startActivityWithPromise(activity, intent, promise, options);
     }
   }
@@ -100,8 +102,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Bundle propsBundle = ConversionUtil.toBundle(props);
-      Intent intent =
-          ReactNativeIntents.modalIntent(getReactApplicationContext(), screenName, propsBundle);
+      Intent intent = ReactNativeIntents.presentIntent(
+              getReactApplicationContext(), screenName, propsBundle);
       startActivityWithPromise(activity, intent, promise, options);
     }
   }
@@ -158,22 +160,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         if (ActivityUtils.hasActivityStopped(activity)) {
           return;
         }
-        Bundle optionsBundle = null;
-        if (options != null && options.hasKey(
-            SHARED_ELEMENT_TRANSITION_GROUP_OPTION) && activity instanceof ReactInterface) {
-          // TODO: 10/6/16 emily this doesn't work for ReactNativeFragment
-          ReactRootView reactRootView = ((ReactInterface) activity).getReactRootView();
-          ViewGroup transitionGroup = ViewUtils.findViewGroupWithTag(
-              reactRootView,
-              R.id.react_shared_element_group_id,
-              options.getString(SHARED_ELEMENT_TRANSITION_GROUP_OPTION));
-          if (transitionGroup != null) {
-            ReactNativeUtils.setIsSharedElementTransition(intent, true);
-            optionsBundle =
-                AutoSharedElementCallback.getActivityOptionsBundle(activity, transitionGroup);
-          }
-        }
-        ReactInterfaceManager.startActivityWithPromise(activity, intent, promise, optionsBundle);
+        ReactInterfaceManager.startActivityWithPromise(activity, intent, promise, options);
       }
     });
   }

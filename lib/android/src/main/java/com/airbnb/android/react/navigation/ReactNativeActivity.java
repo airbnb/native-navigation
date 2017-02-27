@@ -2,7 +2,6 @@ package com.airbnb.android.react.navigation;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -40,9 +39,6 @@ public class ReactNativeActivity extends ReactAwareActivity
   private static final int WAITING_TRANSITION_TARGET_API = VERSION_CODES.LOLLIPOP;
   private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
-  public static final String REACT_MODULE_NAME = "REACT_MODULE_NAME";
-  public static final String REACT_PROPS = "REACT_PROPS";
-
   private static final String ON_ENTER_TRANSITION_COMPLETE = "onEnterTransitionComplete";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
@@ -72,37 +68,11 @@ public class ReactNativeActivity extends ReactAwareActivity
   ReactToolbar toolbar;
   ReactRootView reactRootView;
 
-  public static Intent intentWithDismissFlag() {
-    return new Intent().putExtra(EXTRA_IS_DISMISS, true);
-  }
-
-  public static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
-    Class<? extends ReactNativeActivity> activityClass =
-            isModal
-                    ? ReactNativeModalActivity.class
-                    : ReactNativeActivity.class;
-    return new Intent(context, activityClass)
-            .putExtra(REACT_MODULE_NAME, moduleName)
-            .putExtra(REACT_PROPS, props);
-  }
-
-  public static Intent intent(Context context, String moduleName, Bundle props) {
-    return intent(context, moduleName, props, false);
-  }
-
-  public static Intent intent(Context context, String moduleName, boolean isModal) {
-    return intent(context, moduleName, null, isModal);
-  }
-
-  public static Intent intent(Context context, String moduleName) {
-    return intent(context, moduleName, null, false);
-  }
-
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate");
 
-    String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
+    String moduleName = getIntent().getStringExtra(ReactNativeIntents.EXTRA_MODULE_NAME);
 
     initialConfig = reactNavigationCoordinator.getInitialConfigForModuleName(moduleName);
     // for reconciliation, we save this in "renderedConfig" until the real one comes down
@@ -161,7 +131,7 @@ public class ReactNativeActivity extends ReactAwareActivity
       return;
     }
 
-    String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
+    String moduleName = getIntent().getStringExtra(ReactNativeIntents.EXTRA_MODULE_NAME);
     activityManager = new ReactInterfaceManager(this);
 
     instanceId = String.format(Locale.ENGLISH, "%1s_%2$d", moduleName, UUID++);
@@ -173,7 +143,7 @@ public class ReactNativeActivity extends ReactAwareActivity
       reactRootView = (ReactRootView) reactViewStub.inflate();
     }
 
-    Bundle props = getIntent().getBundleExtra(REACT_PROPS);
+    Bundle props = getIntent().getBundleExtra(ReactNativeIntents.EXTRA_PROPS);
     if (props == null) {
       props = new Bundle();
     }
