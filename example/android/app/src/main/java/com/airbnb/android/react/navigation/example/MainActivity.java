@@ -1,4 +1,4 @@
-package com.example;
+package com.airbnb.android.react.navigation.example;
 
 import android.graphics.Color;
 import android.os.Bundle;
