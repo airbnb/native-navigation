@@ -18,8 +18,14 @@ final class ViewController: UIViewController {
     let pushButton1 = UIButton(type: .roundedRect)
     pushButton1.setTitle("Push ScreenOne", for: .normal)
     pushButton1.addTarget(self, action: #selector(pushScreenOne(sender:)), for: .touchUpInside)
-    pushButton1.frame = CGRect(x: 0, y: 100, width: 320, height: 140)
+    pushButton1.frame = CGRect(x: 0, y: 100, width: 320, height: 60)
     view.addSubview(pushButton1)
+
+    let pushButton2 = UIButton(type: .roundedRect)
+    pushButton2.setTitle("Push TabScreen", for: .normal)
+    pushButton2.addTarget(self, action: #selector(pushTabScreen(sender:)), for: .touchUpInside)
+    pushButton2.frame = CGRect(x: 0, y: 160, width: 320, height: 60)
+    view.addSubview(pushButton2)
 
 //    let button = UIButton(type: .roundedRect)
 //    button.setTitle("Push ScreenOne", for: .normal)
@@ -45,6 +51,11 @@ final class ViewController: UIViewController {
   func pushScreenOne(sender: UIButton) {
     let screenOne = ReactViewController(moduleName: "ScreenOne")
     navigationController?.pushReactViewController(screenOne, animated: true)
+  }
+
+  func pushTabScreen(sender: UIButton) {
+    let tabScreen = ReactTabBarController(moduleName: "TabScreen")
+    navigationController?.pushReactViewController(tabScreen, animated: true)
   }
 }
 

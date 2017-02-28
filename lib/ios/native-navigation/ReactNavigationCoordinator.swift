@@ -37,7 +37,7 @@ private func getUuid() -> String {
 }
 
 private struct ViewControllerHolder {
-  weak var viewController: ReactViewController?
+  weak var viewController: InternalReactViewControllerProtocol?
 }
 
 open class ReactNavigationCoordinator: NSObject {
@@ -90,7 +90,7 @@ open class ReactNavigationCoordinator: NSObject {
     flows[newId] = flow
   }
 
-  open func viewControllerForId(_ id: String) -> ReactViewController? {
+  func viewControllerForId(_ id: String) -> InternalReactViewControllerProtocol? {
     return viewControllers[id]?.viewController
   }
 
@@ -111,7 +111,7 @@ open class ReactNavigationCoordinator: NSObject {
     promises[newId] = ReactPromise(resolve: resolve, reject: reject)
   }
 
-  func registerViewController(_ viewController: ReactViewController) {
+  func registerViewController(_ viewController: InternalReactViewControllerProtocol) {
     let nativeNavigationInstanceId = viewController.nativeNavigationInstanceId
     viewControllers[nativeNavigationInstanceId] = ViewControllerHolder(viewController: viewController)
   }

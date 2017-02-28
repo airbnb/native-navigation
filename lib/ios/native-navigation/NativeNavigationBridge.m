@@ -10,9 +10,12 @@
 
 @interface RCT_EXTERN_REMAP_MODULE(NativeNavigationModule, ReactNavigation, NSObject)
 
-RCT_EXTERN_METHOD(registerScreenProperties:(NSString *)sceneName withProperties:(NSDictionary *)properties)
+RCT_EXTERN_METHOD(registerScreen:(NSString *)sceneName
+                  properties:(NSDictionary *)properties
+                  waitForRender:(BOOL)waitForRender
+                  mode:(NSString *)mode)
 RCT_EXTERN_METHOD(signalFirstRenderComplete:(NSString *)instanceId)
-RCT_EXTERN_METHOD(setNavigationBarProperties:(NSDictionary *)props withInstanceId:(NSString *)instanceId)
+RCT_EXTERN_METHOD(setScreenProperties:(NSDictionary *)props withInstanceId:(NSString *)instanceId)
 RCT_EXTERN_METHOD(push:(NSString *)screenName
                   withProps:(NSDictionary *)props
                   options:(NSDictionary *)options

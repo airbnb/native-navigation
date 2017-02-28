@@ -15,5 +15,9 @@
       android:name="com.airbnb.android.react.navigation.ReactNativeActivity"
       android:launchMode="singleTop"
     />
+    <activity
+      android:name="com.airbnb.android.react.navigation.ReactNativeTabActivity"
+      android:launchMode="singleTop"
+    />
   </application>
 </manifest>
