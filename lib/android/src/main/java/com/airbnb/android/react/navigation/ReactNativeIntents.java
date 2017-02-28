@@ -16,6 +16,7 @@ public final class ReactNativeIntents {
   static final String EXTRA_MODULE_NAME = "REACT_MODULE_NAME";
   static final String EXTRA_PROPS = "REACT_PROPS";
   private static final String SHARED_ELEMENT_TRANSITION_GROUP_OPTION = "transitionGroup";
+  private static ReactNavigationCoordinator coordinator = ReactNavigationCoordinator.sharedInstance;
 
   private ReactNativeIntents() {
   }
@@ -72,21 +73,22 @@ public final class ReactNativeIntents {
       return ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle();
     } else {
       ReactNativeUtils.setIsSharedElementTransition(intent, true);
-      return  AutoSharedElementCallback.getActivityOptionsBundle(activity, transitionGroup);
+      return AutoSharedElementCallback.getActivityOptionsBundle(activity, transitionGroup);
     }
   }
 
   static Intent pushIntent(Context context, String moduleName, @Nullable Bundle props) {
-    return new Intent(context, ReactNativeActivity.class)
+    Class destClass = coordinator.getOrDefault(moduleName).mode.getPushActivityClass();
+    return new Intent(context, destClass)
             .putExtras(intentExtras(moduleName, props));
   }
 
   static Intent presentIntent(
           Context context, String moduleName, @Nullable Bundle props) {
-    return new Intent(context, ReactNativeModalActivity.class)
+    Class destClass = coordinator.getOrDefault(moduleName).mode.getPresentActivityClass();
+    return new Intent(context, destClass)
             .putExtras(intentExtras(moduleName, props));
   }
-
 
   private static Bundle intentExtras(String moduleName, @Nullable Bundle props) {
     return new BundleBuilder()

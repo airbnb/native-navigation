@@ -1,5 +1,6 @@
 package com.airbnb.android.react.navigation;
 
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,5 +39,20 @@ interface NavigationImplementation {
       ActionBar actionBar,
       ReadableMap config,
       boolean firstCall
+  );
+
+  void makeTabItem(
+      ReactBottomNavigation bottomNavigation,
+      Menu menu,
+      int index,
+      Integer itemId,
+      ReadableMap config
+  );
+
+  void reconcileTabBarProperties(
+      ReactBottomNavigation bottomNavigation,
+      Menu menu,
+      ReadableMap prev,
+      ReadableMap next
   );
 }

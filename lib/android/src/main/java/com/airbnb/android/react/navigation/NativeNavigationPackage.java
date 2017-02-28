@@ -25,6 +25,9 @@ public class NativeNavigationPackage implements ReactPackage {
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
     return Arrays.<ViewManager>asList(
         new SharedElementGroupManager(),
-        new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance));
+        new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance),
+        new TabBarViewManager(),
+        new TabViewManager()
+    );
   }
 }

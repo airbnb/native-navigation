@@ -4,10 +4,16 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenu;
+import android.support.design.internal.BottomNavigationMenuView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -108,7 +114,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       return px / pixelDensity;
     }
     // if we've made it here, we need to guess...
-    return 10.0f;
+    return 100.0f;
   }
 
   @TargetApi(Build.VERSION_CODES.M)
@@ -318,12 +324,14 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       }
     }
 
-    if (firstCall || numberHasChanged("elevation", prev, next)) {
-      if (next.hasKey("elevation")) {
-        Double elevation = next.getDouble("elevation");
-        toolbar.setElevation(elevation.floatValue());
-      } else {
-        toolbar.setElevation(defaults.elevation);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (firstCall || numberHasChanged("elevation", prev, next)) {
+        if (next.hasKey("elevation")) {
+          Double elevation = next.getDouble("elevation");
+            toolbar.setElevation(elevation.floatValue());
+        } else {
+          toolbar.setElevation(defaults.elevation);
+        }
       }
     }
 
@@ -553,6 +561,125 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     return true;
   }
 
+  public void makeTabItem(
+      ReactBottomNavigation bottomNavigation,
+      Menu menu,
+      int index,
+      Integer itemId,
+      ReadableMap config
+  ) {
+
+    Log.d(TAG, "makeTabItem");
+
+    MenuItem item = menu.add(
+        Menu.NONE,
+        itemId,
+        Menu.NONE,
+        config.getString("title")
+    );
+
+    if (config.hasKey("image")) {
+      bottomNavigation.setMenuItemIcon(item, config.getMap("image"));
+    } else {
+      // TODO(lmr): this probably isn't the best default.
+      item.setIcon(android.R.drawable.btn_radio);
+    }
+
+    if (config.hasKey("enabled")) {
+      boolean enabled = config.getBoolean("enabled");
+      item.setEnabled(enabled);
+    }
+
+    // not sure if we want/need to set anything on the itemview itself. hacky.
+//    BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigation.getChildAt(0);
+//    BottomNavigationItemView itemView = (BottomNavigationItemView)menuView.getChildAt(index);
+  }
+
+  private static ColorStateList colorStatesFromPrefix(String prefix, ReadableMap props, int defaultColor) {
+
+    String active = String.format("%sActiveColor", prefix);
+    String selected = String.format("%sSelectedColor", prefix);
+    String normal = String.format("%sColor", prefix);
+    String disabled = String.format("%sDisabledColor", prefix);
+
+    int normalColor = props.hasKey(normal) ? props.getInt(normal) : defaultColor;
+    int selectedColor = props.hasKey(selected) ? props.getInt(selected) : normalColor;
+    int activeColor = props.hasKey(active) ? props.getInt(active) : selectedColor;
+    int disabledColor = props.hasKey(disabled) ? props.getInt(disabled) : normalColor;
+
+
+    return new ColorStateList(
+        new int[][]{
+            new int[]{android.R.attr.state_pressed},
+            new int[]{android.R.attr.state_enabled},
+            new int[]{android.R.attr.state_focused, android.R.attr.state_pressed},
+            new int[]{-android.R.attr.state_enabled},
+            new int[]{} // this should be empty to make default color as we want
+        },
+        new int[]{
+            activeColor,
+            selectedColor,
+            normalColor,
+            disabledColor,
+            normalColor
+        }
+    );
+  }
+
+  public void reconcileTabBarProperties(
+      ReactBottomNavigation bottomNavigation,
+      Menu menu,
+      ReadableMap prev,
+      ReadableMap next
+  ) {
+
+    // TODO(lmr):
+//    bottomNavigation.setForegroundTintMode(mode);
+//    bottomNavigation.setBackgroundTintMode(mode);
+//    bottomNavigation.setBackgroundTintMode(PorterDuff.Mode.DARKEN);
+
+    if (boolHasChanged("enabled", prev, next)) {
+      if (next.hasKey("enabled")) {
+        bottomNavigation.setEnabled(next.getBoolean("enabled"));
+      } else {
+        bottomNavigation.setEnabled(true);
+      }
+    }
+
+    if (mapHasChanged("backgroundImage", prev, next)) {
+      if (next.hasKey("backgroundImage")) {
+        bottomNavigation.setBackgroundSource(next.getMap("backgroundImage"));
+      } else {
+        // ???
+      }
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (numberHasChanged("elevation", prev, next)) {
+        if(next.hasKey("elevation")) {
+          bottomNavigation.setElevation((float)next.getDouble("elevation"));
+        } else {
+          bottomNavigation.setElevation(defaults.elevation);
+        }
+      }
+    }
+
+    bottomNavigation.setItemIconTintList(colorStatesFromPrefix("itemIcon", next, Color.BLACK));
+    bottomNavigation.setItemTextColor(colorStatesFromPrefix("itemText", next, Color.BLACK));
+
+    // TODO(lmr): backgroundTintList doesn't seem to have an effect.
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//      bottomNavigation.setBackgroundTintList(colorStatesFromPrefix("background", next, Color.GRAY));
+//    } else
+    if (numberHasChanged("backgroundColor", prev, next)) {
+      if (next.hasKey("backgroundColor")) {
+        bottomNavigation.setBackgroundColor(next.getInt("backgroundColor"));
+      } else {
+        bottomNavigation.setBackgroundColor(Color.GRAY);
+      }
+    }
+  }
+
 
   private static boolean shouldBail(String key, ReadableType type, ReadableMap prev, ReadableMap next) {
     boolean inNext = next.hasKey(key);
@@ -594,7 +721,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        !Objects.equals(next.getString(key), prev.getString(key));
+        !next.getString(key).equals(prev.getString(key));
   }
 
   private static boolean numberHasChanged(
@@ -658,7 +785,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
           if (a.getDouble(key) != b.getDouble(key)) return false;
           break;
         case String:
-          if (!Objects.equals(a.getString(key), b.getString(key))) return false;
+          if (!a.getString(key).equals(b.getString(key))) return false;
           break;
         case Map:
           if (!mapEqual(a.getMap(key), b.getMap(key))) return false;
@@ -692,7 +819,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
           if (b.getDouble(i) != a.getDouble(i)) return false;
           break;
         case String:
-          if (!Objects.equals(b.getString(i), a.getString(i))) return false;
+          if (!b.getString(i).equals(a.getString(i))) return false;
           break;
         case Map:
           if (!mapEqual(a.getMap(i), b.getMap(i))) return false;

@@ -32,18 +32,18 @@ import UIKit
 
 // MARK: Private
 
-private let kNativeNavigationInstanceId = "nativeNavigationInstanceId"
-private let kNativeNavigationBarHeight = "nativeNavigationInitialBarHeight"
-private let kViewControllerId = "viewControllerId"
+let kNativeNavigationInstanceId = "nativeNavigationInstanceId"
+let kNativeNavigationBarHeight = "nativeNavigationInitialBarHeight"
+let kViewControllerId = "viewControllerId"
 private var index = 0
-private let EMPTY_MAP = [String: AnyObject]()
+let EMPTY_MAP = [String: AnyObject]()
 
-private func generateId(_ moduleName: String) -> String {
+func generateId(_ moduleName: String) -> String {
   index += 1
   return "\(moduleName)_\(index)"
 }
 
-private func propsWithMetadata(
+func propsWithMetadata(
   _ props: [String: AnyObject],
   _ nativeNavigationInstanceId: String,
   _ barHeight: CGFloat
@@ -55,7 +55,7 @@ private func propsWithMetadata(
   return newProps
 }
 
-struct WeakViewHolder {
+public struct WeakViewHolder {
   weak var view: UIView?
 }
 
@@ -63,17 +63,46 @@ struct WeakViewHolder {
 
 open class ReactViewController: UIViewController {
 
+  let nativeNavigationInstanceId: String
+  var sharedElementsById: [String: WeakViewHolder] = [:]
+  var sharedElementGroupsById: [String: WeakViewHolder] = [:]
+  var isPendingNavigationTransition: Bool = false
+  var isCurrentlyTransitioning: Bool = false
+  var onTransitionCompleted: (() -> Void)?
+  var onNavigationBarTypeUpdated: (() -> Void)?
+  var reactViewHasBeenRendered: Bool = false
+  var transition: ReactSharedElementTransition?
+  var eagerNavigationController: UINavigationController?
+  open var reactFlowId: String?
+  open var showTabBar: Bool = false // TODO(lmr): showTabBar? is this needed?
+  open weak var delegate: ReactViewControllerDelegate?
+  var dismissResultCode: ReactFlowResultCode?
+  var dismissPayload: [String: AnyObject]?
+  fileprivate let moduleName: String
+  fileprivate var props: [String: AnyObject]
+  fileprivate let coordinator: ReactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance
+  fileprivate var initialConfig: [String: AnyObject]
+  fileprivate var prevConfig: [String: AnyObject]
+  fileprivate var renderedConfig: [String: AnyObject]
+  fileprivate var reactView: UIView!
+  fileprivate var statusBarAnimation: UIStatusBarAnimation = .fade
+  fileprivate var statusBarHidden: Bool = false
+  fileprivate var statusBarStyle: UIStatusBarStyle = UIStatusBarStyle.default
+  fileprivate var statusBarIsDirty: Bool = false
+  fileprivate var leadingButtonVisible: Bool = true
+  private var barHeight: CGFloat
+
   // MARK: Lifecycle
 
   public init(moduleName: String, props: [String: AnyObject] = [:]) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
-    self.coordinator = ReactNavigationCoordinator.sharedInstance
 
     self.barHeight = -1;
     self.props = EMPTY_MAP
 
     self.initialConfig = EMPTY_MAP
+    self.prevConfig = EMPTY_MAP
     self.renderedConfig = EMPTY_MAP
 
     super.init(nibName: nil, bundle: nil)
@@ -97,14 +126,6 @@ open class ReactViewController: UIViewController {
     self.automaticallyAdjustsScrollViewInsets = false
   }
 
-  // MARK: Public
-
-  open var reactFlowId: String?
-
-  // TODO(lmr): showTabBar?
-  open var showTabBar: Bool = false
-  open weak var delegate: ReactViewControllerDelegate?
-
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -112,6 +133,9 @@ open class ReactViewController: UIViewController {
   deinit {
     coordinator.unregisterViewController(nativeNavigationInstanceId)
   }
+
+
+  // MARK: UIViewController Overrides
 
   override open var preferredStatusBarUpdateAnimation : UIStatusBarAnimation {
     return statusBarAnimation
@@ -186,6 +210,11 @@ open class ReactViewController: UIViewController {
     }
   }
 
+
+
+
+  // MARK: Public Setters
+
   open func setStatusBarStyle(_ style: UIStatusBarStyle) {
     if (statusBarStyle != style) {
       statusBarStyle = style
@@ -204,13 +233,62 @@ open class ReactViewController: UIViewController {
     statusBarAnimation = animation
   }
 
+  func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
+    // TODO(lmr): does this belong in navigation implementation
+    self.leadingButtonVisible = leadingButtonVisible
+    handleLeadingButtonVisibleChange()
+  }
+
+  public func setCloseBehavior(_ closeBehavior: String) {
+    // TODO(lmr): does this belong in navigation implementation?
+    // TODO(spike)
+  }
+
+  func setNavigationBarProperties(props: [String: AnyObject]) {
+    if (isCurrentlyTransitioning) {
+      onTransitionCompleted = {
+        self.updateNavigationImpl(props: props)
+        self.onTransitionCompleted = nil // prevent retain cycle
+      }
+    } else {
+      updateNavigationImpl(props: props)
+    }
+  }
+
+
+  // MARK: Public Events
+
+  func signalFirstRenderComplete() {
+    reactViewHasBeenRendered = true
+    if (isPendingNavigationTransition) {
+      onNavigationBarTypeUpdated?()
+    }
+  }
+
+  // this gets fired right after the first real navigation action gets called (push or present)
+  func realNavigationDidHappen() {
+
+  }
+
+  // this gets fired after things are set up and we are now waiting for the first navigation config from JS
+  // to get passed back
+  func startedWaitingForRealNavigation() {
+    reconcileScreenConfig()
+    // TODO(lmr): this is no longer an option in initialConfig
+    if let waitForRender = boolForKey("waitForRender", initialConfig) {
+      if (!waitForRender && isPendingNavigationTransition) {
+        onNavigationBarTypeUpdated?()
+      }
+    }
+  }
+
   // MARK: Internal
 
   /**
    * This is meant to be called by the ReactNavigationCoordinator. The intention is to
    * tell the coordinator that presented us to dismiss us.
    */
-  func dismiss(_ payload: [String: AnyObject]) {
+  public func dismiss(_ payload: [String: AnyObject]) {
     delegate?.didDismiss(self, withPayload: payload)
   }
 
@@ -218,29 +296,14 @@ open class ReactViewController: UIViewController {
     return coordinator.navigation.makeNavigationController(rootViewController: self)
   }
 
-  func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
-    // TODO(lmr): does this belong in navigation implementation
-    self.leadingButtonVisible = leadingButtonVisible
-    handleLeadingButtonVisibleChange()
-  }
-
-  func setCloseBehavior(_ closeBehavior: String) {
-    // TODO(lmr): does this belong in navigation implementation?
-    // TODO(spike)
-  }
-
-  let nativeNavigationInstanceId: String
-  var sharedElementsById: [String: WeakViewHolder] = [:]
-  var sharedElementGroupsById: [String: WeakViewHolder] = [:]
-  var dismissResultCode: ReactFlowResultCode?
-  var dismissPayload: [String: AnyObject]?
-
-  // MARK: Private
-
-  fileprivate func handleLeadingButtonVisibleChange() {
-    // TODO(lmr): does this belong in navigation implementation?
-    navigationItem.setHidesBackButton(!leadingButtonVisible, animated: false)
-    navigationController?.interactivePopGestureRecognizer!.isEnabled = leadingButtonVisible
+  fileprivate func reconcileScreenConfig() {
+    let nav = navigationController ?? eagerNavigationController
+    coordinator.navigation.reconcileScreenConfig(
+      viewController: self,
+      navigationController: nav,
+      prev: prevConfig,
+      next: renderedConfig
+    )
   }
 
   public func emitEvent(_ eventName: String, body: AnyObject?) {
@@ -255,14 +318,14 @@ open class ReactViewController: UIViewController {
     coordinator.bridge?.enqueueJSCall("RCTDeviceEventEmitter.emit", args: args)
   }
 
-  // TODO(spike): This method isn't currently used anywhere. Find out where to use it to
-  // DRY up the result code code.
-  fileprivate func extractResultCode(_ payload: [String: AnyObject]?) -> ReactFlowResultCode {
-    if let rawResultCode = dismissPayload?["resultCode"] as? Int {
-      return ReactFlowResultCode(rawValue: rawResultCode) ?? .ok
-    } else {
-      return .ok
-    }
+
+
+  // MARK: Private
+
+  fileprivate func handleLeadingButtonVisibleChange() {
+    // TODO(lmr): does this belong in navigation implementation?
+    navigationItem.setHidesBackButton(!leadingButtonVisible, animated: false)
+    navigationController?.interactivePopGestureRecognizer!.isEnabled = leadingButtonVisible
   }
 
   func updateStatusBarIfNeeded() {
@@ -275,79 +338,14 @@ open class ReactViewController: UIViewController {
     }
   }
 
-  fileprivate let moduleName: String
-  fileprivate var props: [String: AnyObject]
-  fileprivate let coordinator: ReactNavigationCoordinator
-  fileprivate var initialConfig: [String: AnyObject]
-  fileprivate var renderedConfig: [String: AnyObject]
-  fileprivate var reactView: UIView!
-  fileprivate var statusBarAnimation: UIStatusBarAnimation = .fade
-  fileprivate var statusBarHidden: Bool = false
-  fileprivate var statusBarStyle: UIStatusBarStyle = UIStatusBarStyle.default
-  fileprivate var statusBarIsDirty: Bool = false
-  fileprivate var isPendingNavigationTransition: Bool = false
-  fileprivate var isCurrentlyTransitioning: Bool = false
-  fileprivate var onTransitionCompleted: (() -> Void)?
-  fileprivate var onNavigationBarTypeUpdated: (() -> Void)?
-  fileprivate var leadingButtonVisible: Bool = true
-  fileprivate var transition: ReactSharedElementTransition?
-  fileprivate var eagerNavigationController: UINavigationController?
-
-  fileprivate func reconcileScreenConfig() {
-    let nav = navigationController ?? eagerNavigationController
-    let props = initialConfig.combineWith(values: renderedConfig)
-    coordinator.navigation.reconcileScreenConfig(viewController: self, navigationController: nav, props: props)
-  }
-
   private func updateNavigationImpl(props: [String: AnyObject]) {
-    renderedConfig = props
+    prevConfig = renderedConfig
+    renderedConfig = initialConfig.combineWith(values: props)
     reconcileScreenConfig()
     updateBarHeightIfNeeded()
   }
 
-  func setNavigationBarProperties(props: [String: AnyObject]) {
-    if (isCurrentlyTransitioning) {
-      onTransitionCompleted = {
-        self.updateNavigationImpl(props: props)
-        self.onTransitionCompleted = nil // prevent retain cycle
-      }
-    } else {
-      updateNavigationImpl(props: props)
-    }
-  }
-
-  func signalFirstRenderComplete() {
-    if (isPendingNavigationTransition) {
-      onNavigationBarTypeUpdated?()
-    }
-  }
-
-  func back(sender: UIBarButtonItem) {
-    print("onBackPress")
-    emitEvent("onBackPress", body: nil)
-  }
-
-  // this gets fired right after the first real navigation action gets called (push or present)
-  fileprivate func realNavigationDidHappen() {
-
-  }
-
-  // this gets fired after things are set up and we are now waiting for the first navigation config from JS
-  // to get passed back
-  fileprivate func startedWaitingForRealNavigation() {
-    reconcileScreenConfig()
-    if let waitForRender = boolForKey("waitForRender", initialConfig) {
-      if (!waitForRender && isPendingNavigationTransition) {
-        onNavigationBarTypeUpdated?()
-      }
-    }
-  }
-
-
-  private var barHeight: CGFloat
-
   func updateBarHeightIfNeeded() {
-
     let newHeight = coordinator.navigation.getBarHeight(
       viewController: self,
       navigationController: navigationController ?? eagerNavigationController,
@@ -443,125 +441,3 @@ extension ReactViewController : ReactAnimationToContentVendor {
   }
 }
 
-// we will wait a maximum of 200ms for the RN view to tell us what the navigation bar should look like.
-// should normally happen much quicker than this... This is just to make sure it transitions in a reasonable
-// time frame even if the react thread takes an extra long time.
-private let DELAY: Int64 = Int64(0.2 * Double(NSEC_PER_SEC))
-
-extension UINavigationController {
-
-  public func pushReactViewController(_ viewController: ReactViewController, animated: Bool) {
-    pushReactViewController(viewController, animated: animated, makeTransition: nil)
-  }
-
-  public func pushReactViewController(
-    _ viewController: ReactViewController,
-    animated: Bool,
-    delay: Int64 = DELAY,
-    makeTransition: (() -> ReactSharedElementTransition)?) {
-
-    // TODO(lmr): we need to debounce this
-
-    viewController.eagerNavigationController = self
-
-    // this should never evaluate true, but is here just to trigger loadView()
-    guard (viewController.view != nil) else {
-      return
-    }
-
-    let realPush: () -> Void = { [weak self] in
-      viewController.onNavigationBarTypeUpdated = nil
-      viewController.isPendingNavigationTransition = false
-      viewController.isCurrentlyTransitioning = true
-
-      if let transition = makeTransition?() {
-        viewController.transition = transition
-        self?.transitioningDelegate = transition
-      }
-
-      self?.pushViewController(viewController, animated: animated)
-      viewController.eagerNavigationController = nil
-      viewController.realNavigationDidHappen()
-      self?.transitionCoordinator?.animate(alongsideTransition: nil, completion: { context in
-        viewController.isCurrentlyTransitioning = false
-        // The completion handler of the AIRNavigationController will be called
-        // synchronously from this context, but AFTER this block is called. To
-        // get around this, we call it async.
-        DispatchQueue.main.async(execute: {
-          viewController.onTransitionCompleted?()
-          viewController.emitEvent("onEnterTransitionComplete", body: nil)
-        })
-      })
-    }
-
-    viewController.isPendingNavigationTransition = true
-    viewController.onNavigationBarTypeUpdated = realPush
-    viewController.startedWaitingForRealNavigation()
-
-    // we delay pushing the view controller just a little bit (50ms) so that the react view can render
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)) {
-      if (viewController.isPendingNavigationTransition) {
-        print("Push Fallback Timer Called!")
-        realPush()
-      }
-    }
-  }
-}
-
-extension UIViewController {
-  public func presentReactViewController(_ viewControllerToPresent: ReactViewController, animated: Bool, completion: (() -> Void)?) {
-
-    // TODO(lmr): we need to debounce this
-
-    // we wrap the vc in a navigation controller early on so that when reconcileScreenConfig happens, it has a navigation
-    // controller
-    guard let nav = viewControllerToPresent.wrapInNavigationController() else { return }
-
-    // set this so we know which nav it should operate on before getting presented
-    viewControllerToPresent.eagerNavigationController = nav
-
-    // this should never evaluate to true, but is here just to trigger loadView()
-    if (viewControllerToPresent.view == nil) {
-      return
-    }
-
-    let realPresent = { [weak self, weak viewControllerToPresent, weak nav] in
-      guard let viewControllerToPresent = viewControllerToPresent else { return }
-      guard let nav = nav else { return }
-
-      let identifier = viewControllerToPresent.nativeNavigationInstanceId
-      viewControllerToPresent.onNavigationBarTypeUpdated = nil
-      viewControllerToPresent.isPendingNavigationTransition = false
-      viewControllerToPresent.isCurrentlyTransitioning = true
-
-      self?.present(nav, animated: animated, completion: {
-        viewControllerToPresent.isCurrentlyTransitioning = false
-        completion?()
-        // The completion handler of the AIRNavigationController will be called
-        // synchronously from this context, but AFTER this block is called. To
-        // get around this, we call it async.
-        DispatchQueue.main.async {
-          viewControllerToPresent.onTransitionCompleted?()
-          viewControllerToPresent.emitEvent("onEnterTransitionComplete", body: nil)
-        }
-      })
-      // viewController should have a navigationController now. nil out to prevent retain cycles
-      viewControllerToPresent.eagerNavigationController = nil
-      viewControllerToPresent.realNavigationDidHappen()
-    }
-
-    viewControllerToPresent.isPendingNavigationTransition = true
-    viewControllerToPresent.onNavigationBarTypeUpdated = realPresent
-    viewControllerToPresent.startedWaitingForRealNavigation()
-
-    // we delay pushing the view controller just a little bit (50ms) so that the react view can render
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(DELAY) / Double(NSEC_PER_SEC)) {
-      if (viewControllerToPresent.isPendingNavigationTransition) {
-        print("Present Fallback Timer Called!")
-        viewControllerToPresent.onNavigationBarTypeUpdated?()
-      } else {
-        viewControllerToPresent.onNavigationBarTypeUpdated = nil
-      }
-    }
-  }
-}

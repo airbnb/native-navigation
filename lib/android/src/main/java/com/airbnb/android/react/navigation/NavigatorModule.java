@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import android.support.annotation.Nullable;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -45,13 +46,27 @@ class NavigatorModule extends ReactContextBaseJavaModule {
 
   @SuppressWarnings("unused")
   @ReactMethod
-  public void registerScreenProperties(String sceneName, ReadableMap properties) {
-    coordinator.setInitialConfigForModuleName(sceneName, properties);
+  public void registerScreen(
+      String sceneName,
+      @Nullable ReadableMap properties,
+      boolean waitForRender,
+      String mode
+  ) {
+    if (properties == null) {
+      properties = ConversionUtil.EMPTY_MAP;
+    }
+    coordinator.registerScreen(
+      sceneName,
+      properties,
+      waitForRender,
+      mode
+    );
+//    coordinator.setInitialConfigForModuleName(sceneName, properties);
   }
 
   @SuppressWarnings("unused")
   @ReactMethod
-  public void setNavigationBarProperties(final ReadableMap properties, final String instanceId) {
+  public void setScreenProperties(final ReadableMap properties, final String instanceId) {
 //    final Map<String, Object> props = payloadToMap(properties);
     withToolbar(instanceId, new NavigationModifier() {
       @Override
