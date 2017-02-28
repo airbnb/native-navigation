@@ -1,7 +1,6 @@
-package com.example;
+package com.airbnb.android.react.navigation.example;
 
 import android.app.Application;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -9,17 +8,12 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.airbnb.android.react.navigation.NativeNavigationPackage;
 import com.airbnb.android.react.navigation.ReactNavigationCoordinator;
-import com.facebook.react.*;
-import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.common.LifecycleState;
-import com.facebook.react.cxxbridge.CatalystInstanceImpl;
-import com.facebook.react.cxxbridge.JSBundleLoader;
 import com.facebook.react.shell.MainReactPackage;
-
-import java.util.Collections;
-import java.util.List;
 
 public class MainApplication extends Application {
 
