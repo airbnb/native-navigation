@@ -62,8 +62,8 @@ public class TabView extends View {
 
     Bundle args = new Bundle();
 
-    args.putString(ReactAwareActivity.REACT_MODULE_NAME, route);
-    args.putBundle(ReactAwareActivity.REACT_PROPS, props);
+    args.putString(ReactNativeIntents.EXTRA_MODULE_NAME, route);
+    args.putBundle(ReactNativeIntents.EXTRA_PROPS, props);
 
     fragment.setArguments(args);
 

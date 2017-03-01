@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
-import android.support.v7.app.ActionBar;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.*;
@@ -27,16 +25,17 @@ import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.*;
 
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
 import static com.airbnb.android.react.navigation.ReactNativeActivity.makeSlideLeftAnimation;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.*;
 
 public class ReactNativeTabActivity extends ReactAwareActivity implements ReactInterface, BottomNavigationView.OnNavigationItemSelectedListener {
 
 
   public static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
     return new Intent(context, ReactNativeTabActivity.class)
-        .putExtra(REACT_MODULE_NAME, moduleName)
-        .putExtra(REACT_PROPS, props);
+        .putExtra(EXTRA_MODULE_NAME, moduleName)
+        .putExtra(EXTRA_PROPS, props);
   }
 
   public static Intent intent(Context context, String moduleName, Bundle props) {
@@ -141,7 +140,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 //      return;
 //    }
 
-    String moduleName = getIntent().getStringExtra(REACT_MODULE_NAME);
+    String moduleName = getIntent().getStringExtra(EXTRA_MODULE_NAME);
     activityManager = new ReactInterfaceManager(this);
 
     instanceId = String.format(Locale.ENGLISH, "%1s_%2$d", moduleName, UUID++);
@@ -153,7 +152,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
       reactRootView = (ReactRootView) reactViewStub.inflate();
     }
 
-    Bundle props = getIntent().getBundleExtra(REACT_PROPS);
+    Bundle props = getIntent().getBundleExtra(EXTRA_PROPS);
     if (props == null) {
       props = new Bundle();
     }

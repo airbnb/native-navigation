@@ -18,13 +18,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_PAYLOAD;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.VERSION_CONSTANT_KEY;
 
 class NavigatorModule extends ReactContextBaseJavaModule {
   private static final int VERSION = 2;
-  static final String EXTRA_PAYLOAD = "payload";
-  static final String EXTRA_CODE = "code";
-  static final String EXTRA_IS_DISMISS = "isDismiss";
 
   private static final String CLOSE_BEHAVIOR_DISMISS = "dismiss";
   private static final String RESULT_CODE = "resultCode";
