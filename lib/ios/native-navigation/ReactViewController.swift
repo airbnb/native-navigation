@@ -292,7 +292,7 @@ open class ReactViewController: UIViewController {
     delegate?.didDismiss(self, withPayload: payload)
   }
 
-  func wrapInNavigationController() -> UINavigationController? {
+  func prepareViewControllerForPresenting() -> UIViewController {
     return coordinator.navigation.makeNavigationController(rootViewController: self)
   }
 

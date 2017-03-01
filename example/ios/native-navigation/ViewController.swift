@@ -55,7 +55,7 @@ final class ViewController: UIViewController {
 
   func pushTabScreen(sender: UIButton) {
     let tabScreen = ReactTabBarController(moduleName: "TabScreen")
-    navigationController?.pushReactViewController(tabScreen, animated: true)
+    self.presentReactViewController(tabScreen, animated: true, completion: nil)
   }
 }
 

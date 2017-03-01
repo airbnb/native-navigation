@@ -18,7 +18,7 @@ protocol InternalReactViewControllerProtocol: class {
   var sharedElementsById: [String: WeakViewHolder] { get set }
   var sharedElementGroupsById: [String: WeakViewHolder] { get set }
   func viewController() -> UIViewController
-  func wrapInNavigationController() -> UINavigationController?
+  func prepareViewControllerForPresenting() -> UIViewController
   func realNavigationDidHappen()
   func startedWaitingForRealNavigation()
   func emitEvent(_ eventName: String, body: AnyObject?)
@@ -66,11 +66,13 @@ extension UIViewController {
     internalPresentReactViewController(irvc, animated: animated, completion: completion)
   }
 
-  func internalPresentReactViewController(_ viewControllerToPresent: InternalReactViewControllerProtocol, animated: Bool, completion: (() -> Void)?) {
+  func internalPresentReactViewController(_ rvc: InternalReactViewControllerProtocol, animated: Bool, completion: (() -> Void)?) {
 
     // we wrap the vc in a navigation controller early on so that when reconcileScreenConfig happens, it has a navigation
     // controller
-    guard let nav = viewControllerToPresent.wrapInNavigationController() else { return }
+    // in the common case, this means wrapping the view controller in a navigation controller, but that's not always
+    // what we want.
+    let viewControllerToPresent = rvc.prepareViewControllerForPresenting()
 
     if (IN_PROGRESS) {
       return
@@ -78,51 +80,55 @@ extension UIViewController {
     IN_PROGRESS = true
 
     // set this so we know which nav it should operate on before getting presented
-    viewControllerToPresent.eagerNavigationController = nav
+    if let nav = viewControllerToPresent as? UINavigationController {
+      rvc.eagerNavigationController = nav
+    } else if let nav = viewControllerToPresent.navigationController {
+      rvc.eagerNavigationController = nav
+    }
 
     // this should never evaluate to true, but is here just to trigger loadView()
-    if (viewControllerToPresent.viewController().view == nil) {
+    if (rvc.viewController().view == nil) {
       IN_PROGRESS = false
       return
     }
 
-    let realPresent = { [weak self, weak viewControllerToPresent, weak nav] in
+    let realPresent = { [weak self, weak rvc, weak viewControllerToPresent] in
       IN_PROGRESS = false
+      guard let rvc = rvc else { return }
       guard let viewControllerToPresent = viewControllerToPresent else { return }
-      guard let nav = nav else { return }
 
-      let identifier = viewControllerToPresent.nativeNavigationInstanceId
-      viewControllerToPresent.onNavigationBarTypeUpdated = nil
-      viewControllerToPresent.isPendingNavigationTransition = false
-      viewControllerToPresent.isCurrentlyTransitioning = true
+      let identifier = rvc.nativeNavigationInstanceId
+      rvc.onNavigationBarTypeUpdated = nil
+      rvc.isPendingNavigationTransition = false
+      rvc.isCurrentlyTransitioning = true
 
-      self?.present(nav, animated: animated, completion: {
-        viewControllerToPresent.isCurrentlyTransitioning = false
+      self?.present(viewControllerToPresent, animated: animated, completion: {
+        rvc.isCurrentlyTransitioning = false
         completion?()
         // The completion handler of the AIRNavigationController will be called
         // synchronously from this context, but AFTER this block is called. To
         // get around this, we call it async.
         DispatchQueue.main.async {
-          viewControllerToPresent.onTransitionCompleted?()
-          viewControllerToPresent.emitEvent("onEnterTransitionComplete", body: nil)
+          rvc.onTransitionCompleted?()
+          rvc.emitEvent("onEnterTransitionComplete", body: nil)
         }
       })
       // viewController should have a navigationController now. nil out to prevent retain cycles
-      viewControllerToPresent.eagerNavigationController = nil
-      viewControllerToPresent.realNavigationDidHappen()
+      rvc.eagerNavigationController = nil
+      rvc.realNavigationDidHappen()
     }
 
-    viewControllerToPresent.isPendingNavigationTransition = true
-    viewControllerToPresent.onNavigationBarTypeUpdated = realPresent
-    viewControllerToPresent.startedWaitingForRealNavigation()
+    rvc.isPendingNavigationTransition = true
+    rvc.onNavigationBarTypeUpdated = realPresent
+    rvc.startedWaitingForRealNavigation()
 
     // we delay pushing the view controller just a little bit (50ms) so that the react view can render
     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(DELAY) / Double(NSEC_PER_SEC)) {
-      if (viewControllerToPresent.isPendingNavigationTransition) {
+      if (rvc.isPendingNavigationTransition) {
         print("Present Fallback Timer Called!")
-        viewControllerToPresent.onNavigationBarTypeUpdated?()
+        rvc.onNavigationBarTypeUpdated?()
       } else {
-        viewControllerToPresent.onNavigationBarTypeUpdated = nil
+        rvc.onNavigationBarTypeUpdated = nil
       }
     }
   }

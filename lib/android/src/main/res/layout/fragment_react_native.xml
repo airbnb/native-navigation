@@ -9,11 +9,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <!--<com.airbnb.android.react.navigation.ReactToolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="58dp"-->
-            <!--android:theme="@style/AppTheme"/>-->
+    <com.airbnb.android.react.navigation.ReactToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:theme="@style/AppTheme"/>
 
     <View
             android:id="@+id/loading_view"

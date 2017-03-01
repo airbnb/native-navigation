@@ -92,8 +92,9 @@ open class ReactTabBarController: UITabBarController {
     }
   }
 
-  func wrapInNavigationController() -> UINavigationController? {
-    return coordinator.navigation.makeNavigationController(rootViewController: self)
+  func prepareViewControllerForPresenting() -> UIViewController {
+    return self
+//    return coordinator.navigation.makeNavigationController(rootViewController: self)
   }
 
   func realNavigationDidHappen() {
@@ -177,21 +178,30 @@ extension ReactTabBarController: UITabBarControllerDelegate {
     // initially, we return false in order to let the view controller content render in RN, and then we will programmatically
     // transition once it's done. This prevents white flashes from occurring
 
+    var rvc: InternalReactViewControllerProtocol? = nil
 
-    if (viewController.view == nil) {
+    if let vc = viewController as? InternalReactViewControllerProtocol {
+      rvc = vc
+    } else if let nav = viewController as? UINavigationController {
+      if let vvc = nav.visibleViewController, let vc = vvc as? InternalReactViewControllerProtocol {
+        rvc = vc
+      }
+    }
+
+    guard let irvc = rvc else {
+      return true
+    }
+
+    if (irvc.viewController().view == nil) {
       // this should never evaluate to true, we are just doing this here to make sure we load the RN view hierarchy
       return false
     }
 
-
     guard let index = self.viewControllers?.index(where: { $0 === viewController }) else {
       return true
     }
-    guard let viewController = viewController as? InternalReactViewControllerProtocol else {
-      return true
-    }
 
-    if (viewController.reactViewHasBeenRendered) {
+    if (irvc.reactViewHasBeenRendered) {
       return true
     }
 
@@ -202,29 +212,29 @@ extension ReactTabBarController: UITabBarControllerDelegate {
 
     let realSelect: () -> Void = { [weak self] in
       IN_PROGRESS = false
-      viewController.onNavigationBarTypeUpdated = nil
-      viewController.isPendingNavigationTransition = false
-      viewController.isCurrentlyTransitioning = true
+      irvc.onNavigationBarTypeUpdated = nil
+      irvc.isPendingNavigationTransition = false
+      irvc.isCurrentlyTransitioning = true
 
       self?.selectedIndex = index
 
-      viewController.realNavigationDidHappen()
-      viewController.onTransitionCompleted?()
-      viewController.emitEvent("onEnterTransitionComplete", body: nil)
+      irvc.realNavigationDidHappen()
+      irvc.onTransitionCompleted?()
+      irvc.emitEvent("onEnterTransitionComplete", body: nil)
     }
 
-    viewController.isPendingNavigationTransition = true
-    viewController.onNavigationBarTypeUpdated = realSelect
-    viewController.startedWaitingForRealNavigation()
+    irvc.isPendingNavigationTransition = true
+    irvc.onNavigationBarTypeUpdated = realSelect
+    irvc.startedWaitingForRealNavigation()
 
     // we delay pushing the view controller just a little bit (50ms) so that the react view can render
     DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(DELAY) / Double(NSEC_PER_SEC)) {
-      if (viewController.isPendingNavigationTransition) {
+      if (irvc.isPendingNavigationTransition) {
         print("Push Fallback Timer Called!")
         realSelect()
       } else {
-        viewController.eagerNavigationController = nil
-        viewController.onNavigationBarTypeUpdated = nil
+        irvc.eagerNavigationController = nil
+        irvc.onNavigationBarTypeUpdated = nil
       }
     }
 

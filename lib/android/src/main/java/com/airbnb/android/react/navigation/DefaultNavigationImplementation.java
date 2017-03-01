@@ -368,100 +368,103 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       }
     }
 
-    // ActionBar only properties...
+    if (bar != null) {
 
-    if (firstCall || boolHasChanged("hidden", prev, next)) {
-      boolean hidden = false;
+      // ActionBar only properties...
 
-      if (next.hasKey("hidden")) {
-        hidden = next.getBoolean("hidden");
+      if (firstCall || boolHasChanged("hidden", prev, next)) {
+        boolean hidden = false;
+
+        if (next.hasKey("hidden")) {
+          hidden = next.getBoolean("hidden");
+        }
+
+        if (hidden && bar.isShowing()) {
+          bar.hide();
+        } else if (!hidden && !bar.isShowing()) {
+          bar.show();
+        }
       }
 
-      if (hidden && bar.isShowing()) {
-        bar.hide();
-      } else if (!hidden && !bar.isShowing()) {
-        bar.show();
+      if (firstCall || boolHasChanged("displayHomeAsUp", prev, next)) {
+        if (next.hasKey("displayHomeAsUp")) {
+          boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
+          bar.setDisplayHomeAsUpEnabled(displayHomeAsUp);
+        } else {
+          bar.setDisplayHomeAsUpEnabled(defaults.displayHomeAsUp);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("displayHomeAsUp", prev, next)) {
-      if (next.hasKey("displayHomeAsUp")) {
-        boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
-        bar.setDisplayHomeAsUpEnabled(displayHomeAsUp);
-      } else {
-        bar.setDisplayHomeAsUpEnabled(defaults.displayHomeAsUp);
+      if (firstCall || boolHasChanged("homeButtonEnabled", prev, next)) {
+        if (next.hasKey("homeButtonEnabled")) {
+          boolean homeButtonEnabled = next.getBoolean("homeButtonEnabled");
+          bar.setHomeButtonEnabled(homeButtonEnabled);
+        } else {
+
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("homeButtonEnabled", prev, next)) {
-      if (next.hasKey("homeButtonEnabled")) {
-        boolean homeButtonEnabled = next.getBoolean("homeButtonEnabled");
-        bar.setHomeButtonEnabled(homeButtonEnabled);
-      } else {
-
+      if (firstCall || boolHasChanged("showHome", prev, next)) {
+        if (next.hasKey("showHome")) {
+          boolean showHome = next.getBoolean("showHome");
+          bar.setDisplayShowHomeEnabled(showHome);
+        } else {
+          bar.setDisplayShowHomeEnabled(defaults.showHome);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("showHome", prev, next)) {
-      if (next.hasKey("showHome")) {
-        boolean showHome = next.getBoolean("showHome");
-        bar.setDisplayShowHomeEnabled(showHome);
-      } else {
-        bar.setDisplayShowHomeEnabled(defaults.showHome);
+      if (firstCall || boolHasChanged("showTitle", prev, next)) {
+        if (next.hasKey("showTitle")) {
+          boolean showTitle = next.getBoolean("showTitle");
+          bar.setDisplayShowTitleEnabled(showTitle);
+        } else {
+          bar.setDisplayShowTitleEnabled(defaults.showTitle);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("showTitle", prev, next)) {
-      if (next.hasKey("showTitle")) {
-        boolean showTitle = next.getBoolean("showTitle");
-        bar.setDisplayShowTitleEnabled(showTitle);
-      } else {
-        bar.setDisplayShowTitleEnabled(defaults.showTitle);
+      if (firstCall || boolHasChanged("showCustom", prev, next)) {
+        if (next.hasKey("showCustom")) {
+          boolean showCustom = next.getBoolean("showCustom");
+          bar.setDisplayShowCustomEnabled(showCustom);
+        } else {
+          bar.setDisplayShowCustomEnabled(defaults.showCustom);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("showCustom", prev, next)) {
-      if (next.hasKey("showCustom")) {
-        boolean showCustom = next.getBoolean("showCustom");
-        bar.setDisplayShowCustomEnabled(showCustom);
-      } else {
-        bar.setDisplayShowCustomEnabled(defaults.showCustom);
+      if (firstCall || boolHasChanged("useLogo", prev, next)) {
+        if (next.hasKey("useLogo")) {
+          boolean useLogo = next.getBoolean("useLogo");
+          bar.setDisplayUseLogoEnabled(useLogo);
+        } else {
+          bar.setDisplayUseLogoEnabled(defaults.useLogo);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("useLogo", prev, next)) {
-      if (next.hasKey("useLogo")) {
-        boolean useLogo = next.getBoolean("useLogo");
-        bar.setDisplayUseLogoEnabled(useLogo);
-      } else {
-        bar.setDisplayUseLogoEnabled(defaults.useLogo);
+      if (firstCall || boolHasChanged("useShowHideAnimation", prev, next)) {
+        if (next.hasKey("useShowHideAnimation")) {
+          boolean useShowHideAnimation = next.getBoolean("useShowHideAnimation");
+          bar.setShowHideAnimationEnabled(useShowHideAnimation);
+        } else {
+          bar.setShowHideAnimationEnabled(defaults.useShowHideAnimation);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("useShowHideAnimation", prev, next)) {
-      if (next.hasKey("useShowHideAnimation")) {
-        boolean useShowHideAnimation = next.getBoolean("useShowHideAnimation");
-        bar.setShowHideAnimationEnabled(useShowHideAnimation);
-      } else {
-        bar.setShowHideAnimationEnabled(defaults.useShowHideAnimation);
+      if (firstCall || boolHasChanged("hideOnScroll", prev, next)) {
+        if (next.hasKey("hideOnScroll")) {
+          boolean hideOnScroll = next.getBoolean("hideOnScroll");
+          bar.setHideOnContentScrollEnabled(hideOnScroll);
+        } else {
+          bar.setHideOnContentScrollEnabled(defaults.hideOnScroll);
+        }
       }
-    }
 
-    if (firstCall || boolHasChanged("hideOnScroll", prev, next)) {
-      if (next.hasKey("hideOnScroll")) {
-        boolean hideOnScroll = next.getBoolean("hideOnScroll");
-        bar.setHideOnContentScrollEnabled(hideOnScroll);
-      } else {
-        bar.setHideOnContentScrollEnabled(defaults.hideOnScroll);
-      }
-    }
-
-    if (firstCall || numberHasChanged("hideOffset", prev, next)) {
-      if (next.hasKey("hideOffset")) {
-        int hideOffset = next.getInt("hideOffset");
-        bar.setHideOffset(hideOffset);
-      } else {
-        bar.setHideOffset(defaults.hideOffset);
+      if (firstCall || numberHasChanged("hideOffset", prev, next)) {
+        if (next.hasKey("hideOffset")) {
+          int hideOffset = next.getInt("hideOffset");
+          bar.setHideOffset(hideOffset);
+        } else {
+          bar.setHideOffset(defaults.hideOffset);
+        }
       }
     }
 
