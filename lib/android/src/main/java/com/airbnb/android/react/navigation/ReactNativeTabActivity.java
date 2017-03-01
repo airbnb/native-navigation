@@ -14,6 +14,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.ActionBar;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.*;
@@ -79,7 +80,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
   private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
   private ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
 
-  ReactToolbar toolbar;
+//  ReactToolbar toolbar;
   ReactRootView reactRootView;
 //  ViewPager viewPager;
 //  TabLayout tabLayout;
@@ -92,9 +93,9 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 
     setContentView(R.layout.tab_react_native);
 
-    toolbar = (ReactToolbar) findViewById(R.id.toolbar);
+//    toolbar = (ReactToolbar) findViewById(R.id.toolbar);
 
-    setSupportActionBar(toolbar);
+//    setSupportActionBar(toolbar);
 //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     bottomNavigation = (ReactBottomNavigation) findViewById(R.id.bottom_navigation);
@@ -421,7 +422,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 
   @Override
   public ReactToolbar getToolbar() {
-    return toolbar;
+    return new ReactToolbar(this);
   }
 
   @Override

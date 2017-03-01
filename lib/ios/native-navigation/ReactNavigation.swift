@@ -54,7 +54,11 @@ class ReactNavigation: NSObject {
     if let vc = coordinator.viewControllerForId(instanceId) {
       DispatchQueue.main.async {
         DispatchQueue.main.async {
-          vc.signalFirstRenderComplete()
+          DispatchQueue.main.async {
+            DispatchQueue.main.async {
+              vc.signalFirstRenderComplete()
+            }
+          }
         }
       }
     }

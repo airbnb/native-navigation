@@ -49,7 +49,7 @@ final class TabView: UIView {
 
     // TODO(lmr): handle non-RN tabs
     if let route = route {
-      let vc = ReactViewController(moduleName: route, props: props)
+      let vc = ReactViewController(moduleName: route, props: props).prepareViewControllerForPresenting()
       vc.tabBarItem = tabBarItem
       viewController = vc
     }
