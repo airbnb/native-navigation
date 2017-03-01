@@ -12,7 +12,6 @@ import android.transition.Slide;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,27 +22,25 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.Locale;
 
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.INITIAL_BAR_HEIGHT_PROP;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.INSTANCE_ID_PROP;
 
 public class ReactNativeActivity extends ReactAwareActivity
     implements ReactInterface, DefaultHardwareBackBtnHandler, PermissionAwareActivity {
   private static final int SHARED_ELEMENT_TARGET_API = VERSION_CODES.LOLLIPOP_MR1;
   /** We just need lollipop (not MR1) for the postponed slide in transition */
   private static final int WAITING_TRANSITION_TARGET_API = VERSION_CODES.LOLLIPOP;
-  private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
   private static final String ON_ENTER_TRANSITION_COMPLETE = "onEnterTransitionComplete";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
-  private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
-  private static final String INITIAL_BAR_HEIGHT_PROP = "nativeNavigationInitialBarHeight";
   private static final int RENDER_TIMEOUT_IN_MS = 1700; // TODO(lmr): put this back down when done debugging
   private static final int FAKE_ENTER_TRANSITION_TIME_IN_MS = 500;
   private static final String TAG = "ReactNativeActivity";
@@ -61,9 +58,6 @@ public class ReactNativeActivity extends ReactAwareActivity
   private boolean isWaitingForRenderToFinish = false;
   private boolean isSharedElementTransition = false;
   private PermissionListener permissionListener;
-
-  private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
-  private ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
 
   ReactToolbar toolbar;
   ReactRootView reactRootView;
@@ -509,39 +503,11 @@ public class ReactNativeActivity extends ReactAwareActivity
     return reactNavigationCoordinator.isSuccessfullyInitialized();
   }
 
-  private NavigationImplementation getImplementation() {
-    return reactNavigationCoordinator.getImplementation();
-  }
-
-  @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
-  protected boolean supportIsDestroyed() {
-    return AndroidVersion.isAtLeastJellyBeanMR1() && isDestroyed();
-  }
-
   @TargetApi(Build.VERSION_CODES.M)
   public void requestPermissions(String[] permissions, int requestCode,
       PermissionListener listener) {
     permissionListener = listener;
     requestPermissions(permissions, requestCode);
-  }
-
-  @Override
-  public boolean onKeyUp(int keyCode, KeyEvent event) {
-    if (/* BuildConfig.DEBUG && */keyCode == KeyEvent.KEYCODE_MENU) {
-      // TODO(lmr): disable this in prod
-      reactInstanceManager.getDevSupportManager().showDevOptionsDialog();
-      return true;
-    }
-    if (keyCode == 0) { // this is the "backtick"
-      // TODO(lmr): disable this in prod
-      reactInstanceManager.getDevSupportManager().showDevOptionsDialog();
-      return true;
-    }
-    if (mDoubleTapReloadRecognizer.didDoubleTapR(keyCode, getCurrentFocus())) {
-      reactInstanceManager.getDevSupportManager().handleReloadJS();
-    }
-
-    return super.onKeyUp(keyCode, event);
   }
 
   public void onRequestPermissionsResult(int requestCode, String[] permissions,

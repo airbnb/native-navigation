@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  >
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-  <ViewStub
-    android:id="@+id/react_root_view_stub"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    />
+    <ViewStub
+            android:id="@+id/react_root_view_stub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-  <com.airbnb.android.react.navigation.ReactToolbar android:id="@+id/toolbar" />
+    <com.airbnb.android.react.navigation.ReactToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:theme="@style/AppTheme"/>
 
-  <View
-    android:id="@+id/loading_view"
-    android:layout_gravity="center"
-    />
+    <View
+            android:id="@+id/loading_view"
+            android:layout_gravity="center"
+            android:layout_height="18dp"
+            android:layout_width="42dp"/>
 
 </FrameLayout>

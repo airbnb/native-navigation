@@ -3,7 +3,6 @@ package com.airbnb.android.react.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
@@ -12,6 +11,29 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+class ReactScreenConfig {
+  ReadableMap initialConfig;
+  boolean waitForRender;
+  ReactScreenMode mode;
+
+  static final ReactScreenConfig EMPTY = new ReactScreenConfig(
+      ConversionUtil.EMPTY_MAP,
+      true,
+      ReactScreenMode.SCREEN
+  );
+
+  ReactScreenConfig(
+      ReadableMap initialConfig,
+      boolean waitForRender,
+      ReactScreenMode mode
+  ) {
+    this.initialConfig = initialConfig;
+    this.waitForRender = waitForRender;
+    this.mode = mode;
+  }
+
+}
 
 public class ReactNavigationCoordinator {
   public static ReactNavigationCoordinator sharedInstance = new ReactNavigationCoordinator();
@@ -69,7 +91,15 @@ public class ReactNavigationCoordinator {
   private List<ReactExposedActivityParams> exposedActivities;
   private final Map<String /* instance id */, WeakReference<ReactInterface>> componentsMap = new HashMap<>();
   private final Map<String /* instance id */, Boolean> dismissCloseBehaviorMap = new HashMap<>();
-  private final Map<String /* name */, ReadableMap> screenInitialConfigMap = new HashMap<>();
+  private final Map<String /* name */, ReactScreenConfig> screenMap = new HashMap<>();
+
+  ReactScreenConfig getOrDefault(String screenName) {
+    ReactScreenConfig screen = screenMap.get(screenName);
+    if (screen == null) {
+      screen = ReactScreenConfig.EMPTY;
+    }
+    return screen;
+  }
 
   public void registerComponent(ReactInterface component, String name) {
     componentsMap.put(name, new WeakReference<>(component));
@@ -119,15 +149,24 @@ public class ReactNavigationCoordinator {
     return dismissClose != null && dismissClose;
   }
 
-  public void setInitialConfigForModuleName(String sceneName, ReadableMap config) {
-    screenInitialConfigMap.put(sceneName, config);
+  public void registerScreen(
+      String screenName,
+      ReadableMap initialConfig,
+      boolean waitForRender,
+      String mode
+  ) {
+    screenMap.put(screenName, new ReactScreenConfig(
+        initialConfig,
+        waitForRender,
+        ReactScreenMode.fromString(mode)
+    ));
   }
 
-  public ReadableMap getInitialConfigForModuleName(String sceneName) {
-    if (screenInitialConfigMap.containsKey(sceneName)) {
-      return screenInitialConfigMap.get(sceneName);
-    } else {
-      return ConversionUtil.EMPTY_MAP;
-    }
+//  public void setInitialConfigForModuleName(String screenName, ReadableMap config) {
+//    screenMap.put(screenName, config);
+//  }
+
+  public ReadableMap getInitialConfigForModuleName(String screenName) {
+    return getOrDefault(screenName).initialConfig;
   }
 }

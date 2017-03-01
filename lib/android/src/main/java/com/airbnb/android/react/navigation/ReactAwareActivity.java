@@ -1,9 +1,20 @@
 package com.airbnb.android.react.navigation;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.ViewTreeObserver;
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 
 public abstract class ReactAwareActivity extends AppCompatActivity implements ReactAwareActivityFacade {
+
+  private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
+
+  ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
+  ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
+
   protected boolean hasCustomEnterTransition() {
     return true;
   }
@@ -26,5 +37,37 @@ public abstract class ReactAwareActivity extends AppCompatActivity implements Re
             return true;
           }
         });
+  }
+
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  boolean supportIsDestroyed() {
+    return AndroidVersion.isAtLeastJellyBeanMR1() && isDestroyed();
+  }
+
+  boolean isSuccessfullyInitialized() {
+    return reactNavigationCoordinator.isSuccessfullyInitialized();
+  }
+
+  NavigationImplementation getImplementation() {
+    return reactNavigationCoordinator.getImplementation();
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    if (/* BuildConfig.DEBUG && */keyCode == KeyEvent.KEYCODE_MENU) {
+      // TODO(lmr): disable this in prod
+      reactInstanceManager.getDevSupportManager().showDevOptionsDialog();
+      return true;
+    }
+    if (keyCode == 0) { // this is the "backtick"
+      // TODO(lmr): disable this in prod
+      reactInstanceManager.getDevSupportManager().showDevOptionsDialog();
+      return true;
+    }
+    if (mDoubleTapReloadRecognizer.didDoubleTapR(keyCode, getCurrentFocus())) {
+      reactInstanceManager.getDevSupportManager().handleReloadJS();
+    }
+
+    return super.onKeyUp(keyCode, event);
   }
 }

@@ -18,7 +18,20 @@ public protocol ReactNavigationImplementation {
   func reconcileScreenConfig(
     viewController: ReactViewController,
     navigationController: UINavigationController?,
-    props: [String: AnyObject]
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
+  )
+
+  func reconcileTabConfig(
+    tabBarItem: UITabBarItem,
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
+  )
+
+  func reconcileTabBarConfig(
+    tabBar: UITabBar,
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
   )
 
   func getBarHeight(viewController: ReactViewController, navigationController: UINavigationController?, config: [String: AnyObject]) -> CGFloat;
@@ -66,6 +79,58 @@ class BlockBarButtonItem: UIBarButtonItem {
   func barButtonItemPressed(sender: UIBarButtonItem) {
     actionHandler?()
   }
+}
+
+func stringHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
+  let a = stringForKey(key, prev)
+  let b = stringForKey(key, next)
+  if let a = a, let b = b {
+      return a != b
+  } else if let a = a {
+    return true
+  } else if let b = b {
+    return true
+  }
+  return false
+}
+
+func boolHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
+  let a = boolForKey(key, prev)
+  let b = boolForKey(key, next)
+  if let a = a, let b = b {
+    return a != b
+  } else if let a = a {
+    return true
+  } else if let b = b {
+    return true
+  }
+  return false
+}
+
+func numberHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
+  if let before = prev[key] as? NSNumber, (before != nil) {
+    if let after = next[key] as? NSNumber, (after != nil) {
+      return before != after
+    } else {
+      return true
+    }
+  } else if let after = next[key] as? NSNumber, (after != nil) {
+    return true
+  }
+  return false
+}
+
+func mapHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
+  if let before = prev[key] {
+    if let after = next[key] {
+      return true // TODO: could do more here...
+    } else {
+      return true
+    }
+  } else if let after = next[key] {
+    return true
+  }
+  return false
 }
 
 func colorForKey(_ key: String, _ props: [String: AnyObject]) -> UIColor? {
@@ -260,7 +325,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
       return navController.navigationBar.frame.height + (statusBarHidden ? 0 : 20)
     }
     // make a best guess based on config
-    return (statusBarHidden ? 0 : 20) + (navBarHidden ? 0 : 40) + (hasPrompt ? 30 : 0)
+    return (statusBarHidden ? 0 : 20) + (navBarHidden ? 0 : 44) + (hasPrompt ? 30 : 0)
   }
 
   public func makeNavigationController(rootViewController: UIViewController) -> UINavigationController {
@@ -269,26 +334,95 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     return UINavigationController(rootViewController: rootViewController)
   }
 
-  // TODO(lmr): should we pass in previous props?
+  public func reconcileTabConfig(
+    tabBarItem: UITabBarItem,
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
+  ){
+    if mapHasChanged("image", prev, next) {
+      tabBarItem.image = imageForKey("image", next)
+    }
+    if stringHasChanged("title", prev, next) {
+      tabBarItem.title = stringForKey("title", next)
+    }
+    // badgeValue
+    // selectedImage
+    // titlePositionAdjustment
+    //    tabBarItem.title = title
+    //    tabBarItem.badgeColor
+    //    tabBarItem.badgeTextAttributes(for: .normal)
+    //    tabBarItem.badgeValue
+    //    tabBarItem.selectedImage
+    //    tabBarItem.imageInsets
+    //    tabBarItem.titleTextAttributes(for: .normal)
+    //    tabBarItem.titlePositionAdjustment
+
+  }
+
+  public func reconcileTabBarConfig(
+    tabBar: UITabBar,
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
+  ) {
+    if boolHasChanged("translucent", prev, next) {
+      if let translucent = boolForKey("translucent", next) {
+        tabBar.isTranslucent = translucent
+      } else {
+        tabBar.isTranslucent = false
+      }
+    }
+    if numberHasChanged("tintColor", prev, next) {
+      if let tintColor = colorForKey("tintColor", next) {
+        tabBar.tintColor = tintColor
+      } else {
+
+      }
+    }
+
+    if numberHasChanged("barTintColor", prev, next) {
+      if let barTintColor = colorForKey("barTintColor", next) {
+        tabBar.barTintColor = barTintColor
+      } else {
+
+      }
+    }
+
+//    tabBar.alpha
+//    tabBar.backgroundColor
+
+    // itemPositioning
+    // barStyle
+    // itemSpacing float
+    // itemWidth: float
+    // backgroundImage: image
+    // shadowImage: image
+    // selectionIndicatorImage: image
+    // unselectedItemTintColor: color
+
+  }
+
   public func reconcileScreenConfig(
     viewController: ReactViewController,
     navigationController: UINavigationController?,
-    props: [String: AnyObject]
+    prev: [String: AnyObject],
+    next: [String: AnyObject]
   ) {
     // status bar
-    if let statusBarHidden = boolForKey("statusBarHidden", props) {
+    if let statusBarHidden = boolForKey("statusBarHidden", next) {
       viewController.setStatusBarHidden(statusBarHidden)
     } else {
       viewController.setStatusBarHidden(false)
     }
 
-    if let statusBarStyle = stringForKey("statusBarStyle", props) {
-      viewController.setStatusBarStyle(statusBarStyleFromString(statusBarStyle))
-    } else {
-      viewController.setStatusBarStyle(.default)
+    if stringHasChanged("statusBarStyle", prev, next) {
+      if let statusBarStyle = stringForKey("statusBarStyle", next) {
+        viewController.setStatusBarStyle(statusBarStyleFromString(statusBarStyle))
+      } else {
+        viewController.setStatusBarStyle(.default)
+      }
     }
 
-    if let statusBarAnimation = stringForKey("statusBarAnimation", props) {
+    if let statusBarAnimation = stringForKey("statusBarAnimation", next) {
       viewController.setStatusBarAnimation(statusBarAnimationFromString(statusBarAnimation))
     } else {
       viewController.setStatusBarAnimation(.fade)
@@ -299,110 +433,110 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     let navItem = viewController.navigationItem
 
 
-    if let titleView = titleAndSubtitleViewFromProps(props) {
-      if let title = stringForKey("title", props) {
+    if let titleView = titleAndSubtitleViewFromProps(next) {
+      if let title = stringForKey("title", next) {
         // set the title anyway, for accessibility
         viewController.title = title
       }
       navItem.titleView = titleView
-    } else if let title = stringForKey("title", props) {
+    } else if let title = stringForKey("title", next) {
       navItem.titleView = nil
       viewController.title = title
     }
 
-    if let screenColor = colorForKey("screenColor", props) {
+    if let screenColor = colorForKey("screenColor", next) {
       viewController.view.backgroundColor = screenColor
     }
 
-    if let prompt = stringForKey("prompt", props) {
+    if let prompt = stringForKey("prompt", next) {
       navItem.prompt = prompt
     } else if navItem.prompt != nil {
       navItem.prompt = nil
     }
 
-    if let rightBarButtonItems = configureBarButtonArrayForKey("rightButtons", props) {
+    if let rightBarButtonItems = configureBarButtonArrayForKey("rightButtons", next) {
       for (i, item) in rightBarButtonItems.enumerated() {
-        item.actionHandler = {
-          viewController.emitEvent("onRightPress", body: i as AnyObject?)
+        item.actionHandler = { [weak viewController] in
+          viewController?.emitEvent("onRightPress", body: i as AnyObject?)
         }
       }
       navItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-    } else if let rightBarButtonItem = configurebarButtonItemFromPrefix("right", props, navItem.rightBarButtonItem) {
-      rightBarButtonItem.actionHandler = {
-        viewController.emitEvent("onRightPress", body: nil)
+    } else if let rightBarButtonItem = configurebarButtonItemFromPrefix("right", next, navItem.rightBarButtonItem) {
+      rightBarButtonItem.actionHandler = { [weak viewController] in
+        viewController?.emitEvent("onRightPress", body: nil)
       }
       navItem.setRightBarButton(rightBarButtonItem, animated: true)
     }
 
     // TODO(lmr): we have to figure out how to reset this back to the default "back" behavior...
-    if let leftBarButtonItems = configureBarButtonArrayForKey("leftButtons", props) {
+    if let leftBarButtonItems = configureBarButtonArrayForKey("leftButtons", next) {
       for (i, item) in leftBarButtonItems.enumerated() {
-        item.actionHandler = {
-          viewController.emitEvent("onLeftPress", body: i as AnyObject?)
+        item.actionHandler = { [weak viewController] in
+          viewController?.emitEvent("onLeftPress", body: i as AnyObject?)
         }
       }
       navItem.setLeftBarButtonItems(leftBarButtonItems, animated: true)
-    } else if let leftBarButtonItem = configurebarButtonItemFromPrefix("left", props, navItem.leftBarButtonItem) {
-      leftBarButtonItem.actionHandler = {
+    } else if let leftBarButtonItem = configurebarButtonItemFromPrefix("left", next, navItem.leftBarButtonItem) {
+      leftBarButtonItem.actionHandler = { [weak viewController] in
         // TODO(lmr): we want to dismiss here...
-        viewController.emitEvent("onLeftPress", body: nil)
+        viewController?.emitEvent("onLeftPress", body: nil)
       }
       navItem.setLeftBarButton(leftBarButtonItem, animated: true)
     }
 
-    if let hidesBackButton = boolForKey("hidesBackButton", props) {
+    if let hidesBackButton = boolForKey("hidesBackButton", next) {
       navItem.setHidesBackButton(hidesBackButton, animated: true)
     }
 
     if let navController = navigationController {
 
-      if let hidesBarsOnTap = boolForKey("hidesBarsOnTap", props) {
+      if let hidesBarsOnTap = boolForKey("hidesBarsOnTap", next) {
         navController.hidesBarsOnTap = hidesBarsOnTap
       }
 
-      if let hidesBarsOnSwipe = boolForKey("hidesBarsOnSwipe", props) {
+      if let hidesBarsOnSwipe = boolForKey("hidesBarsOnSwipe", next) {
         navController.hidesBarsOnSwipe = hidesBarsOnSwipe
       }
 
-      if let hidesBarsWhenKeyboardAppears = boolForKey("hidesBarsWhenKeyboardAppears", props) {
+      if let hidesBarsWhenKeyboardAppears = boolForKey("hidesBarsWhenKeyboardAppears", next) {
         navController.hidesBarsWhenKeyboardAppears = hidesBarsWhenKeyboardAppears
       }
 
-      if let hidden = boolForKey("hidden", props) {
+      if let hidden = boolForKey("hidden", next) {
         navController.setNavigationBarHidden(hidden, animated: true)
       }
 
-      if let isToolbarHidden = boolForKey("isToolbarHidden", props) {
+      if let isToolbarHidden = boolForKey("isToolbarHidden", next) {
         navController.setToolbarHidden(isToolbarHidden, animated: true)
       }
 
       let navBar = navController.navigationBar
 
-      if let titleAttributes = textAttributesFromPrefix("title", props) {
+      if let titleAttributes = textAttributesFromPrefix("title", next) {
         navBar.titleTextAttributes = titleAttributes
       }
 
-      if let backIndicatorImage = imageForKey("backIndicatorImage", props) {
+      if let backIndicatorImage = imageForKey("backIndicatorImage", next) {
         navBar.backIndicatorImage = backIndicatorImage
       }
 
-      if let backIndicatorTransitionMaskImage = imageForKey("backIndicatorTransitionMaskImage", props) {
+      if let backIndicatorTransitionMaskImage = imageForKey("backIndicatorTransitionMaskImage", next) {
         navBar.backIndicatorTransitionMaskImage = backIndicatorTransitionMaskImage
       }
 
-      if let backgroundColor = colorForKey("backgroundColor", props) {
+      if let backgroundColor = colorForKey("backgroundColor", next) {
         navBar.barTintColor = backgroundColor
       }
 
-      if let foregroundColor = colorForKey("foregroundColor", props) {
+      if let foregroundColor = colorForKey("foregroundColor", next) {
         navBar.tintColor = foregroundColor
       }
 
-      if let alpha = floatForKey("alpha", props) {
+      if let alpha = floatForKey("alpha", next) {
         navBar.alpha = alpha
       }
 
-      if let translucent = boolForKey("translucent", props) {
+      if let translucent = boolForKey("translucent", next) {
         navBar.isTranslucent = translucent
       }
 

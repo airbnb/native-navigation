@@ -35,14 +35,25 @@ public class MainActivity extends AppCompatActivity {
       }
     );
 
-    Button btn = (Button)findViewById(R.id.button);
+    Button btnScreen = (Button)findViewById(R.id.button_screen);
 
-    btn.setText("Screen One");
+    btnScreen.setText("Screen One");
 
-    btn.setOnClickListener(new View.OnClickListener() {
+    btnScreen.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ReactNativeIntents.presentScreen(MainActivity.this, "ScreenOne");
+        ReactNativeIntents.pushScreen(MainActivity.this, "ScreenOne");
+      }
+    });
+
+    Button btnTabs = (Button)findViewById(R.id.button_tab);
+
+    btnTabs.setText("Tabs");
+
+    btnTabs.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ReactNativeIntents.pushScreen(MainActivity.this, "TabScreen");
       }
     });
 

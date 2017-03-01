@@ -25,11 +25,17 @@ class ReactNavigation: NSObject {
     ]
   }
 
-  func registerScreenProperties(_ sceneName: String, withProperties properties: [String: AnyObject]) {
-    coordinator.registerScreenProperties(sceneName, properties: properties)
+  func registerScreen(
+    _ screenName: String,
+    properties: [String: AnyObject],
+    waitForRender: Bool,
+    mode: String
+  ) {
+    // TODO: register mode and stuff
+    coordinator.registerScreenProperties(screenName, properties: properties)
   }
 
-  func setNavigationBarProperties(_ props: [String: AnyObject], withInstanceId instanceId: String) {
+  func setScreenProperties(_ props: [String: AnyObject], withInstanceId instanceId: String) {
     if let vc = coordinator.viewControllerForId(instanceId) {
       DispatchQueue.main.async {
         vc.setNavigationBarProperties(props: props)
@@ -47,7 +53,13 @@ class ReactNavigation: NSObject {
   func signalFirstRenderComplete(_ instanceId: String) {
     if let vc = coordinator.viewControllerForId(instanceId) {
       DispatchQueue.main.async {
-        vc.signalFirstRenderComplete()
+        DispatchQueue.main.async {
+          DispatchQueue.main.async {
+            DispatchQueue.main.async {
+              vc.signalFirstRenderComplete()
+            }
+          }
+        }
       }
     }
   }
