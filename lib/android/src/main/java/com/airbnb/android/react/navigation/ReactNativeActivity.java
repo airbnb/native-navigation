@@ -28,7 +28,9 @@ import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.Locale;
 
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.INITIAL_BAR_HEIGHT_PROP;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.INSTANCE_ID_PROP;
 
 public class ReactNativeActivity extends ReactAwareActivity
     implements ReactInterface, DefaultHardwareBackBtnHandler, PermissionAwareActivity {

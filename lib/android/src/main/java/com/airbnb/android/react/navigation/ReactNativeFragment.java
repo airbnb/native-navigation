@@ -26,8 +26,8 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
 import java.util.Locale;
 
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_IS_DISMISS;
-import static com.airbnb.android.react.navigation.ReactAwareActivity.INITIAL_BAR_HEIGHT_PROP;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.INITIAL_BAR_HEIGHT_PROP;
 import static com.airbnb.android.react.navigation.ReactNativeActivity.makeSlideLeftAnimation;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.maybeEmitEvent;
 

@@ -12,18 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class ReactScreen {
+class ReactScreenConfig {
   ReadableMap initialConfig;
   boolean waitForRender;
   ReactScreenMode mode;
 
-  static final ReactScreen EMPTY = new ReactScreen(
+  static final ReactScreenConfig EMPTY = new ReactScreenConfig(
       ConversionUtil.EMPTY_MAP,
       true,
       ReactScreenMode.SCREEN
   );
 
-  ReactScreen(
+  ReactScreenConfig(
       ReadableMap initialConfig,
       boolean waitForRender,
       ReactScreenMode mode
@@ -91,12 +91,12 @@ public class ReactNavigationCoordinator {
   private List<ReactExposedActivityParams> exposedActivities;
   private final Map<String /* instance id */, WeakReference<ReactInterface>> componentsMap = new HashMap<>();
   private final Map<String /* instance id */, Boolean> dismissCloseBehaviorMap = new HashMap<>();
-  private final Map<String /* name */, ReactScreen> screenMap = new HashMap<>();
+  private final Map<String /* name */, ReactScreenConfig> screenMap = new HashMap<>();
 
-  ReactScreen getOrDefault(String screenName) {
-    ReactScreen screen = screenMap.get(screenName);
+  ReactScreenConfig getOrDefault(String screenName) {
+    ReactScreenConfig screen = screenMap.get(screenName);
     if (screen == null) {
-      screen = ReactScreen.EMPTY;
+      screen = ReactScreenConfig.EMPTY;
     }
     return screen;
   }
@@ -155,7 +155,7 @@ public class ReactNavigationCoordinator {
       boolean waitForRender,
       String mode
   ) {
-    screenMap.put(screenName, new ReactScreen(
+    screenMap.put(screenName, new ReactScreenConfig(
         initialConfig,
         waitForRender,
         ReactScreenMode.fromString(mode)

@@ -114,7 +114,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       return px / pixelDensity;
     }
     // if we've made it here, we need to guess...
-    return 100.0f;
+    return activity.getResources().getDimensionPixelSize(R.dimen.abc_action_bar_default_height_material);
   }
 
   @TargetApi(Build.VERSION_CODES.M)

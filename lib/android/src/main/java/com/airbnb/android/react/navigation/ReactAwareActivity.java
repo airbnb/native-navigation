@@ -10,11 +10,6 @@ import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 
 public abstract class ReactAwareActivity extends AppCompatActivity implements ReactAwareActivityFacade {
 
-  static final String REACT_MODULE_NAME = "REACT_MODULE_NAME";
-  static final String REACT_PROPS = "REACT_PROPS";
-  static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
-  static final String INITIAL_BAR_HEIGHT_PROP = "nativeNavigationInitialBarHeight";
-
   private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
   ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;

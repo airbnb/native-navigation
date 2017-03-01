@@ -12,8 +12,8 @@ import com.facebook.react.common.MapBuilder;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_CODE;
-import static com.airbnb.android.react.navigation.NavigatorModule.EXTRA_PAYLOAD;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_PAYLOAD;
 
 public final class ReactInterfaceManager {
   private final ReactInterface component;
@@ -75,7 +75,7 @@ public final class ReactInterfaceManager {
   private Intent getResultIntent(Intent data) {
     return new Intent()
             .putExtras(data.getExtras())
-            .putExtra(NavigatorModule.EXTRA_IS_DISMISS, component.isDismissible());
+            .putExtra(ReactNativeIntents.EXTRA_IS_DISMISS, component.isDismissible());
   }
 
   private void deliverPromise(int requestCode, int resultCode, Intent data) {
@@ -89,7 +89,7 @@ public final class ReactInterfaceManager {
   }
 
   private static boolean isDismiss(Intent data) {
-    return data != null && data.getBooleanExtra(NavigatorModule.EXTRA_IS_DISMISS, false);
+    return data != null && data.getBooleanExtra(ReactNativeIntents.EXTRA_IS_DISMISS, false);
   }
 
   private Promise getAndRemovePromise(int requestCode) {
