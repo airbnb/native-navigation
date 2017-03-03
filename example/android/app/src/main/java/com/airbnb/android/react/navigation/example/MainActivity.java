@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     btnScreen.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ReactNativeIntents.pushScreen(MainActivity.this, "ScreenOne");
+        ReactNativeIntents.presentScreen(MainActivity.this, "ScreenOne");
       }
     });
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     btnTabs.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ReactNativeIntents.pushScreen(MainActivity.this, "TabScreen");
+        ReactNativeIntents.presentScreen(MainActivity.this, "TabScreen");
       }
     });
 

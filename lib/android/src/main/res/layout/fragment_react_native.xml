@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<com.airbnb.android.react.navigation.ReactNativeFragmentViewGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ViewStub
-            android:id="@+id/react_root_view_stub"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        android:id="@+id/react_root_view_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout="@layout/react_root_view"/>
 
     <com.airbnb.android.react.navigation.ReactToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:theme="@style/AppTheme"/>
+        android:theme="@style/AppTheme"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
 
     <View
-            android:id="@+id/loading_view"
-            android:layout_gravity="center"
-            android:layout_height="18dp"
-            android:layout_width="42dp"/>
+        android:id="@+id/loading_view"
+        android:layout_height="18dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"/>
 
-</FrameLayout>
+</com.airbnb.android.react.navigation.ReactNativeFragmentViewGroup>

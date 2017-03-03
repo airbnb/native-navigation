@@ -35,12 +35,13 @@ public final class ReactNativeIntents {
   public static void pushScreen(Activity activity, String moduleName, @Nullable Bundle props) {
     // TODO: right now this is the same as presentScreen but eventually it should just do
     // a fragment transaction
-    Intent intent = presentIntent(activity, moduleName, props);
+    Intent intent = pushIntent(activity, moduleName, props);
     //noinspection unchecked
     Bundle options = ActivityOptionsCompat
             .makeSceneTransitionAnimation(activity)
             .toBundle();
     activity.startActivity(intent, options);
+//    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.delay);
   }
 
   @SuppressWarnings("WeakerAccess")
@@ -57,6 +58,7 @@ public final class ReactNativeIntents {
             .makeSceneTransitionAnimation(activity)
             .toBundle();
     activity.startActivity(intent, options);
+//    activity.overridePendingTransition(R.anim.slide_up, R.anim.delay);
   }
 
   static Bundle getSharedElementOptionsBundle(
@@ -77,7 +79,7 @@ public final class ReactNativeIntents {
       //noinspection unchecked
       return ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle();
     } else {
-      ReactNativeUtils.setIsSharedElementTransition(intent, true);
+      ReactNativeUtils.setIsSharedElementTransition(intent);
       return AutoSharedElementCallback.getActivityOptionsBundle(activity, transitionGroup);
     }
   }
