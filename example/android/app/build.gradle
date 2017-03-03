@@ -101,7 +101,7 @@ android {
   buildToolsVersion "25.0.2"
 
   defaultConfig {
-    applicationId "com.example"
+    applicationId "com.airbnb.android.react.navigation.example"
     minSdkVersion 16
     targetSdkVersion 25
     versionCode 1

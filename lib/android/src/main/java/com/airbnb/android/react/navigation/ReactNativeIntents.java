@@ -41,7 +41,6 @@ public final class ReactNativeIntents {
             .makeSceneTransitionAnimation(activity)
             .toBundle();
     activity.startActivity(intent, options);
-//    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.delay);
   }
 
   @SuppressWarnings("WeakerAccess")
@@ -58,7 +57,6 @@ public final class ReactNativeIntents {
             .makeSceneTransitionAnimation(activity)
             .toBundle();
     activity.startActivity(intent, options);
-//    activity.overridePendingTransition(R.anim.slide_up, R.anim.delay);
   }
 
   static Bundle getSharedElementOptionsBundle(
