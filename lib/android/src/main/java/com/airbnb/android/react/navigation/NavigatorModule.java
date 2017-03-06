@@ -226,7 +226,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
 
   private void ensureCoordinatorComponent(Activity activity) {
     if (!(activity instanceof ScreenCoordinatorComponent)) {
-      throw new IllegalStateException("Your activity must implement ScreenCoordinatorComponent.")
+      throw new IllegalStateException("Your activity must implement ScreenCoordinatorComponent.");
     }
   }
 
