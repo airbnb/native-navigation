@@ -44,3 +44,5 @@ android/app/libs
 _book
 
 Pods/
+
+.vscode
