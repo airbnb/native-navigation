@@ -72,7 +72,7 @@ public class ReactNativeFragment extends Fragment
   private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
   private ReactNativeFragmentViewGroup contentContainer;
   private ReactRootView reactRootView;
-  private ReactInterfaceManager activityManager;
+//  private ReactInterfaceManager activityManager;
   private final Handler handler = new Handler();
   private PermissionListener permissionListener;
   private AppCompatActivity activity;
@@ -135,7 +135,7 @@ public class ReactNativeFragment extends Fragment
         }
       }, RENDER_TIMEOUT_IN_MS);
     }
-    activityManager = new ReactInterfaceManager(this);
+//    activityManager = new ReactInterfaceManager(this);
     reactNavigationCoordinator.registerComponent(this, instanceId);
   }
 
@@ -235,7 +235,7 @@ public class ReactNativeFragment extends Fragment
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    activityManager.onActivityResult(requestCode, resultCode, data);
+//    activityManager.onActivityResult(requestCode, resultCode, data);
   }
 
   @Override
