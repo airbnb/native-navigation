@@ -95,13 +95,15 @@ class NavigatorModule extends ReactContextBaseJavaModule {
       @Override
       public void run() {
         Activity activity = getCurrentActivity();
-        if (activity != null && activity instanceof ScreenCoordinatorComponent) {
-          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
-              screenName,
-              ConversionUtil.toBundle(props),
-              ConversionUtil.toBundle(options),
-              promise);
+        if (activity == null) {
+          return;
         }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
+            screenName,
+            ConversionUtil.toBundle(props),
+            ConversionUtil.toBundle(options),
+            promise);
       }
     });
   }
@@ -110,10 +112,11 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void pushNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
-      startActivityWithPromise(activity, intent, promise, options);
+    if (activity == null) {
+      return;
     }
+    Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
+    startActivityWithPromise(activity, intent, promise, options);
   }
 
   @SuppressWarnings("UnusedParameters")
@@ -123,13 +126,15 @@ class NavigatorModule extends ReactContextBaseJavaModule {
       @Override
       public void run() {
         Activity activity = getCurrentActivity();
-        if (activity != null && activity instanceof ScreenCoordinatorComponent) {
-          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
-              screenName,
-              ConversionUtil.toBundle(props),
-              ConversionUtil.toBundle(options),
-              promise);
+        if (activity == null) {
+          return;
         }
+        ensureCoordinatorComponent(activity);
+          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
+            screenName,
+            ConversionUtil.toBundle(props),
+            ConversionUtil.toBundle(options),
+            promise);
       }
     });
   }
@@ -138,10 +143,11 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void presentNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
-      startActivityWithPromise(activity, intent, promise, options);
+    if (activity == null) {
+      return;
     }
+    Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
+    startActivityWithPromise(activity, intent, promise, options);
   }
 
   @ReactMethod
@@ -151,9 +157,11 @@ class NavigatorModule extends ReactContextBaseJavaModule {
       public void run() {
         // TODO: handle payload
         Activity activity = getCurrentActivity();
-        if (activity != null && activity instanceof ScreenCoordinatorComponent) {
-          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
+        if (activity == null) {
+          return;
         }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
       }
     });
   }
@@ -166,9 +174,11 @@ class NavigatorModule extends ReactContextBaseJavaModule {
       public void run() {
         // TODO: handle payload
         Activity activity = getCurrentActivity();
-        if (activity != null && activity instanceof ScreenCoordinatorComponent) {
-          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
+        if (activity == null) {
+          return;
         }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
       }
     });
   }
@@ -212,6 +222,12 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     }
     activity.setResult(getResultCodeFromPayload(payload), intent);
     activity.finish();
+  }
+
+  private void ensureCoordinatorComponent(Activity activity) {
+    if (!(activity instanceof ScreenCoordinatorComponent)) {
+      throw new IllegalStateException("Your activity must implement ScreenCoordinatorComponent.")
+    }
   }
 
   /**
