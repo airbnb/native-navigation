@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -77,6 +78,16 @@ public class ReactNativeFragment extends Fragment
   private AppCompatActivity activity;
   private ReactToolbar toolbar;
   private View loadingView;
+
+  static ReactNativeFragment newInstance(String moduleName, @Nullable Bundle props) {
+    ReactNativeFragment frag = new ReactNativeFragment();
+    Bundle args = new BundleBuilder()
+          .putString(ReactNativeIntents.EXTRA_MODULE_NAME, moduleName)
+          .putBundle(ReactNativeIntents.EXTRA_PROPS, props)
+          .toBundle();
+    frag.setArguments(args);
+    return frag;
+  }
 
   static ReactNativeFragment newInstance(Bundle intentExtras) {
     ReactNativeFragment frag = new ReactNativeFragment();

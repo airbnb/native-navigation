@@ -29,7 +29,7 @@ public class ReactNativeFragmentViewGroup extends FrameLayout {
     super(context, attrs, defStyleAttr);
   }
 
-  public void setKeyListener(@Nullable KeyListener keyListener) {
+  void setKeyListener(@Nullable KeyListener keyListener) {
     this.keyListener = keyListener;
   }
 
