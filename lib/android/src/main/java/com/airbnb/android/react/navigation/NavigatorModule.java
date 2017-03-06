@@ -2,11 +2,10 @@ package com.airbnb.android.react.navigation;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-
 import android.support.annotation.Nullable;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -90,63 +89,98 @@ class NavigatorModule extends ReactContextBaseJavaModule {
 
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
-  public void push(String screenName, ReadableMap props, ReadableMap options, Promise promise) {
-    Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Bundle propsBundle = ConversionUtil.toBundle(props);
-      Intent intent =
-          ReactNativeIntents.pushIntent(getReactApplicationContext(), screenName, propsBundle);
-      startActivityWithPromise(activity, intent, promise, options);
-    }
+  public void push(final String screenName, final ReadableMap props,
+      final ReadableMap options, final Promise promise) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
+            screenName,
+            ConversionUtil.toBundle(props),
+            ConversionUtil.toBundle(options),
+            promise);
+      }
+    });
   }
 
   @SuppressWarnings({"UnusedParameters", "unused"})
   @ReactMethod
   public void pushNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
-      startActivityWithPromise(activity, intent, promise, options);
+    if (activity == null) {
+      return;
     }
+    Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
+    startActivityWithPromise(activity, intent, promise, options);
   }
 
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
-  public void present(String screenName, ReadableMap props, ReadableMap options, Promise promise) {
-    Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Bundle propsBundle = ConversionUtil.toBundle(props);
-      Intent intent = ReactNativeIntents.presentIntent(
-              getReactApplicationContext(), screenName, propsBundle);
-      startActivityWithPromise(activity, intent, promise, options);
-    }
+  public void present(final String screenName, final ReadableMap props, final ReadableMap options, final Promise promise) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
+            screenName,
+            ConversionUtil.toBundle(props),
+            ConversionUtil.toBundle(options),
+            promise);
+      }
+    });
   }
 
   @SuppressWarnings({"UnusedParameters", "unused"})
   @ReactMethod
   public void presentNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
     Activity activity = getCurrentActivity();
-    if (activity != null) {
-      Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
-      startActivityWithPromise(activity, intent, promise, options);
+    if (activity == null) {
+      return;
     }
+    Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
+    startActivityWithPromise(activity, intent, promise, options);
   }
 
   @ReactMethod
-  public void dismiss(ReadableMap payload, @SuppressWarnings("UnusedParameters") boolean animated) {
-    Activity activity = getCurrentActivity();
-    if (activity != null) {
-      dismiss(activity, payload);
-    }
+  public void dismiss(final ReadableMap payload, @SuppressWarnings("UnusedParameters") boolean animated) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        // TODO: handle payload
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
+      }
+    });
   }
 
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
   public void pop(ReadableMap payload, boolean animated) {
-    Activity activity = getCurrentActivity();
-    if (activity != null) {
-      pop(activity, payload);
-    }
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        // TODO: handle payload
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
+      }
+    });
   }
 
   private interface NavigationModifier {
@@ -190,10 +224,10 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     activity.finish();
   }
 
-  private void pop(Activity activity, ReadableMap payload) {
-    Intent intent = new Intent().putExtra(EXTRA_PAYLOAD, payloadToMap(payload));
-    activity.setResult(getResultCodeFromPayload(payload), intent);
-    activity.finish();
+  private void ensureCoordinatorComponent(Activity activity) {
+    if (!(activity instanceof ScreenCoordinatorComponent)) {
+      throw new IllegalStateException("Your activity must implement ScreenCoordinatorComponent.")
+    }
   }
 
   /**
