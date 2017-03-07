@@ -134,6 +134,7 @@ public class ScreenCoordinator {
       dismiss();
       return;
     }
+    stack.remove(stack.size() - 1);
     activity.getSupportFragmentManager().popBackStack();
   }
 
