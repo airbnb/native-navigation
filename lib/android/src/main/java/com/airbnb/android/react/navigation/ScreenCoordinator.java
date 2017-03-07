@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import com.airbnb.android.R;
@@ -35,6 +37,7 @@ public class ScreenCoordinator {
   private final ViewGroup container;
 
   private String currentStackTag = getNextStackTag();
+  private Fragment dismissingFragment;
 
   public ScreenCoordinator(AppCompatActivity activity, ViewGroup container,
       @Nullable Bundle savedInstanceState) {
@@ -45,6 +48,10 @@ public class ScreenCoordinator {
 
   void onSaveInstanceState(Bundle outState) {
     // TODO
+  }
+
+  public void pushScreen(String moduleName) {
+    pushScreen(moduleName, null, null, null);
   }
 
   public void pushScreen(
@@ -68,7 +75,7 @@ public class ScreenCoordinator {
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
         .setAllowOptimization(true)
-        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
     Fragment currentFragment = getCurrentFragment();
     if (currentFragment != null) {
       ft.detach(currentFragment);
@@ -77,7 +84,7 @@ public class ScreenCoordinator {
         .add(Math.abs(currentStackTag.hashCode()), fragment)
         .addToBackStack(null)
         .commit();
-    addFragmentToStack(fragment, currentStackTag);
+    fragmentStacks.get(currentStackTag).add(fragment);
   }
 
   public void presentScreen(String moduleName) {
@@ -118,7 +125,7 @@ public class ScreenCoordinator {
         .add(Math.abs(currentStackTag.hashCode()), fragment)
         .addToBackStack(currentStackTag)
         .commit();
-    addFragmentToStack(fragment, currentStackTag);
+    fragmentStacks.get(currentStackTag).add(fragment);
   }
 
   public void pop() {
@@ -127,20 +134,15 @@ public class ScreenCoordinator {
       dismiss();
       return;
     }
-    Fragment fragmentToRemove = stack.remove(stack.size() - 1);
-    stack = fragmentStacks.get(currentStackTag);
-    Fragment fragmentToAttach = stack.get(stack.size() - 1);
-
-    activity.getSupportFragmentManager().beginTransaction()
-        .setAllowOptimization(true)
-        .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-        .remove(fragmentToRemove)
-        .attach(fragmentToAttach)
-        .commit();
+    activity.getSupportFragmentManager().popBackStack();
   }
 
   public void dismiss() {
-    String dismissingStackTag = stackTagBackStack.pop();;
+    String dismissingStackTag = stackTagBackStack.pop();
+    List<Fragment> stack = fragmentStacks.remove(dismissingStackTag);
+    // This is needed so we can override the pop exit animation to slide down.
+    dismissingFragment = stack.get(stack.size() - 1);
+
     if (stackTagBackStack.isEmpty()) {
       activity.finish();
       activity.overridePendingTransition(R.anim.delay, R.anim.slide_down);
@@ -152,6 +154,16 @@ public class ScreenCoordinator {
         .popBackStack(dismissingStackTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
   }
 
+  public Animation onCreateAnimation(Fragment fragment) {
+    if (fragment == dismissingFragment) {
+      // If this fragment was pushed on to the stack, it's pop exit animation will be
+      // slide out right. However, we want it to be slide down in this case.
+      dismissingFragment = null;
+      return AnimationUtils.loadAnimation(activity, R.anim.slide_down);
+    }
+    return null;
+  }
+
   @Nullable
   private Fragment getCurrentFragment() {
     List<Fragment> stack = fragmentStacks.get(currentStackTag);
@@ -159,15 +171,6 @@ public class ScreenCoordinator {
       return null;
     }
     return stack.get(stack.size() - 1);
-  }
-
-  private void addFragmentToStack(Fragment fragment, String stackTag) {
-    List<Fragment> stack = fragmentStacks.get(stackTag);
-    if (stack == null) {
-      stack = new ArrayList<>();
-      fragmentStacks.put(stackTag, stack);
-    }
-    stack.add(fragment);
   }
 
   private void ensureContainerForCurrentStack() {

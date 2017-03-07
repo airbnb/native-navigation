@@ -36,7 +36,7 @@ public class MainFragment extends Fragment {
     btnScreen.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        getScreenCoordinator().presentScreen("ScreenOne");
+        getScreenCoordinator().presentScreen(NativeFragment.newInstance(0));
       }
     });
 
