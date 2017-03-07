@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements ScreenCoordinator
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     ViewGroup container = (ViewGroup) findViewById(R.id.content);
+
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
     screenCoordinator.presentScreen(MainFragment.newInstance());
   }
