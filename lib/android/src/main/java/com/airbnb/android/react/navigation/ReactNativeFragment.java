@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.animation.Animation;
+
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
@@ -72,7 +75,7 @@ public class ReactNativeFragment extends Fragment
   private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
   private ReactNativeFragmentViewGroup contentContainer;
   private ReactRootView reactRootView;
-//  private ReactInterfaceManager activityManager;
+  //  private ReactInterfaceManager activityManager;
   private final Handler handler = new Handler();
   private PermissionListener permissionListener;
   private AppCompatActivity activity;
@@ -82,9 +85,9 @@ public class ReactNativeFragment extends Fragment
   static ReactNativeFragment newInstance(String moduleName, @Nullable Bundle props) {
     ReactNativeFragment frag = new ReactNativeFragment();
     Bundle args = new BundleBuilder()
-          .putString(ReactNativeIntents.EXTRA_MODULE_NAME, moduleName)
-          .putBundle(ReactNativeIntents.EXTRA_PROPS, props)
-          .toBundle();
+            .putString(ReactNativeIntents.EXTRA_MODULE_NAME, moduleName)
+            .putBundle(ReactNativeIntents.EXTRA_PROPS, props)
+            .toBundle();
     frag.setArguments(args);
     return frag;
   }
@@ -239,6 +242,24 @@ public class ReactNativeFragment extends Fragment
   }
 
   @Override
+  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    if (!enter) {
+      // React Native will flush the UI cache as soon as we unmount it. This will cause the view to
+      // disappear unless we delay it until after the fragment animation.
+      if (transit == FragmentTransaction.TRANSIT_NONE && nextAnim == 0) {
+        reactRootView.unmountReactApplication();
+      } else {
+        contentContainer.unmountReactApplicationAfterAnimation(reactRootView);
+      }
+      reactRootView = null;
+    }
+    if (getActivity() instanceof ScreenCoordinatorComponent) {
+      return ((ScreenCoordinatorComponent) getActivity()).getScreenCoordinator().onCreateAnimation(this);
+    }
+    return null;
+  }
+
+  @Override
   public void invokeDefaultOnBackPressed() {
     getActivity().onBackPressed();
   }
@@ -263,10 +284,6 @@ public class ReactNativeFragment extends Fragment
     Log.d(TAG, "onDestroyView");
     super.onDestroyView();
     reactNavigationCoordinator.unregisterComponent(instanceId);
-    if (reactRootView != null) {
-      reactRootView.unmountReactApplication();
-      reactRootView = null;
-    }
   }
 
   @Override
