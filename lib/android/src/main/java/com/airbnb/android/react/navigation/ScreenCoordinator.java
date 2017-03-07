@@ -1,7 +1,6 @@
 package com.airbnb.android.react.navigation;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -82,15 +81,10 @@ public class ScreenCoordinator {
       ft.detach(currentFragment);
     }
     ft
-        .add(Math.abs(currentStackTag.hashCode()), fragment, getNextFragmentTag())
+        .add(Math.abs(currentStackTag.hashCode()), fragment)
         .addToBackStack(null)
         .commit();
     fragmentStacks.get(currentStackTag).add(fragment);
-  }
-
-  @NonNull
-  private String getNextFragmentTag() {
-    return currentStackTag + "_" + fragmentStacks.get(currentStackTag).size();
   }
 
   public void presentScreen(String moduleName) {
@@ -128,7 +122,7 @@ public class ScreenCoordinator {
       ft.detach(currentFragment);
     }
     ft
-        .add(Math.abs(currentStackTag.hashCode()), fragment, getNextFragmentTag())
+        .add(Math.abs(currentStackTag.hashCode()), fragment)
         .addToBackStack(currentStackTag)
         .commit();
     fragmentStacks.get(currentStackTag).add(fragment);
@@ -140,22 +134,13 @@ public class ScreenCoordinator {
       dismiss();
       return;
     }
-    Fragment fragmentToRemove = stack.remove(stack.size() - 1);
-    stack = fragmentStacks.get(currentStackTag);
-    Fragment fragmentToAttach = stack.get(stack.size() - 1);
-
-//    activity.getSupportFragmentManager().beginTransaction()
-//            .setAllowOptimization(true)
-//            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-//            .remove(fragmentToRemove)
-//            .attach(fragmentToAttach)
-//            .commit();
     activity.getSupportFragmentManager().popBackStack();
   }
 
   public void dismiss() {
     String dismissingStackTag = stackTagBackStack.pop();
     List<Fragment> stack = fragmentStacks.remove(dismissingStackTag);
+    // This is needed so we can override the pop exit animation to slide down.
     dismissingFragment = stack.get(stack.size() - 1);
 
     if (stackTagBackStack.isEmpty()) {
@@ -171,6 +156,8 @@ public class ScreenCoordinator {
 
   public Animation onCreateAnimation(Fragment fragment) {
     if (fragment == dismissingFragment) {
+      // If this fragment was pushed on to the stack, it's pop exit animation will be
+      // slide out right. However, we want it to be slide down in this case.
       dismissingFragment = null;
       return AnimationUtils.loadAnimation(activity, R.anim.slide_down);
     }
