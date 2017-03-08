@@ -97,8 +97,8 @@ public final class ReactNativeUtils {
     return isSharedElementTransition(intent.getExtras());
   }
 
-  static boolean isSharedElementTransition(Bundle args) {
-    return Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API &&
+  static boolean isSharedElementTransition(@Nullable Bundle args) {
+    return Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API && args != null &&
             args.getBoolean(IS_SHARED_ELEMENT_TRANSITION, false);
   }
 
