@@ -1,12 +1,26 @@
-/* eslint global-require: 0 */
 import Navigator from 'native-navigation';
 
-Navigator.registerScreen('Example', () => require('./screens/Example'));
-Navigator.registerScreen('ScreenOne', () => require('./screens/NavigationExampleScreen'), {
-  initialConfig: {
-    // title: 'FooBar',
-  },
-});
-Navigator.registerScreen('TabScreen', () => require('./screens/TabScreen'), {
-  mode: 'tabs',
-});
+Navigator.registerScreen(
+  'SharedElementToScreen',
+  () => require('./screens/SharedElementToScreen')
+);
+Navigator.registerScreen(
+  'SharedElementFromScreen',
+  () => require('./screens/SharedElementFromScreen')
+);
+Navigator.registerScreen(
+  'ScreenOne',
+  () => require('./screens/NavigationExampleScreen'),
+  {
+    initialConfig: {
+      // title: 'FooBar',
+    },
+  }
+);
+Navigator.registerScreen(
+  'TabScreen',
+  () => require('./screens/TabScreen'),
+  {
+    mode: 'tabs',
+  }
+);

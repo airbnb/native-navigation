@@ -10,38 +10,38 @@ import {
   Platform,
 } from 'react-native';
 
-import Navigator from 'native-navigation';
+import { TabBar, Tab } from 'native-navigation';
 
 const propTypes = {};
 const defaultProps = {};
 
 export default class TabScreen extends React.Component {
   render() {
-    console.log('rendering MainTabScene');
     return (
-      <Navigator.TabBar
-        barTintColor="red"
-        backgroundColor="red"
-        elevation={100}
+      <TabBar
+        elevation={20}
       >
-        <Navigator.Tab
-          title="Foo"
-          image={{
-            uri: Platform.select({
-              ios: 'NavBarButtonPlus',
-              android: 'ic_menu_black_24dp',
-            }),
-            width: 51,
-            height: 51,
-          }}
-
+        <Tab
           route={'ScreenOne'}
-          props={{ foo: 'bar' }}
+          title="Home"
+          image={require('../icons/home.png')}
         />
-        <Navigator.Tab title="Bar" route={'ScreenOne'} props={{ foo: 'bar' }} />
-        <Navigator.Tab title="Bam" route={'ScreenOne'} props={{ foo: 'bar' }} />
-        <Navigator.Tab title="Baz" route={'ScreenOne'} props={{ foo: 'bar' }} />
-      </Navigator.TabBar>
+        <Tab
+          route={'ScreenOne'}
+          title="Chat"
+          image={require('../icons/chat.png')}
+        />
+        <Tab
+          route={'ScreenOne'}
+          title="Data"
+          image={require('../icons/backup.png')}
+        />
+        <Tab
+          route={'ScreenOne'}
+          title="Settings"
+          image={require('../icons/settings.png')}
+        />
+      </TabBar>
     );
   }
 }
