@@ -51,4 +51,20 @@
         android:layout_height="wrap_content"
         android:text="Dismiss"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payload:"
+            android:layout_marginRight="4dp"/>
+        <EditText
+            android:id="@+id/payload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hello World"/>
+    </LinearLayout>
 </LinearLayout>

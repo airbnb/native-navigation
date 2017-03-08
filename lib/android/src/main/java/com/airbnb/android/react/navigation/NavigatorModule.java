@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
-import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_PAYLOAD;
+import static com.airbnb.android.react.navigation.ScreenCoordinator.EXTRA_PAYLOAD;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.VERSION_CONSTANT_KEY;
 
 class NavigatorModule extends ReactContextBaseJavaModule {
@@ -90,7 +90,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
   public void push(final String screenName, final ReadableMap props,
-      final ReadableMap options, final Promise promise) {
+      final ReadableMap options) {
     handler.post(new Runnable() {
       @Override
       public void run() {
@@ -102,8 +102,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
             screenName,
             ConversionUtil.toBundle(props),
-            ConversionUtil.toBundle(options),
-            promise);
+            ConversionUtil.toBundle(options));
       }
     });
   }
