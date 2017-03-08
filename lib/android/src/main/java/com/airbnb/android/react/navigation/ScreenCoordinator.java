@@ -1,5 +1,6 @@
 package com.airbnb.android.react.navigation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.airbnb.android.R;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.common.MapBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
+
 /**
  * Owner of the navigation stack for a given Activity. There should be one per activity.
  */
 public class ScreenCoordinator {
+  public static final String EXTRA_PAYLOAD = "payload";
   private static int stackId = 0;
 
   private static String getNextStackTag() {
@@ -33,6 +38,7 @@ public class ScreenCoordinator {
 
   private final Stack<String> stackTagBackStack = new Stack<>();
   private final Map<String, List<Fragment>> fragmentStacks = new HashMap<>();
+  private final Map<String, Promise> promisesMap = new HashMap<>();
   private final AppCompatActivity activity;
   private final ViewGroup container;
 
@@ -51,26 +57,19 @@ public class ScreenCoordinator {
   }
 
   public void pushScreen(String moduleName) {
-    pushScreen(moduleName, null, null, null);
+    pushScreen(moduleName, null, null);
   }
 
   public void pushScreen(
       String moduleName,
       @Nullable Bundle props,
-      @Nullable Bundle options,
-      @Nullable Promise promise) {
+      @Nullable Bundle options) {
     // TODO: use options
     Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
-    pushScreen(fragment, promise);
+    pushScreen(fragment);
   }
 
   public void pushScreen(Fragment fragment) {
-    pushScreen(fragment, null);
-  }
-
-  public void pushScreen(
-      Fragment fragment,
-      @Nullable Promise promise) {
     // TODO: use props, options, and promise.
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
@@ -111,6 +110,7 @@ public class ScreenCoordinator {
     }
     currentStackTag = getNextStackTag();
     stackTagBackStack.push(currentStackTag);
+    promisesMap.put(currentStackTag, promise);
     // TODO: dry this up with pushScreen
     // TODO: use promise
     ensureContainerForCurrentStack();
@@ -139,7 +139,13 @@ public class ScreenCoordinator {
   }
 
   public void dismiss() {
+    dismiss(Activity.RESULT_OK, null);
+  }
+
+  public void dismiss(int resultCode, Map<String, Object> payload) {
     String dismissingStackTag = stackTagBackStack.pop();
+    Promise promise = promisesMap.remove(dismissingStackTag);
+    deliverPromise(promise, resultCode, payload);
     List<Fragment> stack = fragmentStacks.remove(dismissingStackTag);
     // This is needed so we can override the pop exit animation to slide down.
     dismissingFragment = stack.get(stack.size() - 1);
@@ -163,6 +169,14 @@ public class ScreenCoordinator {
       return AnimationUtils.loadAnimation(activity, R.anim.slide_down);
     }
     return null;
+  }
+
+  private void deliverPromise(Promise promise, int resultCode, Map<String, Object> payload) {
+    if (promise != null) {
+      Map<String, Object> newPayload =
+              MapBuilder.of(EXTRA_CODE, resultCode, EXTRA_PAYLOAD, payload);
+      promise.resolve(ConversionUtil.toWritableMap(newPayload));
+    }
   }
 
   @Nullable

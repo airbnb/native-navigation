@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
-import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_PAYLOAD;
+import static com.airbnb.android.react.navigation.ScreenCoordinator.EXTRA_PAYLOAD;
 
 public final class ReactInterfaceManager {
   private final ReactInterface component;
