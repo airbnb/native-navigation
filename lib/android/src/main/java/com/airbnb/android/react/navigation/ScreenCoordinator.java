@@ -128,6 +128,10 @@ public class ScreenCoordinator {
     fragmentStacks.get(currentStackTag).add(fragment);
   }
 
+  public void onBackPressed() {
+    pop();
+  }
+
   public void pop() {
     List<Fragment> stack = fragmentStacks.get(currentStackTag);
     if (stack.size() == 1) {

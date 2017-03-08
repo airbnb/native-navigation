@@ -1,6 +1,5 @@
 package com.airbnb.android.react.navigation.example;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +27,7 @@ public class MainFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_main, container, false);
     toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    initToolBar();
 
     Button btnScreen = (Button) view.findViewById(R.id.button_screen);
 
@@ -36,7 +36,7 @@ public class MainFragment extends Fragment {
     btnScreen.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        getScreenCoordinator().presentScreen(NativeFragment.newInstance(0));
+        getScreenCoordinator().presentScreen(NativeFragment.newInstance(1));
       }
     });
 
@@ -51,13 +51,11 @@ public class MainFragment extends Fragment {
       }
     });
 
-    initToolBar();
     return view;
   }
 
   private void initToolBar() {
-    toolbar.setTitle("App Toolbar");
-    toolbar.setBackgroundColor(Color.BLUE);
+    toolbar.setTitle(R.string.native_navigation);
     ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(
             new View.OnClickListener() {

@@ -26,4 +26,9 @@ public class MainActivity extends AppCompatActivity implements ScreenCoordinator
   public ScreenCoordinator getScreenCoordinator() {
     return screenCoordinator;
   }
+
+  @Override
+  public void onBackPressed() {
+    screenCoordinator.onBackPressed();
+  }
 }
