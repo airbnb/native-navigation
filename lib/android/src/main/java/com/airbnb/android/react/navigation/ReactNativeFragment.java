@@ -101,6 +101,15 @@ public class ReactNativeFragment extends Fragment
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    if (instanceId == null) {
+      if (savedInstanceState == null) {
+        String moduleName = getArguments().getString(ReactNativeIntents.EXTRA_MODULE_NAME);
+        instanceId = String.format(Locale.ENGLISH, "%1s_fragment_%2$d", moduleName, UUID++);
+      } else {
+        instanceId = savedInstanceState.getString(INSTANCE_ID_PROP);
+      }
+    }
+
     setHasOptionsMenu(true);
     Log.d(TAG, "onCreate");
   }
@@ -155,7 +164,6 @@ public class ReactNativeFragment extends Fragment
       return;
     }
     String moduleName = getArguments().getString(ReactNativeIntents.EXTRA_MODULE_NAME);
-    instanceId = String.format(Locale.ENGLISH, "%1s_fragment_%2$d", moduleName, UUID++);
     Bundle props = getArguments().getBundle(ReactNativeIntents.EXTRA_PROPS);
     if (props == null) {
       props = new Bundle();
@@ -239,6 +247,11 @@ public class ReactNativeFragment extends Fragment
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 //    activityManager.onActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    outState.putString(INSTANCE_ID_PROP, instanceId);
   }
 
   @Override
