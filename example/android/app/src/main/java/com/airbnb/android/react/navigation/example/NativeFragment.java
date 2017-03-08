@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,16 @@ public class NativeFragment extends Fragment {
     View view = inflater.inflate(R.layout.fragment_native, container, false);
     final int count = getArguments().getInt(ARG_COUNT);
 
-    ((TextView) view.findViewById(R.id.text)).setText("Fragment " + count);
+    Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+    toolbar.setTitle("Fragment " + count);
+    toolbar.setNavigationIcon(R.drawable.n2_ic_arrow_back_white);
+    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        getActivity().onBackPressed();
+      }
+    });
 
     view.findViewById(R.id.push).setOnClickListener(new View.OnClickListener() {
       @Override
@@ -82,9 +93,7 @@ public class NativeFragment extends Fragment {
     view.findViewById(R.id.present_rn).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
-        getScreenCoordinator()
-                .presentScreen("ScreenOne");
+        getScreenCoordinator().presentScreen("ScreenOne");
       }
     });
 

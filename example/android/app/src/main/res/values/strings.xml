@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Navigation</string>
+    <string name="native_navigation">Native Navigation</string>
 </resources>
