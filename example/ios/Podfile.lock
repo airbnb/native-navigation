@@ -1,26 +1,26 @@
 PODS:
   - native-navigation (0.1.0):
     - React
-  - React (0.41.101):
-    - React/Core (= 0.41.101)
-  - React/Core (0.41.101):
+  - React (0.42.0):
+    - React/Core (= 0.42.0)
+  - React/Core (0.42.0):
     - React/cxxreact
-    - React/yoga
-  - React/cxxreact (0.41.101):
+    - Yoga (= 0.42.0.React)
+  - React/cxxreact (0.42.0):
     - React/jschelpers
-  - React/jschelpers (0.41.101)
-  - React/RCTAnimation (0.41.101):
+  - React/jschelpers (0.42.0)
+  - React/RCTAnimation (0.42.0):
     - React/Core
-  - React/RCTImage (0.41.101):
+  - React/RCTImage (0.42.0):
     - React/Core
     - React/RCTNetwork
-  - React/RCTNetwork (0.41.101):
+  - React/RCTNetwork (0.42.0):
     - React/Core
-  - React/RCTText (0.41.101):
+  - React/RCTText (0.42.0):
     - React/Core
-  - React/RCTWebSocket (0.41.101):
+  - React/RCTWebSocket (0.42.0):
     - React/Core
-  - React/yoga (0.41.101)
+  - Yoga (0.42.0.React)
 
 DEPENDENCIES:
   - native-navigation (from `../../`)
@@ -30,17 +30,21 @@ DEPENDENCIES:
   - React/RCTNetwork (from `../../node_modules/react-native`)
   - React/RCTText (from `../../node_modules/react-native`)
   - React/RCTWebSocket (from `../../node_modules/react-native`)
+  - Yoga (from `../../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
 EXTERNAL SOURCES:
   native-navigation:
     :path: "../../"
   React:
     :path: "../../node_modules/react-native"
+  Yoga:
+    :path: "../../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
 SPEC CHECKSUMS:
   native-navigation: 23b0ef13de8bd9aaa4dbaa115e9b7055e6844987
-  React: 4787ac12335f4638b697a3cb446995b67da487ab
+  React: 8ec97f0d79ba31892c526cf56425937926cc9b48
+  Yoga: 4183cc70cae189d73f996b1e40c3078aca9f96ef
 
-PODFILE CHECKSUM: 0fc574ad668400aaa3b824e6e981792b8d5b0a78
+PODFILE CHECKSUM: 7e68a1cf8d8d6de6e00bc3a4b7c3e92de721c044
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0
