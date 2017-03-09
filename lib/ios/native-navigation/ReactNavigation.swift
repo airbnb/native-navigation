@@ -163,7 +163,13 @@ class ReactNavigation: NSObject {
     DispatchQueue.main.async {
       guard let vc = self.coordinator.topViewController() else { return }
       (vc as? ReactViewController)?.dismiss(payload)
-      self.coordinator.topNavigationController()?.popViewController(animated: animated)
+      if let nav = self.coordinator.topNavigationController() {
+        if nav.viewControllers.count == 1 {
+          nav.dismiss(animated: animated, completion: nil)
+        } else {
+          nav.popViewController(animated: animated)
+        }
+      }
     }
   }
 
