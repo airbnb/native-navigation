@@ -54,8 +54,21 @@ extension ReactTabBarController: InternalReactViewControllerProtocol {
 private let DELAY: Int64 = Int64(1.2 * Double(NSEC_PER_SEC))
 private var IN_PROGRESS: Bool = false
 
+
 extension UIViewController {
-  public func presentReactViewController(_ viewControllerToPresent: ReactViewControllerProtocol, animated: Bool, completion: (() -> Void)?) {
+  public func presentReactViewController(
+    _ viewControllerToPresent: ReactViewControllerProtocol,
+    animated: Bool,
+    completion: (() -> Void)?
+  ) {
+    presentReactViewController(viewControllerToPresent, animated: animated, completion: completion, makeTransition: nil)
+  }
+  public func presentReactViewController(
+    _ viewControllerToPresent: ReactViewControllerProtocol,
+    animated: Bool,
+    completion: (() -> Void)?,
+    makeTransition: (() -> ReactSharedElementTransition)?
+  ) {
     guard let irvc = viewControllerToPresent as? InternalReactViewControllerProtocol else {
       assertionFailure("Unrecognized ReactViewController type.")
       if let vc = viewControllerToPresent as? UIViewController {
@@ -63,10 +76,15 @@ extension UIViewController {
       }
       return
     }
-    internalPresentReactViewController(irvc, animated: animated, completion: completion)
+    internalPresentReactViewController(irvc, animated: animated, completion: completion, makeTransition: makeTransition)
   }
 
-  func internalPresentReactViewController(_ rvc: InternalReactViewControllerProtocol, animated: Bool, completion: (() -> Void)?) {
+  func internalPresentReactViewController(
+    _ rvc: InternalReactViewControllerProtocol,
+    animated: Bool,
+    completion: (() -> Void)?,
+    makeTransition: (() -> ReactSharedElementTransition)?
+  ) {
 
     // we wrap the vc in a navigation controller early on so that when reconcileScreenConfig happens, it has a navigation
     // controller
@@ -101,6 +119,11 @@ extension UIViewController {
       rvc.onNavigationBarTypeUpdated = nil
       rvc.isPendingNavigationTransition = false
       rvc.isCurrentlyTransitioning = true
+
+      if let transition = makeTransition?() {
+        rvc.transition = transition
+        viewControllerToPresent.transitioningDelegate = transition
+      }
 
       self?.present(viewControllerToPresent, animated: animated, completion: {
         rvc.isCurrentlyTransitioning = false
@@ -185,6 +208,7 @@ extension UINavigationController {
 
       if let transition = makeTransition?() {
         viewController.transition = transition
+        self?.delegate = transition
         self?.transitioningDelegate = transition
       }
 

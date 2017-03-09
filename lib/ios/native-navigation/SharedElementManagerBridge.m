@@ -9,7 +9,7 @@
 #import <React/RCTLog.h>
 #import <React/RCTViewManager.h>
 
-@interface RCT_EXTERN_REMAP_MODULE(AirbnbSharedElement, SharedElementManager, RCTViewManager)
+@interface RCT_EXTERN_REMAP_MODULE(NativeNavigationSharedElement, SharedElementManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(nativeNavigationInstanceId, NSString);
 RCT_REMAP_VIEW_PROPERTY(id, identifier, NSString);

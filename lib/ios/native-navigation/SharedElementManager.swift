@@ -19,7 +19,7 @@ final class SharedElement: RCTView {
     self.identifier = identifier
   }
 
-  func setAirbnbInstanceId(_ nativeNavigationInstanceId: String!) {
+  func setNativeNavigationInstanceId(_ nativeNavigationInstanceId: String!) {
     self.nativeNavigationInstanceId = nativeNavigationInstanceId
   }
 

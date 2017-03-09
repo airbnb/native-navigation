@@ -6,6 +6,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import Navigator from 'native-navigation';
 
 import LoremImage from '../components/LoremImage';
 import LoremHeader from '../components/LoremHeader';
@@ -24,6 +25,10 @@ export default class SharedElementToScreen extends Component {
   render() {
     const { id } = this.props;
     return (
+      <Navigator.Config
+        leftImage={require('../icons/close.png')}
+        onLeftPress={() => Navigator.dismiss()}
+      >
       <Screen>
         <LoremImage
           id={id}
@@ -55,6 +60,7 @@ export default class SharedElementToScreen extends Component {
           </View>
         ))}
       </Screen>
+      </Navigator.Config>
     );
   }
 }
