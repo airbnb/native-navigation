@@ -1,19 +1,17 @@
 {
-  "gitbook": "2.x.x",
+  "gitbook": "3.2.2",
   "title": "Native Navigation",
   "description": "Native Navigation for React Native",
   "structure": {
-    "summary": "docs/README.md",
-    "glossary": "docs/GLOSSARY.md"
+    "glossary": "GLOSSARY.md"
   },
   "plugins": [
-    "highlight",
     "edit-link",
+    "prism",
+    "-highlight",
     "github",
-    "-search",
-    "codeblock-disable-glossary",
-    "collapsible-menu",
-    "anchors"
+    "anchorjs",
+    "-search"
   ],
   "pluginsConfig": {
     "edit-link": {
