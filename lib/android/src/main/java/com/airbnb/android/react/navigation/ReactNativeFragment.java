@@ -208,6 +208,18 @@ public class ReactNativeFragment extends Fragment
     activity = (AppCompatActivity) getActivity();
     activity.setSupportActionBar(toolbar);
 
+    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Activity activity = ReactNativeFragment.this.getActivity();
+        if (activity instanceof ScreenCoordinatorComponent) {
+          ((ScreenCoordinatorComponent) activity).getScreenCoordinator().onBackPressed();
+        } else {
+          activity.onBackPressed();
+        }
+      }
+    });
+
     String moduleName = getArguments().getString(EXTRA_REACT_MODULE_NAME);
     Log.d(TAG, "onCreateView " + moduleName);
 
