@@ -46,7 +46,7 @@
   "homepage": "https://github.com/airbnb/native-navigation#readme",
   "peerDependencies": {
     "react": ">=15.3.1",
-    "react-native": ">=0.35"
+    "react-native": ">=0.42"
   },
   "dependencies": {
     "deline": "^1.0.2",
@@ -67,7 +67,7 @@
     "gitbook-cli": "^2.3.0",
     "murmur2js": "^1.0.0",
     "react": "^15.4.1",
-    "react-native": "github:airbnb/react-native#daccc4709c591585b257b0135f7a044a05bcc836"
+    "react-native": "^0.42.0"
   },
   "rnpm": {
     "android": {
