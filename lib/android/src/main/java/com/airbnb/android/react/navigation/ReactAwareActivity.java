@@ -1,22 +1,36 @@
 package com.airbnb.android.react.navigation;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.ViewTreeObserver;
+
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
+import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
-public abstract class ReactAwareActivity extends AppCompatActivity implements ReactAwareActivityFacade {
+public abstract class ReactAwareActivity extends AppCompatActivity
+        implements ReactAwareActivityFacade, DefaultHardwareBackBtnHandler {
 
   private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
   ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
   ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
 
-  protected boolean hasCustomEnterTransition() {
-    return true;
+  @Override
+  protected void onPause() {
+    reactInstanceManager.onHostPause(this);
+    super.onPause();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    reactInstanceManager.onHostResume(this, this);
+  }
+
+  @Override
+  public void invokeDefaultOnBackPressed() {
+    onBackPressed();
   }
 
   /**
@@ -39,7 +53,6 @@ public abstract class ReactAwareActivity extends AppCompatActivity implements Re
         });
   }
 
-  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   boolean supportIsDestroyed() {
     return AndroidVersion.isAtLeastJellyBeanMR1() && isDestroyed();
   }

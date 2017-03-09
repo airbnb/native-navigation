@@ -74,7 +74,6 @@ public class ScreenCoordinator {
   }
 
   public void pushScreen(Fragment fragment, @Nullable Bundle options) {
-// TODO: use props, options, and promise.
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
             .setAllowOptimization(true);
@@ -84,7 +83,7 @@ public class ScreenCoordinator {
     }
 
     if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
-        setupFragmentForSharedElement(fragment, ft, options);
+        setupFragmentForSharedElement(currentFragment,  fragment, ft, options);
     } else {
         ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -98,19 +97,19 @@ public class ScreenCoordinator {
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   private void setupFragmentForSharedElement(
-          Fragment fragment, FragmentTransaction transaction, Bundle options) {
-    ViewGroup rootView = (ViewGroup) fragment.getView();
+          Fragment outFragment, Fragment inFragment, FragmentTransaction transaction, Bundle options) {
+    FragmentSharedElementTransition transition = new FragmentSharedElementTransition();
+    inFragment.setSharedElementEnterTransition(transition);
+    inFragment.setSharedElementReturnTransition(transition);
+    Fade fade = new Fade();
+    inFragment.setEnterTransition(fade);
+    inFragment.setReturnTransition(fade);
+    ViewGroup rootView = (ViewGroup) outFragment.getView();
     ViewGroup transitionGroup = ViewUtils.findViewGroupWithTag(
             rootView,
             R.id.react_shared_element_group_id,
             options.getString(TRANSITION_GROUP));
     AutoSharedElementCallback.addSharedElementsToFragmentTransaction(transaction, transitionGroup);
-    FragmentSharedElementTransition transition = new FragmentSharedElementTransition();
-    fragment.setSharedElementEnterTransition(transition);
-    fragment.setSharedElementReturnTransition(transition);
-    Fade fade = new Fade();
-    fragment.setEnterTransition(fade);
-    fragment.setReturnTransition(fade);
   }
 
   public void presentScreen(String moduleName) {
@@ -135,6 +134,7 @@ public class ScreenCoordinator {
     if (fragment == null) {
       throw new IllegalArgumentException("Fragment must not be null.");
     }
+    Fragment currentFragment = getCurrentFragment();
     currentStackTag = getNextStackTag();
     stackTagBackStack.push(currentStackTag);
     promisesMap.put(currentStackTag, promise);
@@ -144,7 +144,6 @@ public class ScreenCoordinator {
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
         .setAllowOptimization(true)
         .setCustomAnimations(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down);
-    Fragment currentFragment = getCurrentFragment();
     if (currentFragment != null) {
       ft.detach(currentFragment);
     }
