@@ -15,6 +15,10 @@ const propTypes = {
 const defaultProps = {
 };
 
+const contextTypes = {
+  nativeNavigationInstanceId: PropTypes.string,
+};
+
 export default class Screen extends React.Component {
   render() {
     const {
@@ -27,8 +31,6 @@ export default class Screen extends React.Component {
         title={title}
         backgroundColor={theme.color.lightGray}
         elevation={4}
-        rightImage={require('../icons/chevron_right.png')}
-        navIcon={require('../icons/chevron_right.png')}
         onBackPress={() => console.log('onBackPress')}
         onLeftPress={() => console.log('onLeftPress')}
         onRightPress={(x) => console.log('onRightPress', x)}
@@ -46,3 +48,4 @@ export default class Screen extends React.Component {
 
 Screen.defaultProps = defaultProps;
 Screen.propTypes = propTypes;
+Screen.contextTypes = contextTypes;

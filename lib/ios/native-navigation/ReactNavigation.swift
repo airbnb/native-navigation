@@ -109,10 +109,29 @@ class ReactNavigation: NSObject {
     print("present \(screenName)")
     DispatchQueue.main.async {
       guard let nav = self.coordinator.topNavigationController() else { return }
+      guard let current = self.coordinator.topViewController() as? ReactViewController else {
+        print("Called present() when topViewController() isn't a ReactViewController")
+        return
+      }
       let animated = (options["animated"] as? Bool) ?? true
       let presented = ReactViewController(moduleName: screenName, props: props)
+
+      var makeTransition: (() -> ReactSharedElementTransition)? = nil
+
+      if let transitionGroup = options["transitionGroup"] as? String {
+        makeTransition = {
+          return ReactSharedElementTransition(
+            transitionGroup: transitionGroup,
+            fromViewController: current,
+            toViewController: presented as ReactAnimationToContentVendor,
+            style: ReactSharedElementTransition.makeDefaultStyle(options),
+            options: [:]
+          )
+        }
+      }
+
       self.coordinator.registerFlow(presented, resolve: resolve, reject: reject)
-      nav.presentReactViewController(presented, animated: animated, completion: nil)
+      nav.presentReactViewController(presented, animated: animated, completion: nil, makeTransition: makeTransition)
     }
   }
   
