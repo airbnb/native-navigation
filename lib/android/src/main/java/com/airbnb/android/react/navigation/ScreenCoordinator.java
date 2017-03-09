@@ -1,12 +1,15 @@
 package com.airbnb.android.react.navigation;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -29,7 +32,8 @@ import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
  * Owner of the navigation stack for a given Activity. There should be one per activity.
  */
 public class ScreenCoordinator {
-  public static final String EXTRA_PAYLOAD = "payload";
+  static final String EXTRA_PAYLOAD = "payload";
+  private static final String TRANSITION_GROUP = "transitionGroup";
   private static int stackId = 0;
 
   private static String getNextStackTag() {
@@ -60,30 +64,53 @@ public class ScreenCoordinator {
     pushScreen(moduleName, null, null);
   }
 
-  public void pushScreen(
-      String moduleName,
-      @Nullable Bundle props,
-      @Nullable Bundle options) {
-    // TODO: use options
+  public void pushScreen(String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
     Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
-    pushScreen(fragment);
+    pushScreen(fragment, options);
   }
 
   public void pushScreen(Fragment fragment) {
-    // TODO: use props, options, and promise.
+    pushScreen(fragment, null);
+  }
+
+  public void pushScreen(Fragment fragment, @Nullable Bundle options) {
+// TODO: use props, options, and promise.
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
-        .setAllowOptimization(true)
-        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+            .setAllowOptimization(true);
     Fragment currentFragment = getCurrentFragment();
-    if (currentFragment != null) {
-      ft.detach(currentFragment);
+    if (currentFragment == null) {
+      throw new IllegalStateException("There is no current fragment. You must present one first.");
+    }
+
+    if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
+        setupFragmentForSharedElement(fragment, ft, options);
+    } else {
+        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
     }
     ft
-        .add(Math.abs(currentStackTag.hashCode()), fragment)
-        .addToBackStack(null)
-        .commit();
+            .detach(currentFragment)
+            .add(Math.abs(currentStackTag.hashCode()), fragment)
+            .addToBackStack(null)
+            .commit();
     fragmentStacks.get(currentStackTag).add(fragment);
+  }
+
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  private void setupFragmentForSharedElement(
+          Fragment fragment, FragmentTransaction transaction, Bundle options) {
+    ViewGroup rootView = (ViewGroup) fragment.getView();
+    ViewGroup transitionGroup = ViewUtils.findViewGroupWithTag(
+            rootView,
+            R.id.react_shared_element_group_id,
+            options.getString(TRANSITION_GROUP));
+    AutoSharedElementCallback.addSharedElementsToFragmentTransaction(transaction, transitionGroup);
+    FragmentSharedElementTransition transition = new FragmentSharedElementTransition();
+    fragment.setSharedElementEnterTransition(transition);
+    fragment.setSharedElementReturnTransition(transition);
+    Fade fade = new Fade();
+    fragment.setEnterTransition(fade);
+    fragment.setReturnTransition(fade);
   }
 
   public void presentScreen(String moduleName) {

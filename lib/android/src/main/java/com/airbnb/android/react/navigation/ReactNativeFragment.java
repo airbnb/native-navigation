@@ -110,6 +110,10 @@ public class ReactNativeFragment extends Fragment
       }
     }
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      setEnterSharedElementCallback(new AutoSharedElementCallback((AppCompatActivity) getActivity()));
+    }
+
     setHasOptionsMenu(true);
     Log.d(TAG, "onCreate");
   }
