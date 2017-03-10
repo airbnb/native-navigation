@@ -153,7 +153,7 @@ android {
 }
 
 dependencies {
-  compile 'com.facebook.react:react-native:+'
+  compile 'com.facebook.react:react-native:0.42.+'
   compile 'com.android.support:appcompat-v7:25.1.1'
   compile 'com.android.support:support-annotations:25.1.1'
   compile project(':native-navigation-lib')

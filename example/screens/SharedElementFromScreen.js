@@ -18,7 +18,7 @@ export default class SharedElementFromScreen extends Component {
           >
             <ImageRow
               id={id}
-              onPress={() => Navigator.present('SharedElementToScreen', { id }, {
+              onPress={() => Navigator.push('SharedElementToScreen', { id }, {
                 transitionGroup: `${id}`,
               })}
             />

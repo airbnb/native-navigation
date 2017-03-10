@@ -28,7 +28,6 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
-import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionListener;
 
 import java.util.Locale;
@@ -36,8 +35,7 @@ import java.util.Locale;
 import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.maybeEmitEvent;
 
-public class ReactNativeFragment extends Fragment
-        implements ReactInterface, DefaultHardwareBackBtnHandler,
+public class ReactNativeFragment extends Fragment implements ReactInterface,
         ReactNativeFragmentViewGroup.KeyListener {
   private static final String TAG = ReactNativeFragment.class.getSimpleName();
   private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
@@ -285,14 +283,8 @@ public class ReactNativeFragment extends Fragment
   }
 
   @Override
-  public void invokeDefaultOnBackPressed() {
-    getActivity().onBackPressed();
-  }
-
-  @Override
   public void onPause() {
     super.onPause();
-    reactInstanceManager.onHostPause(getActivity());
     emitEvent(ON_DISAPPEAR, null);
   }
 
@@ -300,7 +292,6 @@ public class ReactNativeFragment extends Fragment
   public void onResume() {
     super.onResume();
     Log.d(TAG, "onResume");
-    reactInstanceManager.onHostResume(getActivity(), this);
     updateBarHeightIfNeeded();
     emitEvent(ON_APPEAR, null);
   }

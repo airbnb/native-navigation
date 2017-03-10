@@ -2,13 +2,13 @@ package com.airbnb.android.react.navigation.example;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 
+import com.airbnb.android.react.navigation.ReactAwareActivity;
 import com.airbnb.android.react.navigation.ScreenCoordinator;
 import com.airbnb.android.react.navigation.ScreenCoordinatorComponent;
 
-public class MainActivity extends AppCompatActivity implements ScreenCoordinatorComponent {
+public class MainActivity extends ReactAwareActivity implements ScreenCoordinatorComponent {
 
   private ScreenCoordinator screenCoordinator;
 
