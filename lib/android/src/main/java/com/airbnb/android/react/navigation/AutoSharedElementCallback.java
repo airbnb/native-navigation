@@ -16,19 +16,30 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.*;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Shared element helper which will automatically find and coordinate shared element transitions.
@@ -92,6 +103,20 @@ import java.util.*;
     //noinspection unchecked
     return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionViews.toArray
         (new Pair[transitionViews.size()]));
+  }
+
+  /**
+   * Walks the given view group and adds all view with a set transition name to the fragment
+   * transaction.
+   */
+  public static void addSharedElementsToFragmentTransaction(
+          FragmentTransaction ft, ViewGroup viewGroup) {
+    List<Pair<View, String>> transitionViews = new ArrayList<>();
+    ViewUtils.findTransitionViews(viewGroup, transitionViews);
+
+    for (Pair<View, String> tv : transitionViews) {
+      ft.addSharedElement(tv.first, tv.second);
+    }
   }
 
   /**
