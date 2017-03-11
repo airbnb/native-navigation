@@ -55,11 +55,7 @@ public final class ReactNativeUtils {
   }
 
   private static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
-    Class<? extends ReactNativeActivity> activityClass =
-            isModal
-                    ? ReactNativeModalActivity.class
-                    : ReactNativeActivity.class;
-    return new Intent(context, activityClass)
+    return new Intent(context, ReactNativeActivity.class)
             .putExtra(ReactNativeFragment.EXTRA_IS_MODAL, isModal)
             .putExtra(ReactNativeFragment.EXTRA_REACT_MODULE_NAME, moduleName)
             .putExtra(ReactNativeFragment.EXTRA_REACT_PROPS, props);
@@ -85,8 +81,7 @@ public final class ReactNativeUtils {
   /** Returns true if the provided intent will launch a ReactNative Activity, false otherwise. */
   static boolean isReactNativeIntent(Intent intent) {
     String className = intent.getComponent().getClassName();
-    return ReactNativeModalActivity.class.getName().equals(className)
-        || ReactNativeActivity.class.getName().equals(className);
+    return ReactNativeActivity.class.getName().equals(className);
   }
 
   static boolean isSharedElementTransition(Activity activity) {
