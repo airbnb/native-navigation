@@ -9,15 +9,15 @@
   <application>
     <activity
       android:name="com.airbnb.android.react.navigation.ReactNativeModalActivity"
-      android:launchMode="singleTop"
-    />
+      android:launchMode="singleTop"/>
     <activity
       android:name="com.airbnb.android.react.navigation.ReactNativeActivity"
-      android:launchMode="singleTop"
-    />
+      android:launchMode="singleTop"/>
     <activity
       android:name="com.airbnb.android.react.navigation.ReactNativeTabActivity"
-      android:launchMode="singleTop"
-    />
+      android:launchMode="singleTop"/>
+    <activity
+        android:name="com.airbnb.android.react.navigation.ReactNativeTabActivity2"
+        android:launchMode="singleTop"/>
   </application>
 </manifest>

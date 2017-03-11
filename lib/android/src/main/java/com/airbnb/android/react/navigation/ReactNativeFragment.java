@@ -273,11 +273,18 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
         reactRootView.unmountReactApplication();
       } else {
         contentContainer.unmountReactApplicationAfterAnimation(reactRootView);
+
       }
       reactRootView = null;
     }
     if (getActivity() instanceof ScreenCoordinatorComponent) {
-      return ((ScreenCoordinatorComponent) getActivity()).getScreenCoordinator().onCreateAnimation(this);
+      ScreenCoordinator screenCoordinator =
+              ((ScreenCoordinatorComponent) getActivity()).getScreenCoordinator();
+      if (screenCoordinator != null) {
+        // In some cases such as TabConfig, the screen may be loaded before there is a screen
+        // coordinator but it doesn't live inside of any back stack and isn't visible.
+        return screenCoordinator.onCreateAnimation(this);
+      }
     }
     return null;
   }
