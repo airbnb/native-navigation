@@ -1,9 +1,9 @@
 package com.airbnb.android.react.navigation;
 
 public enum ReactScreenMode {
-  SCREEN(ReactNativeActivity.class, ReactNativeModalActivity.class),
+  SCREEN(ReactNativeActivity.class, ReactNativeActivity.class),
   TABS(ReactNativeTabActivity.class),
-  UNKNOWN(ReactNativeActivity.class, ReactNativeModalActivity.class);
+  UNKNOWN(ReactNativeActivity.class, ReactNativeActivity.class);
 
   public static ReactScreenMode fromString(String s) {
     try {
@@ -13,6 +13,7 @@ public enum ReactScreenMode {
     }
   }
 
+  // TODO: merge these fields. They should be the same.
   private Class pushActivityClass;
   private Class presentActivityClass;
 
