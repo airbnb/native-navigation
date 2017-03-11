@@ -19,7 +19,10 @@ public class MainActivity extends ReactAwareActivity implements ScreenCoordinato
     ViewGroup container = (ViewGroup) findViewById(R.id.content);
 
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
-    screenCoordinator.presentScreen(MainFragment.newInstance());
+
+    if (savedInstanceState == null) {
+      screenCoordinator.presentScreen(MainFragment.newInstance());
+    }
   }
 
   @Override

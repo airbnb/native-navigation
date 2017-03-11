@@ -58,17 +58,6 @@ public class TabView extends View {
   }
 
   private ReactNativeFragment instantiateFragment() {
-    ReactNativeFragment fragment = new ReactNativeFragment();
-
-    Bundle args = new Bundle();
-
-    args.putString(ReactNativeIntents.EXTRA_MODULE_NAME, route);
-    args.putBundle(ReactNativeIntents.EXTRA_PROPS, props);
-
-    fragment.setArguments(args);
-
-    return fragment;
+    return ReactNativeFragment.newInstance(route, props);
   }
-
-
 }

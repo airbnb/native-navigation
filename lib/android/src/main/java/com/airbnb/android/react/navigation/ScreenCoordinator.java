@@ -4,12 +4,14 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -32,13 +34,11 @@ import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
  * Owner of the navigation stack for a given Activity. There should be one per activity.
  */
 public class ScreenCoordinator {
+  private static final String TAG = ScreenCoordinator.class.getSimpleName();
   static final String EXTRA_PAYLOAD = "payload";
   private static final String TRANSITION_GROUP = "transitionGroup";
-  private static int stackId = 0;
 
-  private static String getNextStackTag() {
-    return "STACK" + stackId++;
-  }
+
 
   private final Stack<String> stackTagBackStack = new Stack<>();
   private final Map<String, List<Fragment>> fragmentStacks = new HashMap<>();
@@ -46,6 +46,7 @@ public class ScreenCoordinator {
   private final AppCompatActivity activity;
   private final ViewGroup container;
 
+  private int stackId = 0;
   private String currentStackTag = getNextStackTag();
   private Fragment dismissingFragment;
 
@@ -93,6 +94,7 @@ public class ScreenCoordinator {
             .addToBackStack(null)
             .commit();
     fragmentStacks.get(currentStackTag).add(fragment);
+    Log.d(TAG, toString());
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -139,7 +141,6 @@ public class ScreenCoordinator {
     stackTagBackStack.push(currentStackTag);
     promisesMap.put(currentStackTag, promise);
     // TODO: dry this up with pushScreen
-    // TODO: use promise
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
         .setAllowOptimization(true)
@@ -152,6 +153,34 @@ public class ScreenCoordinator {
         .addToBackStack(currentStackTag)
         .commit();
     fragmentStacks.get(currentStackTag).add(fragment);
+    Log.d(TAG, toString());
+  }
+
+  public void dismissAll() {
+    while (!stackTagBackStack.isEmpty()) {
+      dismiss(0, null, false);
+      activity.getFragmentManager().executePendingTransactions();
+    }
+  }
+
+  public void showTab(Fragment fragment, int id) {
+    if (fragment == null) {
+      throw new IllegalArgumentException("Fragment must not be null.");
+    }
+    if (!stackTagBackStack.isEmpty()) {
+      dismissAll();
+    }
+    currentStackTag = getStackTag(id);
+    stackTagBackStack.push(currentStackTag);
+    ensureContainerForCurrentStack();
+    activity.getSupportFragmentManager().beginTransaction()
+            .setAllowOptimization(true)
+            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+            .add(Math.abs(currentStackTag.hashCode()), fragment)
+            .addToBackStack(currentStackTag)
+            .commit();
+    fragmentStacks.get(currentStackTag).add(fragment);
+    Log.d(TAG, toString());
   }
 
   public void onBackPressed() {
@@ -166,6 +195,7 @@ public class ScreenCoordinator {
     }
     stack.remove(stack.size() - 1);
     activity.getSupportFragmentManager().popBackStack();
+    Log.d(TAG, toString());
   }
 
   public void dismiss() {
@@ -173,6 +203,10 @@ public class ScreenCoordinator {
   }
 
   public void dismiss(int resultCode, Map<String, Object> payload) {
+    dismiss(resultCode, payload, true);
+  }
+
+  private void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {
     String dismissingStackTag = stackTagBackStack.pop();
     Promise promise = promisesMap.remove(dismissingStackTag);
     deliverPromise(promise, resultCode, payload);
@@ -181,14 +215,17 @@ public class ScreenCoordinator {
     dismissingFragment = stack.get(stack.size() - 1);
 
     if (stackTagBackStack.isEmpty()) {
-      activity.finish();
-      activity.overridePendingTransition(R.anim.delay, R.anim.slide_down);
+      if (finishIfEmpty) {
+        activity.finish();
+        activity.overridePendingTransition(R.anim.delay, R.anim.slide_down);
+      }
     } else {
       currentStackTag = stackTagBackStack.peek();
     }
 
     activity.getSupportFragmentManager()
-        .popBackStack(dismissingStackTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            .popBackStackImmediate(dismissingStackTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    Log.d(TAG, toString());
   }
 
   public Animation onCreateAnimation(Fragment fragment) {
@@ -209,6 +246,14 @@ public class ScreenCoordinator {
     }
   }
 
+  private String getNextStackTag() {
+    return getStackTag(stackId++);
+  }
+
+  private String getStackTag(int id) {
+    return "STACK" + id;
+  }
+
   @Nullable
   private Fragment getCurrentFragment() {
     List<Fragment> stack = fragmentStacks.get(currentStackTag);
@@ -218,18 +263,44 @@ public class ScreenCoordinator {
     return stack.get(stack.size() - 1);
   }
 
+  private View getContainerForId(int id) {
+    View existingView = container.findViewById(id);
+    if (existingView != null) {
+      return existingView;
+    }
+    FrameLayout container = createContainerView();
+    container.setId(id);
+    this.container.addView(container);
+    return container;
+  }
+
   private void ensureContainerForCurrentStack() {
     // Ids must be > 0
     int id = Math.abs(currentStackTag.hashCode());
     View existingView = container.findViewById(id);
-    if (existingView != null) {
-      return;
-    }
-    FrameLayout stackContainer = new FrameLayout(activity);
-    stackContainer.setId(id);
-    container.addView(stackContainer);
     if (fragmentStacks.get(currentStackTag) == null) {
       fragmentStacks.put(currentStackTag, new ArrayList<Fragment>());
     }
+    if (existingView == null) {
+      FrameLayout stackContainer = createContainerView();
+      stackContainer.setId(id);
+      container.addView(stackContainer);
+    }
+  }
+
+  @NonNull
+  private FrameLayout createContainerView() {
+    return new FrameLayout(activity);
+  }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("ScreenCoordinator{");
+    sb.append("stackTagBackStack=").append(stackTagBackStack);
+    boolean hasStack = currentStackTag != null && fragmentStacks.get(currentStackTag) != null;
+    sb.append(", stackSize=").append(hasStack ? fragmentStacks.get(currentStackTag).size() : 0);
+    sb.append(", currentStackTag='").append(currentStackTag).append('\'');
+    sb.append('}');
+    return sb.toString();
   }
 }
