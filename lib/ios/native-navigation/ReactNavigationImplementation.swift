@@ -11,7 +11,7 @@ import UIKit
 import React
 
 
-public protocol ReactNavigationImplementation: class {
+@objc public protocol ReactNavigationImplementation: class {
 
   func makeNavigationController(rootViewController: UIViewController) -> UINavigationController
 
