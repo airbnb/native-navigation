@@ -28,4 +28,5 @@
 * [Implementations](/docs/implementations/README.md)
     * [DefaultImplementations](/docs/implementations/DefaultImplementation.md)
 * [Change Log](/CHANGELOG.md)
+* [FAQ](/docs/FAQ.md)
 * [Contributing Guide](/CONTRIBUTING.md)

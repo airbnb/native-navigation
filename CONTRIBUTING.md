@@ -17,14 +17,27 @@ cd native-navigation
 
 # install dependencies
 npm install
-
-# run packager for development
-npm run dev
 ```
 
 ### Developing on Android
 
+```bash
+# run packager for development
+npm start
+
+# in a separate window, you can run the example app with:
+npm run run:android
+```
+
 ### Developing on iOS
+
+```bash
+# run packager for development
+npm start
+
+# in a separate window, you can run the example app with:
+npm run run:ios
+```
 
 ### Style & Linting
 
