@@ -94,7 +94,11 @@ open class ReactViewController: UIViewController {
 
   // MARK: Lifecycle
 
-  public init(moduleName: String, props: [String: AnyObject] = [:]) {
+  public convenience init(moduleName: String) {
+    self.init(moduleName: moduleName, props: [:])
+  }
+
+  public init(moduleName: String, props: [String: AnyObject]) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
 
@@ -362,6 +366,9 @@ open class ReactViewController: UIViewController {
 // MARK: ReactFlowCoordinator
 
 extension ReactViewController : ReactFlowCoordinator {
+  @objc public func finish(_ resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
+    ReactNavigationCoordinator.sharedInstance.onFlowFinish(self, resultCode: resultCode, payload: payload)
+  }
   public func start(_ props: [String:AnyObject]?) {
     let nc = ReactNavigationCoordinator.sharedInstance.topNavigationController()
     nc?.pushReactViewController(self, animated: true)
