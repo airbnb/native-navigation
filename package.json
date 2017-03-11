@@ -1,6 +1,6 @@
 {
   "name": "native-navigation",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
