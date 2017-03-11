@@ -1,17 +1,13 @@
-package com.airbnb.android.react.navigation.example;
+package com.airbnb.android.react.navigation;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.FrameLayout;
-import com.airbnb.android.react.navigation.*;
 
-public class MainActivity extends ReactAwareActivity implements ScreenCoordinatorComponent {
+public abstract class ReactActivity extends ReactAwareActivity implements ScreenCoordinatorComponent {
+  private static final String TAG = ReactActivity.class.getSimpleName();
 
   private ScreenCoordinator screenCoordinator;
 
@@ -31,8 +27,25 @@ public class MainActivity extends ReactAwareActivity implements ScreenCoordinato
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
 
     if (savedInstanceState == null) {
-      screenCoordinator.presentScreen("ScreenOne");
+      screenCoordinator.presentScreen(
+          getInitialScreenName(),
+          getInitialScreenProps(),
+          getInitialScreenOptions(),
+          null
+      );
     }
+  }
+
+  protected @Nullable String getInitialScreenName() {
+    return null;
+  }
+
+  protected @Nullable Bundle getInitialScreenProps() {
+    return null;
+  }
+
+  protected @Nullable Bundle getInitialScreenOptions() {
+    return null;
   }
 
   @Override

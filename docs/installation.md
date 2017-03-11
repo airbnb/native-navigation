@@ -23,7 +23,7 @@ Install the latest version of native-navigation:
 npm i --save native-navigation
 ```
 
-*IMPORTANT*: Do NOT use `react-native link` to link native navigation. It is currently not supported.
+**IMPORTANT**: Do NOT use `react-native link` to link native navigation. It is currently not supported.
  
 
 
@@ -43,9 +43,13 @@ that looks something like this:
 AppRegistry.registerComponent('MyNewProject', () => MyNewProject);
 ```
 
-We want to change this to use `NativeNavigator.registerScreen` instead in both files:
+We want to change this to import Native Navigation and use `NativeNavigator.registerScreen` instead in both files:
 
 ```js
+// top of the file
+import Navigator from 'native-navigation';
+
+// bottom of the file 
 Navigator.registerScreen('Home', () => MyNewProject);
 ```
 
@@ -129,6 +133,9 @@ We now need to make some modifications to our project in XCode. Open up the proj
 ```bash
 open MyNewProject.xcworkspace
 ```
+
+NOTE: If Xcode presents a window asking if you want to update the project to the latest swift version, click Yes.
+
 
 React Native's starter template will have the React Project initially statically linked to your project,
 but now we are using CocoaPods, so we want to get rid of them.
@@ -264,9 +271,138 @@ And your `AppDelegate.m` file like this:
 @end
 ```
 
+We are done modifying our main project! One more thing, though. If you have used the React Native
+starter template to get to this point, you should have a `MyNewProjectTests.m` file for running
+tests.  The default test implementation that the template uses the `RCTSetLogFunction` global function,
+which is written using Objective-C++ and cannot be referenced in the tests project since React is now
+being imported as a dynamic framework. We are working on fixing this issue. In the meantime, you can
+just write tests without using the `RCTSetLogFunction` function.
+
+You can change your `testRendersWelcomeScreen` method to look like:
+
+```objective-c
+- (void)testRendersWelcomeScreen
+{
+  UIViewController *vc = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+  NSDate *date = [NSDate dateWithTimeIntervalSinceNow:TIMEOUT_SECONDS];
+  BOOL foundElement = NO;
+
+  while ([date timeIntervalSinceNow] > 0 && !foundElement) {
+    [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    [[NSRunLoop mainRunLoop] runMode:NSRunLoopCommonModes beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+
+    foundElement = [self findSubviewInView:vc.view matching:^BOOL(UIView *view) {
+      if ([view.accessibilityLabel isEqualToString:TEXT_TO_LOOK_FOR]) {
+        return YES;
+      }
+      return NO;
+    }];
+  }
+
+  XCTAssertTrue(foundElement, @"Couldn't find element with text '%@' in %d seconds", TEXT_TO_LOOK_FOR, TIMEOUT_SECONDS);
+}
+```
+
 At this point, you should be able to build and run your iOS project!
+
+
 
 
 ## Android Project Setup
 
-_This section still needs to be filled out_
+
+In `android/settings.gradle`, you need to include Native Navigation as a project to build it from source:
+
+```
+include ':native-navigation'
+project(':native-navigation').projectDir = new File(rootProject.projectDir, '../node_modules/native-navigation/lib/android')
+```
+
+Then, in `android/app/build.gradle`, you can add the following to the `dependencies` block:
+
+```
+dependencies {
+    // ... any dependencies you already had
+    
+    // if you don't already depend on the support libraries, add these
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:support-annotations:25.1.1'
+    
+    // add native-navigation
+    compile project(':native-navigation')
+}
+```
+
+Add the following to the `android` block:
+
+```
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+```
+
+Finally, change the `compoileSdkVersion` and `targetSdkVersion` to `25`.
+
+That is all that is needed for gradle settings, but now we need to set up the app.
+
+In `MainApplication.java`, we need to add `NativeNavigationPackage` to the list of packages:
+
+```java
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+          new MainReactPackage(),
+          new NativeNavigationPackage()
+      );
+    }
+```
+
+Then, in the application's `onCreate()` method, we need to provide the `ReactNavigationCoordinator` 
+the `ReactInstanceManager`:
+
+```java
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    SoLoader.init(this, /* native exopackage */ false);
+    
+    // These three lines need to be added
+    ReactInstanceManager manager = mReactNativeHost.getReactInstanceManager();
+    ReactNavigationCoordinator.sharedInstance.injectReactInstanceManager(manager);
+    manager.createReactContextInBackground();
+  }
+```
+
+Now, in `MainActivity.java`, we want to change it to extend NativeNavigation's `ReactActivity` 
+instead of React Native's `ReactActivity` class.
+
+You can remove the `getMainComponentName()` overridden method and replace it with a `getInitialScreenName()`
+method:
+
+```java
+public class MainActivity extends ReactActivity {
+
+    /**
+     * Returns the name of the screen registered from JavaScript.
+     */
+    @Override
+    protected String getInitialScreenName() {
+        return "Home";
+    }
+}
+```
+
+
+## Related Guides
+
+- [Basic Usage](/docs/guides/basic-usage.md)
+- [Integrating with existing apps](/docs/guides/integrating-with-existing-apps.md)
