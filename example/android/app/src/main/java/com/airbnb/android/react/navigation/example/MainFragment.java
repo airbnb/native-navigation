@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.airbnb.android.react.navigation.ReactNativeTabActivity2;
+import com.airbnb.android.react.navigation.ReactNativeTabActivity;
 import com.airbnb.android.react.navigation.ScreenCoordinator;
 import com.airbnb.android.react.navigation.ScreenCoordinatorComponent;
 
@@ -49,7 +49,7 @@ public class MainFragment extends Fragment {
     btnTabs.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        startActivity(new Intent(getContext(), ReactNativeTabActivity2.class));
+        startActivity(new Intent(getContext(), ReactNativeTabActivity.class));
       }
     });
 
