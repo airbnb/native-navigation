@@ -1,5 +1,23 @@
 # Installation
 
+If you get a chance to scroll down this page, you might be thinking to yourself:
+
+> Why is installing Native Navigation so complicated?
+
+Good question. There are a couple of factors...
+
+1. Native Navigation changes the way you structure your React Native app by encouraging multiple 
+React "Root Views" rather than one. This means if you're using the standard boilerplate that came 
+with the React Native CLI starter template, we have to change some of the code to make it work.
+2. The iOS implementation of Native Navigation is written in Swift, and using Swift in React Native 
+apps has some challenges due to Swift code needing to be dynamically linked. React Native projects 
+are typically all done with static linking. We are working on making this aspect of the setup less
+complicated, but it might take some time. The easiest way to skirt around these issues is to use
+CocoaPods to manage your dependencies. It's worth pointing out that this will mean you can't use 
+`react-native link` for other dependencies you install.
+
+If you are starting a new project from scratch, we recommend downloading or cloning our 
+[boilerplate starter project](https://github.com/lelandrichardson/native-navigation-boilerplate).
 
 
 
@@ -130,20 +148,30 @@ pod install
 There should now be an `MyNewProject.xcworkspace` available in your ios directory, which was created
 by CocoaPods. You should use this file to open your app up in XCode, NOT the .xcodeproj file.
 
-We now need to make some modifications to our project in XCode. Open up the project:
+We now need to make some modifications to our project in Xcode. Open up the project:
 
 ```bash
 open MyNewProject.xcworkspace
 ```
 
-NOTE: If Xcode presents a window asking if you want to update the project to the latest swift version, click Yes.
+![Convert swift syntax](/assets/install_swift_syntax.png)
+
+Xcode may presents a window asking if you want to update the project to the latest swift version, click "Convert". There aren't
+any actual changes that need to be made. React Native's template just has the project set to use Swift 2.3 
+instead of Swift 3.
 
 
 React Native's starter template will have the React Project initially statically linked to your project,
 but now we are using CocoaPods, so we want to get rid of them.
 
+In Xcode, go to the "Project navigator" in the left sidebar and find the `Libraries` folder. Select
+every library in that folder, then right-click it and hit "Delete":
 
-_TODO: show some screenshots and better instructions of doing this_
+![Select all of the libraries](/assets/install_remove_libs_1.png)
+
+For the dialog that appears, click "Remove References":
+
+![Hit "Remove References"](/assets/install_remove_libs_2.png)
 
 
 Now we need to set up our navigation in our project's actual code. We are going to do most of the
@@ -377,6 +405,8 @@ the `ReactInstanceManager`:
 
 ```java
 import com.airbnb.android.react.navigation.ReactNavigationCoordinator;
+
+// ...
 
 @Override
 public void onCreate() {
