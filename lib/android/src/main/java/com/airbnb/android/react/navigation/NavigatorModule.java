@@ -59,7 +59,6 @@ class NavigatorModule extends ReactContextBaseJavaModule {
       waitForRender,
       mode
     );
-//    coordinator.setInitialConfigForModuleName(sceneName, properties);
   }
 
   @SuppressWarnings("unused")
