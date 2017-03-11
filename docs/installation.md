@@ -1,6 +1,8 @@
 # Installation
 
 
+
+
 ## Creating a new project with Native Navigation
 
 You can start your project using React Native's CLI. If you do not have the CLI installed yet,
@@ -27,7 +29,7 @@ npm i --save native-navigation
  
 
 
-### JavaScript Project Setup
+## JavaScript Project Setup
 
 We recommend structuring your project in a slightly different way than the React Native template starts
 you off with. For a more detailed guide, please check out our [Project Structure Guide](/docs/guides/project-structure.md).
@@ -61,7 +63,7 @@ have the entry point of your application be cross-platform. This is entirely up 
 
 
 
-### iOS Project Setup
+## iOS Project Setup
 
 Native Navigation is written in Swift, and thus it is currently required to be imported into
 your iOS App as a dynamic framework. We are actively working on an approach to importing this project
@@ -357,29 +359,35 @@ That is all that is needed for gradle settings, but now we need to set up the ap
 In `MainApplication.java`, we need to add `NativeNavigationPackage` to the list of packages:
 
 ```java
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-          new NativeNavigationPackage()
-      );
-    }
+import com.airbnb.android.react.navigation.NativeNavigationPackage;
+
+// ...
+
+@Override
+protected List<ReactPackage> getPackages() {
+  return Arrays.<ReactPackage>asList(
+      new MainReactPackage(),
+      new NativeNavigationPackage()
+  );
+}
 ```
 
 Then, in the application's `onCreate()` method, we need to provide the `ReactNavigationCoordinator` 
 the `ReactInstanceManager`:
 
 ```java
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-    
-    // These three lines need to be added
-    ReactInstanceManager manager = mReactNativeHost.getReactInstanceManager();
-    ReactNavigationCoordinator.sharedInstance.injectReactInstanceManager(manager);
-    manager.createReactContextInBackground();
-  }
+import com.airbnb.android.react.navigation.ReactNavigationCoordinator;
+
+@Override
+public void onCreate() {
+  super.onCreate();
+  SoLoader.init(this, /* native exopackage */ false);
+  
+  // These three lines need to be added
+  ReactNavigationCoordinator coordinator = ReactNavigationCoordinator.sharedInstance;
+  coordinator.injectReactInstanceManager(mReactNativeHost.getReactInstanceManager());
+  coordinator.start(this);
+}
 ```
 
 Now, in `MainActivity.java`, we want to change it to extend NativeNavigation's `ReactActivity` 
@@ -389,6 +397,8 @@ You can remove the `getMainComponentName()` overridden method and replace it wit
 method:
 
 ```java
+import com.airbnb.android.react.navigation.ReactActivity;
+
 public class MainActivity extends ReactActivity {
 
     /**
