@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ViewStub
+    <FrameLayout
         android:id="@+id/react_root_view_stub"
         android:layout="@layout/react_root_view"
         android:layout_width="0dp"

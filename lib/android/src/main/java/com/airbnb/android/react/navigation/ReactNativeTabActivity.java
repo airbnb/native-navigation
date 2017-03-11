@@ -1,6 +1,5 @@
 package com.airbnb.android.react.navigation;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 
+@Deprecated
 public class ReactNativeTabActivity extends ReactAwareActivity implements ReactInterface, BottomNavigationView.OnNavigationItemSelectedListener {
 
 
@@ -68,6 +67,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
   // An incrementing ID to identify each ReactNativeActivity instance (used in `instanceId`)
   private static int UUID = 1;
 
+  private ScreenCoordinator screenCoordinator;
   private String instanceId;
   private float barHeight;
   private ReadableMap initialConfig = ConversionUtil.EMPTY_MAP;
@@ -103,6 +103,9 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 
     bottomNavigation = (ReactBottomNavigation) findViewById(R.id.bottom_navigation);
 
+    screenCoordinator = new ScreenCoordinator(this, (ViewGroup) findViewById(R.id.content), savedInstanceState);
+    screenCoordinator.presentScreen("TabScreen");
+
     if (!isSuccessfullyInitialized()) {
       Log.d(TAG, "onCreate: !successfully initialized");
       // TODO(lmr): move to utils
@@ -123,7 +126,6 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
     } else {
       Log.d(TAG, "onCreate: successfully initialized!");
       onCreateWithReactContext();
-      setupTransition();
     }
   }
 
@@ -190,79 +192,6 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
 //    reactRootView.setVisibility(View.GONE);
 
     setupBottomNavigation();
-  }
-
-  private void setupTransition() {
-    Log.d(TAG, "setupTransition");
-    if (initialConfig.hasKey("waitForRender") && !initialConfig.getBoolean("waitForRender")) {
-      return;
-    }
-    // Shared element transitions have been unreliable on Lollipop < MR1.
-    if (Build.VERSION.SDK_INT >= SHARED_ELEMENT_TARGET_API &&
-            ReactNativeUtils.isSharedElementTransition(getIntent())) {
-      Log.d(TAG, "setupTransition: sharedElementTransition");
-      setupSharedElementTransition();
-    } else if (isSuccessfullyInitialized() && Build.VERSION.SDK_INT >= WAITING_TRANSITION_TARGET_API) {
-      Log.d(TAG, "setupTransition: waitingForRenderTransition");
-      setupDefaultWaitingForRenderTransition();
-    } else {
-      Log.d(TAG, "setupTransition: postDelayed");
-      // if we don't have the ability to use a `TransitionListener`, we do the poor man's approach of
-      // just emitting the event after some amount of time has expired. :facepalm:
-      handler.postDelayed(new Runnable() {
-        @Override public void run() {
-          if (!supportIsDestroyed()) {
-            ReactNativeTabActivity.this.emitEvent(ON_ENTER_TRANSITION_COMPLETE, null);
-          }
-        }
-      }, FAKE_ENTER_TRANSITION_TIME_IN_MS);
-    }
-
-    // in this case, we end up waiting for the first render to complete
-    // doing the transition. If this never happens for some reason, we are going to push
-    // anyway in 250ms. The handler should get canceled + called sooner though (it's za race).
-    isWaitingForRenderToFinish = true;
-    transitionHandler.postDelayed(new Runnable() {
-      @Override public void run() {
-        Log.d(TAG, "render timeout callback called");
-        ReactNativeTabActivity.this.onFinishWaitingForRender();
-      }
-    }, RENDER_TIMEOUT_IN_MS);
-  }
-
-  @TargetApi(SHARED_ELEMENT_TARGET_API)
-  private void setupSharedElementTransition() {
-    isSharedElementTransition = true;
-    Log.d(TAG, "supportPostponeEnterTransition");
-    supportPostponeEnterTransition();
-
-    // We are doing a shared element transition...
-    setEnterSharedElementCallback(new AutoSharedElementCallback(this));
-
-    attachEnterTransitionListener(getWindow().getEnterTransition());
-  }
-
-  @TargetApi(WAITING_TRANSITION_TARGET_API)
-  private void attachEnterTransitionListener(Transition transition) {
-    transition.addListener(new SimpleTransitionListener() {
-      @Override public void onTransitionEnd(Transition transition) {
-        emitEvent(ON_ENTER_TRANSITION_COMPLETE, null);
-      }
-    });
-  }
-
-  @TargetApi(WAITING_TRANSITION_TARGET_API)
-  private void setEnterTransition(Transition transition) {
-    attachEnterTransitionListener(transition);
-    getWindow().setEnterTransition(transition);
-  }
-
-  @TargetApi(WAITING_TRANSITION_TARGET_API)
-  private void setupDefaultWaitingForRenderTransition() {
-    Log.d(TAG, "supportPostponeEnterTransition");
-    // TODO(lmr): it seems like this isn't actually quite working on the first push.
-    supportPostponeEnterTransition();
-//    setEnterTransition(makeSlideLeftAnimation());
   }
 
   private void setupBottomNavigation() {
@@ -409,7 +338,6 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
         }
       }
     }
-
   }
 
   @Override
@@ -484,7 +412,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity implements ReactI
       String key =
           String.format(Locale.ENGLISH, "NativeNavigationScreen.%s.%s", eventName, instanceId);
       Log.d(TAG, key);
-      ReactNativeUtils.maybeEmitEvent((ReactContext) reactInstanceManager.getCurrentReactContext(),
+      ReactNativeUtils.maybeEmitEvent(reactInstanceManager.getCurrentReactContext(),
           key, object);
     }
   }
