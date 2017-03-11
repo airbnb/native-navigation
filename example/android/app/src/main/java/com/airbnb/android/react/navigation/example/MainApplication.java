@@ -4,7 +4,6 @@ import android.app.Application;
 import com.airbnb.android.react.navigation.NativeNavigationPackage;
 import com.airbnb.android.react.navigation.ReactNavigationCoordinator;
 import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -44,9 +43,10 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    ReactInstanceManager manager = mReactNativeHost.getReactInstanceManager();
-    ReactNavigationCoordinator.sharedInstance.injectReactInstanceManager(manager);
-    manager.createReactContextInBackground();
+
+    ReactNavigationCoordinator coordinator = ReactNavigationCoordinator.sharedInstance;
+    coordinator.injectReactInstanceManager(mReactNativeHost.getReactInstanceManager());
+    coordinator.start(this);
   }
 
 }
