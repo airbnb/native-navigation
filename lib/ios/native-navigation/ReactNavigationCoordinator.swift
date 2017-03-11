@@ -9,24 +9,18 @@
 import React
 import UIKit
 
-public protocol ReactNavigationCoordinatorDelegate {
+@objc public protocol ReactNavigationCoordinatorDelegate {
   func rootViewController(forCoordinator coordinator: ReactNavigationCoordinator) -> UIViewController?
-  func flowCoordinatorForId(_ name: String) -> ReactFlowCoordinator?
-  func registerReactDeepLinkUrl(_ deepLinkUrl: String)
+  @objc optional func flowCoordinatorForId(_ name: String) -> ReactFlowCoordinator?
+  @objc optional func registerReactDeepLinkUrl(_ deepLinkUrl: String)
 }
 
-public protocol ReactFlowCoordinator: class {
-  var reactFlowId: String? { get set }
+@objc public protocol ReactFlowCoordinator: class {
+  @objc var reactFlowId: String? { get set }
 
-  func start(_ props: [String:AnyObject]?)
+  @objc func start(_ props: [String:AnyObject]?)
 
-  func finish(_ resultCode: ReactFlowResultCode, payload: [String:AnyObject]?)
-}
-
-extension ReactFlowCoordinator {
-  public func finish(_ resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
-    ReactNavigationCoordinator.sharedInstance.onFlowFinish(self, resultCode: resultCode, payload: payload)
-  }
+  @objc func finish(_ resultCode: ReactFlowResultCode, payload: [String:AnyObject]?)
 }
 
 private var _uuid: Int = 0
@@ -75,7 +69,7 @@ open class ReactNavigationCoordinator: NSObject {
   }
 
   open func startFlow(fromName name: String, withProps props: [String: AnyObject], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-    guard let flow = delegate?.flowCoordinatorForId(name) else {
+    guard let flow = delegate?.flowCoordinatorForId?(name) else {
       return
     }
     register(flow, resolve: resolve, reject: reject)
@@ -100,7 +94,7 @@ open class ReactNavigationCoordinator: NSObject {
 
   open func registerDeepLinkUrl(_ sceneName: String, deepLinkUrl: String) {
     deepLinkMapping[deepLinkUrl] = sceneName
-    delegate?.registerReactDeepLinkUrl(deepLinkUrl)
+    delegate?.registerReactDeepLinkUrl?(deepLinkUrl)
   }
 
   // MARK: Internal
@@ -143,9 +137,7 @@ open class ReactNavigationCoordinator: NSObject {
     viewControllers[nativeNavigationInstanceId] = nil
   }
 
-  // MARK: Private
-
-  fileprivate func onFlowFinish(_ flow: ReactFlowCoordinator, resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
+  func onFlowFinish(_ flow: ReactFlowCoordinator, resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
     guard let id = flow.reactFlowId else {
       return
     }
@@ -170,6 +162,8 @@ open class ReactNavigationCoordinator: NSObject {
       unregisterViewController(vc.nativeNavigationInstanceId)
     }
   }
+
+  // MARK: Private
 
   fileprivate var promises: [String: ReactPromise]
   fileprivate var viewControllers: [String: ViewControllerHolder]
