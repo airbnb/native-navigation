@@ -1,15 +1,4 @@
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  Platform,
-} from 'react-native';
-
+import React from 'react';
 import { TabBar, Tab } from 'native-navigation';
 
 const propTypes = {};

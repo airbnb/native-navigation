@@ -1,6 +1,6 @@
 {
   "name": "native-navigation",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
@@ -32,12 +32,6 @@
     "url": "git+https://github.com/airbnb/native-navigation.git"
   },
   "keywords": [
-    "react",
-    "react-native",
-    "animation",
-    "navigation",
-    "navigator",
-    "shared element transitions"
   ],
   "author": "Leland Richardson <leland.richardson@airbnb.com>",
   "license": "MIT",
