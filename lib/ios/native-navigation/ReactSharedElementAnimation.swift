@@ -229,6 +229,12 @@ public final class ReactSharedElementAnimation: TransitionAnimation {
     from: UIView,
     to: UIView) -> (() -> ())
   {
+    // alert: bug fix
+    // for some reason the `to` snapshots are not showing up with images visible, even though they are cached.
+    // this hack makes it so that the `from` view is used for the whole transition.  Ideally, we figure out a
+    // better solution for this.
+    to.alpha = 0;
+
     let toCenter = to.center
     let fromCenter = from.center
     let ratio = getScaleRatio(from, to: to)
