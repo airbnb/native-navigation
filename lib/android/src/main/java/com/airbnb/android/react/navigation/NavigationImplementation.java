@@ -1,6 +1,5 @@
 package com.airbnb.android.react.navigation;
 
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;

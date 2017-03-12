@@ -31,7 +31,8 @@ public class MainActivity extends ReactAwareActivity implements ScreenCoordinato
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
 
     if (savedInstanceState == null) {
-      screenCoordinator.presentScreen("ScreenOne");
+      screenCoordinator.presentScreen(MainFragment.newInstance());
+//      screenCoordinator.presentScreen("ScreenOne");
     }
   }
 
