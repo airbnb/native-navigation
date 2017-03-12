@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "native-navigation_Example.app"
-               BlueprintName = "native-navigation_Example"
+               BuildableName = "native-navigation.app"
+               BlueprintName = "native-navigation"
                ReferencedContainer = "container:native-navigation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,8 +57,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "native-navigation_Example.app"
-            BlueprintName = "native-navigation_Example"
+            BuildableName = "native-navigation.app"
+            BlueprintName = "native-navigation"
             ReferencedContainer = "container:native-navigation.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -80,8 +80,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "native-navigation_Example.app"
-            BlueprintName = "native-navigation_Example"
+            BuildableName = "native-navigation.app"
+            BlueprintName = "native-navigation"
             ReferencedContainer = "container:native-navigation.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -106,8 +106,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "native-navigation_Example.app"
-            BlueprintName = "native-navigation_Example"
+            BuildableName = "native-navigation.app"
+            BlueprintName = "native-navigation"
             ReferencedContainer = "container:native-navigation.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
