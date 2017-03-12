@@ -123,6 +123,15 @@ With those parameters, we do the following:
 _This section has not yet been filled out_
 
 
+## Common Issues
+
+**White screen on iPhone 7 Simulators**:
+
+Shared Element Transitions use custom transition coordinators and view snapshotting on iOS. There is 
+a [known issue](https://forums.developer.apple.com/thread/63438) with these on iPhone 7 Simulators. 
+In these simulators, the whole screen will appear white and not work. This affects simulators only 
+and not real devices.
+
 
 ## Related Pages
 
