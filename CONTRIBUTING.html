@@ -1,0 +1,631 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Contributing Guide · Native Navigation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="docs/FAQ.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="docs/installation.html">
+            
+                <a href="docs/installation.html">
+            
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="docs/roadmap.html">
+            
+                <a href="docs/roadmap.html">
+            
+                    
+                    Roadmap to 1.0
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="docs/guides/">
+            
+                <a href="docs/guides/">
+            
+                    
+                    Guides
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="docs/guides/integrating-with-existing-apps.html">
+            
+                <a href="docs/guides/integrating-with-existing-apps.html">
+            
+                    
+                    Integrating with existing apps
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="docs/guides/custom-navigation-implementations.html">
+            
+                <a href="docs/guides/custom-navigation-implementations.html">
+            
+                    
+                    Custom Navigation Implementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="docs/guides/tabs.html">
+            
+                <a href="docs/guides/tabs.html">
+            
+                    
+                    Tabs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="docs/guides/deep-linking.html">
+            
+                <a href="docs/guides/deep-linking.html">
+            
+                    
+                    Deep Linking
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="docs/guides/project-structure.html">
+            
+                <a href="docs/guides/project-structure.html">
+            
+                    
+                    Project Structure
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="docs/guides/shared-element-transitions.html">
+            
+                <a href="docs/guides/shared-element-transitions.html">
+            
+                    
+                    Shared Element Transitions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="docs/api/">
+            
+                <a href="docs/api/">
+            
+                    
+                    API Documentation
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="docs/api/navigator/">
+            
+                <a href="docs/api/navigator/">
+            
+                    
+                    Navigator
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="docs/api/navigator/registerScreen.html">
+            
+                <a href="docs/api/navigator/registerScreen.html">
+            
+                    
+                    Navigator.registerScreen
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.2" data-path="docs/api/navigator/push.html">
+            
+                <a href="docs/api/navigator/push.html">
+            
+                    
+                    Navigator.push
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.3" data-path="docs/api/navigator/present.html">
+            
+                <a href="docs/api/navigator/present.html">
+            
+                    
+                    Navigator.present
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.4" data-path="docs/api/navigator/pop.html">
+            
+                <a href="docs/api/navigator/pop.html">
+            
+                    
+                    Navigator.pop
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.5" data-path="docs/api/navigator/dismiss.html">
+            
+                <a href="docs/api/navigator/dismiss.html">
+            
+                    
+                    Navigator.dismiss
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="docs/api/navigator-config.html">
+            
+                <a href="docs/api/navigator-config.html">
+            
+                    
+                    Config
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="docs/api/navigator-spacer.html">
+            
+                <a href="docs/api/navigator-spacer.html">
+            
+                    
+                    Spacer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="docs/api/navigator-tab.html">
+            
+                <a href="docs/api/navigator-tab.html">
+            
+                    
+                    Tab
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="docs/api/navigator-tab-bar.html">
+            
+                <a href="docs/api/navigator-tab-bar.html">
+            
+                    
+                    TabBar
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="docs/api/navigator-shared-element.html">
+            
+                <a href="docs/api/navigator-shared-element.html">
+            
+                    
+                    SharedElement
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="docs/api/navigator-shared-element-group.html">
+            
+                <a href="docs/api/navigator-shared-element-group.html">
+            
+                    
+                    SharedElementGroup
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="docs/implementations/">
+            
+                <a href="docs/implementations/">
+            
+                    
+                    Implementations
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="docs/implementations/DefaultImplementation.html">
+            
+                <a href="docs/implementations/DefaultImplementation.html">
+            
+                    
+                    DefaultImplementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="CHANGELOG.html">
+            
+                <a href="CHANGELOG.html">
+            
+                    
+                    Change Log
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="docs/FAQ.html">
+            
+                <a href="docs/FAQ.html">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.9" data-path="CONTRIBUTING.html">
+            
+                <a href="CONTRIBUTING.html">
+            
+                    
+                    Contributing Guide
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Contributing Guide</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="contributing-guide">Contributing Guide</h1>
+<p>Contributions are welcome and are greatly appreciated! Every little bit helps, and credit will
+always be given.</p>
+<h2 id="setting-up-your-environment">Setting up your environment</h2>
+<p>After forking to your own github org, do the following steps to get started:</p>
+<pre class="language-"><code class="lang-bash"><span class="token comment" spellcheck="true"># clone your fork to your local machine</span>
+<span class="token function">git</span> clone https://github.com/airbnb/native-navigation.git
+
+<span class="token comment" spellcheck="true"># step into local repo</span>
+<span class="token function">cd</span> native-navigation
+
+<span class="token comment" spellcheck="true"># install dependencies</span>
+<span class="token function">npm</span> <span class="token function">install</span>
+</code></pre>
+<h3 id="developing-on-android">Developing on Android</h3>
+<pre class="language-"><code class="lang-bash"><span class="token comment" spellcheck="true"># run packager for development</span>
+<span class="token function">npm</span> start
+
+<span class="token comment" spellcheck="true"># in a separate window, you can run the example app with:</span>
+<span class="token function">npm</span> run run:android
+</code></pre>
+<h3 id="developing-on-ios">Developing on iOS</h3>
+<pre class="language-"><code class="lang-bash"><span class="token comment" spellcheck="true"># run packager for development</span>
+<span class="token function">npm</span> start
+
+<span class="token comment" spellcheck="true"># in a separate window, you can run the example app with:</span>
+<span class="token function">npm</span> run run:ios
+</code></pre>
+<h3 id="style--linting">Style &amp; Linting</h3>
+<p>This codebase adheres to the <a href="https://github.com/airbnb/javascript" target="_blank">Airbnb Styleguide</a> and is
+enforced using <a href="http://eslint.org/" target="_blank">ESLint</a>.</p>
+<p>It is recommended that you install an eslint plugin for your editor of choice when working on this
+codebase, however you can always check to see if the source code is compliant by running:</p>
+<pre class="language-"><code class="lang-bash"><span class="token function">npm</span> run lint
+</code></pre>
+<h3 id="building-docs">Building Docs</h3>
+<p>Building the docs locally is extremely simple. First execute the following command:</p>
+<pre class="language-"><code class="lang-bash"><span class="token function">npm</span> run docs:watch
+</code></pre>
+<p>After this, you can open up your browser to the specified port (usually <a href="http://localhost:4000" target="_blank">http://localhost:4000</a> )</p>
+<p>The browser will automatically refresh when there are changes to any of the source files.</p>
+<h2 id="pull-request-guidelines">Pull Request Guidelines</h2>
+<p>Before you submit a pull request from your forked repo, check that it meets these guidelines:</p>
+<ol>
+<li>If the pull request adds functionality, the docs should be updated as part of the same PR.</li>
+<li>If the pull request adds functionality, code in the example app that demonstrates the new functionality should be updated as part of the same PR.</li>
+<li>If the pull request adds functionality, the PR description should include motivation and use cases for the feature.</li>
+<li>If the pull request fixes a bug, an explanation including what the bug was, and how to reproduce it should be included in the PR description.</li>
+<li>Please rebase and resolve all conflicts before submitting.</li>
+</ol>
+
+                                
+                                </section>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="docs/FAQ.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: FAQ">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Contributing Guide","level":"1.9","depth":1,"previous":{"title":"FAQ","level":"1.8","depth":1,"path":"docs/FAQ.md","ref":"docs/FAQ.md","articles":[]},"dir":"ltr"},"config":{"plugins":["edit-link","prism","-highlight","github","anchorjs","-search"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"edit-link":{"label":"Edit This Page","base":"https://github.com/airbnb/native-navigation/tree/master"},"github":{"url":"https://github.com/airbnb/native-navigation/"},"prism":{},"anchorjs":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Native Navigation","gitbook":"3.2.2","description":"Native Navigation for React Native"},"file":{"path":"CONTRIBUTING.md","mtime":"2017-03-12T01:43:08.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-03-13T18:58:26.673Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-edit-link/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

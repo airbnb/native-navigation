@@ -1,0 +1,6 @@
+lib/
+gradle/
+gen/
+example/
+build/
+.gradle/

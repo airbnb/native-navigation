@@ -1,0 +1,694 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Project Structure · Native Navigation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="shared-element-transitions.html" />
+    
+    
+    <link rel="prev" href="deep-linking.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../installation.html">
+            
+                <a href="../installation.html">
+            
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../roadmap.html">
+            
+                <a href="../roadmap.html">
+            
+                    
+                    Roadmap to 1.0
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Guides
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="integrating-with-existing-apps.html">
+            
+                <a href="integrating-with-existing-apps.html">
+            
+                    
+                    Integrating with existing apps
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="custom-navigation-implementations.html">
+            
+                <a href="custom-navigation-implementations.html">
+            
+                    
+                    Custom Navigation Implementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="tabs.html">
+            
+                <a href="tabs.html">
+            
+                    
+                    Tabs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="deep-linking.html">
+            
+                <a href="deep-linking.html">
+            
+                    
+                    Deep Linking
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.5" data-path="project-structure.html">
+            
+                <a href="project-structure.html">
+            
+                    
+                    Project Structure
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="shared-element-transitions.html">
+            
+                <a href="shared-element-transitions.html">
+            
+                    
+                    Shared Element Transitions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../api/">
+            
+                <a href="../api/">
+            
+                    
+                    API Documentation
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../api/navigator/">
+            
+                <a href="../api/navigator/">
+            
+                    
+                    Navigator
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="../api/navigator/registerScreen.html">
+            
+                <a href="../api/navigator/registerScreen.html">
+            
+                    
+                    Navigator.registerScreen
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.2" data-path="../api/navigator/push.html">
+            
+                <a href="../api/navigator/push.html">
+            
+                    
+                    Navigator.push
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.3" data-path="../api/navigator/present.html">
+            
+                <a href="../api/navigator/present.html">
+            
+                    
+                    Navigator.present
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.4" data-path="../api/navigator/pop.html">
+            
+                <a href="../api/navigator/pop.html">
+            
+                    
+                    Navigator.pop
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.5" data-path="../api/navigator/dismiss.html">
+            
+                <a href="../api/navigator/dismiss.html">
+            
+                    
+                    Navigator.dismiss
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../api/navigator-config.html">
+            
+                <a href="../api/navigator-config.html">
+            
+                    
+                    Config
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../api/navigator-spacer.html">
+            
+                <a href="../api/navigator-spacer.html">
+            
+                    
+                    Spacer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../api/navigator-tab.html">
+            
+                <a href="../api/navigator-tab.html">
+            
+                    
+                    Tab
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../api/navigator-tab-bar.html">
+            
+                <a href="../api/navigator-tab-bar.html">
+            
+                    
+                    TabBar
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../api/navigator-shared-element.html">
+            
+                <a href="../api/navigator-shared-element.html">
+            
+                    
+                    SharedElement
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../api/navigator-shared-element-group.html">
+            
+                <a href="../api/navigator-shared-element-group.html">
+            
+                    
+                    SharedElementGroup
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../implementations/">
+            
+                <a href="../implementations/">
+            
+                    
+                    Implementations
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../implementations/DefaultImplementation.html">
+            
+                <a href="../implementations/DefaultImplementation.html">
+            
+                    
+                    DefaultImplementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../CHANGELOG.html">
+            
+                <a href="../../CHANGELOG.html">
+            
+                    
+                    Change Log
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../FAQ.html">
+            
+                <a href="../FAQ.html">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../CONTRIBUTING.html">
+            
+                <a href="../../CONTRIBUTING.html">
+            
+                    
+                    Contributing Guide
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Project Structure</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="project-structure">Project Structure</h1>
+<h2 id="directory-structure">Directory Structure</h2>
+<p>Native Navigation might make you end up structuring your app a little bit differently than 
+how the React Native project encourages you to do.</p>
+<p>With Native Navigation, &quot;Screens&quot; are the top level react components of your app, and we have to
+register each of them individually. We have found that this leads to a natural way of splitting up
+your code base, and also has some performance advantages by preventing all of your code from getting
+executed at app start.</p>
+<p>The typical project structure we recommend is something like this:</p>
+<pre class="language-"><code>root/
+&#x251C;&#x2500;&#x2500; components/
+&#x251C;&#x2500;&#x2500; screens/
+&#x2502;   &#x251C;&#x2500;&#x2500; FooScreen.js
+&#x2502;   &#x2514;&#x2500;&#x2500; BarScreen.js
+&#x251C;&#x2500;&#x2500; routes.js
+&#x2514;&#x2500;&#x2500; index.js
+</code></pre><p>In this case, &quot;Screens&quot; are separated from &quot;Components&quot;, and there is a top level <code>index.js</code> and <code>routes.js</code>
+file.</p>
+<p>Our <code>routes.js</code> file might look something like this:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">export</span> <span class="token keyword">const</span> FOO<span class="token punctuation">:</span> <span class="token string">&apos;MyApp/Foo&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> BAR<span class="token punctuation">:</span> <span class="token string">&apos;MyApp/Bar&apos;</span><span class="token punctuation">;</span>
+</code></pre>
+<p><code>routes.js</code> is just a set of constants that correspond to screens. You can think of them like URLs
+for different pages of a website.</p>
+<p>Our <code>index.js</code> file might look something like this:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> Navigator <span class="token keyword">from</span> <span class="token string">&apos;native-navigation&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> FOO<span class="token punctuation">,</span> BAR <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;./routes&apos;</span><span class="token punctuation">;</span>
+
+Navigator<span class="token punctuation">.</span><span class="token function">registerScreen</span><span class="token punctuation">(</span>FOO<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&apos;./screens/FooScreen&apos;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Navigator<span class="token punctuation">.</span><span class="token function">registerScreen</span><span class="token punctuation">(</span>BAR<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&apos;./screens/BarScreen&apos;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>The <code>index.js</code> file is the index file that you should have as the entry point to your JavaScript 
+bundle that the React Native bridge uses.</p>
+<h2 id="integrating-with-redux">Integrating with Redux</h2>
+<p>There is nothing special that one needs to do to integrate redux into an app using Native Navigation,
+however, since NativeNavigation results in splitting up every screen of your app into separate root
+views and registering each separately, there are ways to reduce the boilerplate of redux integration.</p>
+<p>One way we recommend doing this is by registering all of your screens with a custom <code>registerScreen</code>
+function, rather than calling <code>Navigator.registerScreen</code> directly. This allows you to add custom 
+options to the call that are specific to your app or internal infrastructure.</p>
+<p>Redux is a good simple example of this, where we may want to add a <code>getStore</code> option to the
+<code>registerScreen</code> method that automatically registers the screen with the redux store provided in
+context.</p>
+<p>One could accomplish this like:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">&apos;react&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Provider <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react-redux&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Navigator <span class="token keyword">from</span> <span class="token string">&apos;native-navigation&apos;</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// This ensures that we can use `() =&gt; require(&apos;./foo&apos;)` as a `getScreen` or `getStore` option,</span>
+<span class="token comment" spellcheck="true">// even if `foo.js` is an ES6 module.  It&apos;s not really important to this example.</span>
+<span class="token keyword">function</span> <span class="token function">unwrapDefaultExport</span><span class="token punctuation">(</span>module<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>module <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> module<span class="token punctuation">.</span>__esModule <span class="token operator">===</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> module<span class="token punctuation">.</span><span class="token keyword">default</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> module<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// provided a `getScreen` function and a `getStore` function, we want to return a new function</span>
+<span class="token comment" spellcheck="true">// that returns a new react component that renders the old one, but with the redux store provided</span>
+<span class="token comment" spellcheck="true">// through context.</span>
+<span class="token keyword">function</span> <span class="token function">wrapScreenGetter</span><span class="token punctuation">(</span>route<span class="token punctuation">,</span> getScreen<span class="token punctuation">,</span> <span class="token punctuation">{</span> getStore <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">class</span> <span class="token class-name">ConnectedScreen</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span> <span class="token punctuation">{</span>
+    <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> Screen <span class="token operator">=</span> <span class="token function">unwrapDefaultExport</span><span class="token punctuation">(</span><span class="token function">getScreen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">unwrapDefaultExport</span><span class="token punctuation">(</span><span class="token function">getStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token operator">&lt;</span>Provider store<span class="token operator">=</span><span class="token punctuation">{</span>store<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>Screen <span class="token punctuation">{</span><span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">}</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>Provider<span class="token operator">&gt;</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment" spellcheck="true">// customize the display name for better React dev tools interop.</span>
+  ConnectedScreen<span class="token punctuation">.</span>displayName <span class="token operator">=</span> <span class="token template-string"><span class="token string">`ConnectedScreen(</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>route<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">)`</span></span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// invoking this here ensures that our original `getScreen` function gets called, which we want</span>
+    <span class="token comment" spellcheck="true">// to happen to make sure that `Navigator.preload` still does meaningful work.</span>
+    <span class="token function">getScreen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> ConnectedScreen<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">registerConnectedScreen</span><span class="token punctuation">(</span>route<span class="token punctuation">,</span> getScreen<span class="token punctuation">,</span> options <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> getWrapper <span class="token operator">=</span> <span class="token function">wrapScreenGetter</span><span class="token punctuation">(</span>route<span class="token punctuation">,</span> getScreen<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> Navigator<span class="token punctuation">.</span><span class="token function">registerScreen</span><span class="token punctuation">(</span>route<span class="token punctuation">,</span> getWrapper<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Then you would register screens like in the following example:</p>
+<pre class="language-"><code class="lang-js"><span class="token comment" spellcheck="true">// index.js</span>
+<span class="token keyword">import</span> registerConnectedScreen <span class="token keyword">from</span> <span class="token string">&apos;./utils/registerConnectedScreen&apos;</span><span class="token punctuation">;</span>
+
+<span class="token function">registerConnectedScreen</span><span class="token punctuation">(</span>
+  <span class="token string">&apos;SomeScreen&apos;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&apos;./screens/SomeScreen&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    getStore<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&apos;./path/to/redux/store&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="related-guides">Related Guides</h2>
+<ul>
+<li><a href="integrating-with-existing-apps.html">Integrating with Existing Apps</a></li>
+<li><a href="basic-usage.md">Basic Usage</a></li>
+</ul>
+
+                                
+                                </section>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="deep-linking.html" class="navigation navigation-prev " aria-label="Previous page: Deep Linking">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="shared-element-transitions.html" class="navigation navigation-next " aria-label="Next page: Shared Element Transitions">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Project Structure","level":"1.4.5","depth":2,"next":{"title":"Shared Element Transitions","level":"1.4.6","depth":2,"path":"docs/guides/shared-element-transitions.md","ref":"docs/guides/shared-element-transitions.md","articles":[]},"previous":{"title":"Deep Linking","level":"1.4.4","depth":2,"path":"docs/guides/deep-linking.md","ref":"docs/guides/deep-linking.md","articles":[]},"dir":"ltr"},"config":{"plugins":["edit-link","prism","-highlight","github","anchorjs","-search"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"edit-link":{"label":"Edit This Page","base":"https://github.com/airbnb/native-navigation/tree/master"},"github":{"url":"https://github.com/airbnb/native-navigation/"},"prism":{},"anchorjs":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Native Navigation","gitbook":"3.2.2","description":"Native Navigation for React Native"},"file":{"path":"docs/guides/project-structure.md","mtime":"2017-03-12T01:43:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-03-13T18:58:26.673Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-edit-link/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

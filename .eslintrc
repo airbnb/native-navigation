@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "globals": {
+    "__DEV__": true
+  },
+  "plugins": [
+    "prefer-object-spread"
+  ],
+  "rules": {
+    "no-console": 0,
+    "prefer-template": 0,
+    "global-require": 0,
+    "no-use-before-define": 0,
+    "prefer-object-spread/prefer-object-spread": 2,
+    "react/prefer-stateless-function": 0,
+    "react/jsx-filename-extension": 0,
+    "react/sort-comp": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": [2, { "ignore": ["^native-navigation$"] }]
+  }
+}

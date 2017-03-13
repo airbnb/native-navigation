@@ -1,0 +1,7 @@
+rootProject.name = 'native-navigation'
+
+include ":example-android"
+project(":example-android").projectDir = file("./example/android/app")
+
+include ":native-navigation-lib"
+project(":native-navigation-lib").projectDir = file("./lib/android")

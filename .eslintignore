@@ -1,0 +1,8 @@
+node_modules
+build
+_book
+gradle
+lib/android
+lib/ios
+example/android
+example/ios

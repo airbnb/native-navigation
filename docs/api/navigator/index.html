@@ -1,0 +1,612 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Navigator · Native Navigation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="registerScreen.html" />
+    
+    
+    <link rel="prev" href="../" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../../">
+            
+                <a href="../../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../installation.html">
+            
+                <a href="../../installation.html">
+            
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../roadmap.html">
+            
+                <a href="../../roadmap.html">
+            
+                    
+                    Roadmap to 1.0
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../guides/">
+            
+                <a href="../../guides/">
+            
+                    
+                    Guides
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../../guides/integrating-with-existing-apps.html">
+            
+                <a href="../../guides/integrating-with-existing-apps.html">
+            
+                    
+                    Integrating with existing apps
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../../guides/custom-navigation-implementations.html">
+            
+                <a href="../../guides/custom-navigation-implementations.html">
+            
+                    
+                    Custom Navigation Implementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../../guides/tabs.html">
+            
+                <a href="../../guides/tabs.html">
+            
+                    
+                    Tabs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../../guides/deep-linking.html">
+            
+                <a href="../../guides/deep-linking.html">
+            
+                    
+                    Deep Linking
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../../guides/project-structure.html">
+            
+                <a href="../../guides/project-structure.html">
+            
+                    
+                    Project Structure
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../../guides/shared-element-transitions.html">
+            
+                <a href="../../guides/shared-element-transitions.html">
+            
+                    
+                    Shared Element Transitions
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    API Documentation
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Navigator
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="registerScreen.html">
+            
+                <a href="registerScreen.html">
+            
+                    
+                    Navigator.registerScreen
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.2" data-path="push.html">
+            
+                <a href="push.html">
+            
+                    
+                    Navigator.push
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.3" data-path="present.html">
+            
+                <a href="present.html">
+            
+                    
+                    Navigator.present
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.4" data-path="pop.html">
+            
+                <a href="pop.html">
+            
+                    
+                    Navigator.pop
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.5" data-path="dismiss.html">
+            
+                <a href="dismiss.html">
+            
+                    
+                    Navigator.dismiss
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../navigator-config.html">
+            
+                <a href="../navigator-config.html">
+            
+                    
+                    Config
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../navigator-spacer.html">
+            
+                <a href="../navigator-spacer.html">
+            
+                    
+                    Spacer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../navigator-tab.html">
+            
+                <a href="../navigator-tab.html">
+            
+                    
+                    Tab
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../navigator-tab-bar.html">
+            
+                <a href="../navigator-tab-bar.html">
+            
+                    
+                    TabBar
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../navigator-shared-element.html">
+            
+                <a href="../navigator-shared-element.html">
+            
+                    
+                    SharedElement
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../navigator-shared-element-group.html">
+            
+                <a href="../navigator-shared-element-group.html">
+            
+                    
+                    SharedElementGroup
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../../implementations/">
+            
+                <a href="../../implementations/">
+            
+                    
+                    Implementations
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../implementations/DefaultImplementation.html">
+            
+                <a href="../../implementations/DefaultImplementation.html">
+            
+                    
+                    DefaultImplementations
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../../CHANGELOG.html">
+            
+                <a href="../../../CHANGELOG.html">
+            
+                    
+                    Change Log
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../../FAQ.html">
+            
+                <a href="../../FAQ.html">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../../../CONTRIBUTING.html">
+            
+                <a href="../../../CONTRIBUTING.html">
+            
+                    
+                    Contributing Guide
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../../.." >Navigator</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="navigator-api-reference">Navigator: API Reference</h1>
+<h2 id="methods">Methods</h2>
+<h3 id="registerscreenscreenname-getscreen-options"><code>registerScreen(screenName, getScreen[, options])</code></h3>
+<p><a href="registerScreen.html">View Documentation</a></p>
+<h3 id="pushscreenname-props-options-promise"><code>push(screenName[, props, options]): Promise</code></h3>
+<p><a href="push.html">View Documentation</a></p>
+<h3 id="presentscreenname-props-options-promise"><code>present(screenName[, props, options]): Promise</code></h3>
+<p><a href="present.html">View Documentation</a></p>
+<h3 id="poppayload"><code>pop([payload])</code></h3>
+<p><a href="pop.html">View Documentation</a></p>
+<h3 id="dismisspayload"><code>dismiss([payload])</code></h3>
+<p><a href="dismiss.html">View Documentation</a></p>
+<h2 id="components">Components</h2>
+<h3 id="config"><code>Config</code></h3>
+<p><a href="../navigator-config.html">View Documentation</a></p>
+<h3 id="spacer"><code>Spacer</code></h3>
+<p><a href="../navigator-spacer.html">View Documentation</a></p>
+<h3 id="tabbar"><code>TabBar</code></h3>
+<p><a href="../navigator-tab-bat.md">View Documentation</a></p>
+<h3 id="tab"><code>Tab</code></h3>
+<p><a href="../navigator-tab.html">View Documentation</a></p>
+<h3 id="sharedelement"><code>SharedElement</code></h3>
+<p><a href="../navigator-shared-element.html">View Documentation</a></p>
+<h3 id="sharedelementgroup"><code>SharedElementGroup</code></h3>
+<p><a href="../navigator-shared-element-group.html">View Documentation</a></p>
+
+                                
+                                </section>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../" class="navigation navigation-prev " aria-label="Previous page: API Documentation">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="registerScreen.html" class="navigation navigation-next " aria-label="Next page: Navigator.registerScreen">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Navigator","level":"1.5.1","depth":2,"next":{"title":"Navigator.registerScreen","level":"1.5.1.1","depth":3,"path":"docs/api/navigator/registerScreen.md","ref":"docs/api/navigator/registerScreen.md","articles":[]},"previous":{"title":"API Documentation","level":"1.5","depth":1,"path":"docs/api/README.md","ref":"docs/api/README.md","articles":[{"title":"Navigator","level":"1.5.1","depth":2,"path":"docs/api/navigator/README.md","ref":"docs/api/navigator/README.md","articles":[{"title":"Navigator.registerScreen","level":"1.5.1.1","depth":3,"path":"docs/api/navigator/registerScreen.md","ref":"docs/api/navigator/registerScreen.md","articles":[]},{"title":"Navigator.push","level":"1.5.1.2","depth":3,"path":"docs/api/navigator/push.md","ref":"docs/api/navigator/push.md","articles":[]},{"title":"Navigator.present","level":"1.5.1.3","depth":3,"path":"docs/api/navigator/present.md","ref":"docs/api/navigator/present.md","articles":[]},{"title":"Navigator.pop","level":"1.5.1.4","depth":3,"path":"docs/api/navigator/pop.md","ref":"docs/api/navigator/pop.md","articles":[]},{"title":"Navigator.dismiss","level":"1.5.1.5","depth":3,"path":"docs/api/navigator/dismiss.md","ref":"docs/api/navigator/dismiss.md","articles":[]}]},{"title":"Config","level":"1.5.2","depth":2,"path":"docs/api/navigator-config.md","ref":"docs/api/navigator-config.md","articles":[]},{"title":"Spacer","level":"1.5.3","depth":2,"path":"docs/api/navigator-spacer.md","ref":"docs/api/navigator-spacer.md","articles":[]},{"title":"Tab","level":"1.5.4","depth":2,"path":"docs/api/navigator-tab.md","ref":"docs/api/navigator-tab.md","articles":[]},{"title":"TabBar","level":"1.5.5","depth":2,"path":"docs/api/navigator-tab-bar.md","ref":"docs/api/navigator-tab-bar.md","articles":[]},{"title":"SharedElement","level":"1.5.6","depth":2,"path":"docs/api/navigator-shared-element.md","ref":"docs/api/navigator-shared-element.md","articles":[]},{"title":"SharedElementGroup","level":"1.5.7","depth":2,"path":"docs/api/navigator-shared-element-group.md","ref":"docs/api/navigator-shared-element-group.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["edit-link","prism","-highlight","github","anchorjs","-search"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"edit-link":{"label":"Edit This Page","base":"https://github.com/airbnb/native-navigation/tree/master"},"github":{"url":"https://github.com/airbnb/native-navigation/"},"prism":{},"anchorjs":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Native Navigation","gitbook":"3.2.2","description":"Native Navigation for React Native"},"file":{"path":"docs/api/navigator/README.md","mtime":"2017-03-12T01:43:06.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-03-13T18:58:26.673Z"},"basePath":"../../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-edit-link/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
