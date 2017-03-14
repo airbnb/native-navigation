@@ -2,7 +2,7 @@ use_frameworks!
 
 project 'native-navigation.xcodeproj'
 
-target 'native-navigation_Example' do
+target 'native-navigation' do
   pod 'Yoga', :path => '../../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
   pod 'native-navigation', :path => '../../'
   pod 'React', :path => '../../node_modules/react-native', :subspecs => [
