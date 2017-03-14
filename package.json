@@ -8,7 +8,7 @@
     "run:packager": "./node_modules/react-native/packager/packager.sh",
     "run:ios": "react-native run-ios --project-path ./example/ios",
     "start:android": "adb shell am start -n com.airbnb.android.react.navigation.example/.MainActivity",
-    "run:android": "cd example/android && ./gradlew installDebug && cd - && npm run start:android",
+    "run:android": "./gradlew installDebug && npm run start:android",
     "lint": "eslint ./",
     "build": "npm run build:js && npm run build:android && npm run build:ios",
     "build:js": "exit 0",
