@@ -76,7 +76,7 @@ To run on Android: `npm run run:android`
 
 Native Navigation is a navigation library for the React Native platform. There are many navigation 
 libraries in the React Native ecosystem. Native Navigation is unique in that it is built on top of
-the iOS and Android platform navigational components, and is this more "native" than most other 
+the iOS and Android platform navigational components, and is thus more "native" than most other 
 options which implement navigation from scratch in JavaScript on top of base React Native components
 like `View` and `Animated`.
 
