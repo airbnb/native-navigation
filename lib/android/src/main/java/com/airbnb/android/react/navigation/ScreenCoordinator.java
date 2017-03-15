@@ -175,6 +175,8 @@ public class ScreenCoordinator {
         .add(bsi.getContainerId(), fragment)
         .addToBackStack(bsi.getTag())
         .commit();
+    activity.getSupportFragmentManager().executePendingTransactions();
+    fragment.getView().setTag(FragmentContainerLayout.TAG_BACK_STACK_INDEX, );
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
