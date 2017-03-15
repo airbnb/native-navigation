@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,9 +23,6 @@ import com.airbnb.android.R;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.common.MapBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -38,17 +36,36 @@ public class ScreenCoordinator {
   static final String EXTRA_PAYLOAD = "payload";
   private static final String TRANSITION_GROUP = "transitionGroup";
 
+  enum PresentAnimation {
+    Modal(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down),
+    Push(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right),
+    Fade(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
 
+    @AnimRes int enter;
+    @AnimRes int exit;
+    @AnimRes int popEnter;
+    @AnimRes int popExit;
 
-  private final Stack<String> stackTagBackStack = new Stack<>();
-  private final Map<String, List<Fragment>> fragmentStacks = new HashMap<>();
-  private final Map<String, Promise> promisesMap = new HashMap<>();
+    PresentAnimation(int enter, int exit, int popEnter, int popExit) {
+      this.enter = enter;
+      this.exit = exit;
+      this.popEnter = popEnter;
+      this.popExit = popExit;
+    }
+  }
+
+  private final Stack<BackStack> backStacks = new Stack<>();
   private final AppCompatActivity activity;
   private final ViewGroup container;
 
   private int stackId = 0;
-  private String currentStackTag = getNextStackTag();
-  private Fragment dismissingFragment;
+  /**
+   * When we dismiss a back stack, the fragment manager would normally execute the latest fragment's
+   * pop exit animation. However, if we present A as a modal, push, B, then dismiss(), the latest
+   * pop exit animation would be from when B was pushed, not from when A was presented.
+   * We want the dismiss animation to be the popExit of the original present transaction.
+   */
+  @AnimRes private int nextPopExitAnim;
 
   public ScreenCoordinator(AppCompatActivity activity, ViewGroup container,
       @Nullable Bundle savedInstanceState) {
@@ -86,14 +103,16 @@ public class ScreenCoordinator {
     if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
         setupFragmentForSharedElement(currentFragment,  fragment, ft, options);
     } else {
-        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+      PresentAnimation anim = PresentAnimation.Push;
+      ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
     }
+    BackStack bsi = getCurrentBackStack();
     ft
             .detach(currentFragment)
-            .add(Math.abs(currentStackTag.hashCode()), fragment)
+            .add(bsi.getContainerId(), fragment)
             .addToBackStack(null)
             .commit();
-    fragmentStacks.get(currentStackTag).add(fragment);
+    bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
 
@@ -125,7 +144,7 @@ public class ScreenCoordinator {
       @Nullable Promise promise) {
     // TODO: use options
     Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
-    presentScreen(fragment, promise);
+    presentScreen(fragment, PresentAnimation.Modal, promise);
   }
 
   public void presentScreen(Fragment fragment) {
@@ -133,54 +152,38 @@ public class ScreenCoordinator {
   }
 
   public void presentScreen(Fragment fragment, @Nullable Promise promise) {
+    presentScreen(fragment, PresentAnimation.Modal, promise);
+  }
+
+  public void presentScreen(Fragment fragment, PresentAnimation anim, @Nullable Promise promise) {
     if (fragment == null) {
       throw new IllegalArgumentException("Fragment must not be null.");
     }
-    Fragment currentFragment = getCurrentFragment();
-    currentStackTag = getNextStackTag();
-    stackTagBackStack.push(currentStackTag);
-    promisesMap.put(currentStackTag, promise);
+    BackStack bsi = new BackStack(getNextStackTag(), anim, promise);
+    backStacks.push(bsi);
     // TODO: dry this up with pushScreen
     ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
         .setAllowOptimization(true)
-        .setCustomAnimations(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down);
+        .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
+
+    Fragment currentFragment = getCurrentFragment();
     if (currentFragment != null) {
       ft.detach(currentFragment);
     }
     ft
-        .add(Math.abs(currentStackTag.hashCode()), fragment)
-        .addToBackStack(currentStackTag)
+        .add(bsi.getContainerId(), fragment)
+        .addToBackStack(bsi.getTag())
         .commit();
-    fragmentStacks.get(currentStackTag).add(fragment);
+    bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
 
   public void dismissAll() {
-    while (!stackTagBackStack.isEmpty()) {
+    while (!backStacks.isEmpty()) {
       dismiss(0, null, false);
       activity.getFragmentManager().executePendingTransactions();
     }
-  }
-
-  public void showTab(Fragment fragment, int id) {
-    if (fragment == null) {
-      throw new IllegalArgumentException("Fragment must not be null.");
-    }
-    if (!stackTagBackStack.isEmpty()) {
-      dismissAll();
-    }
-    currentStackTag = getStackTag(id);
-    stackTagBackStack.push(currentStackTag);
-    ensureContainerForCurrentStack();
-    activity.getSupportFragmentManager().beginTransaction()
-            .setAllowOptimization(true)
-            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
-            .add(Math.abs(currentStackTag.hashCode()), fragment)
-            .addToBackStack(currentStackTag)
-            .commit();
-    fragmentStacks.get(currentStackTag).add(fragment);
-    Log.d(TAG, toString());
   }
 
   public void onBackPressed() {
@@ -188,12 +191,12 @@ public class ScreenCoordinator {
   }
 
   public void pop() {
-    List<Fragment> stack = fragmentStacks.get(currentStackTag);
-    if (stack.size() == 1) {
+    BackStack bsi = getCurrentBackStack();
+    if (bsi.getSize() == 1) {
       dismiss();
       return;
     }
-    stack.remove(stack.size() - 1);
+    bsi.popFragment();
     activity.getSupportFragmentManager().popBackStack();
     Log.d(TAG, toString());
   }
@@ -207,33 +210,36 @@ public class ScreenCoordinator {
   }
 
   private void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {
-    String dismissingStackTag = stackTagBackStack.pop();
-    Promise promise = promisesMap.remove(dismissingStackTag);
+    BackStack bsi = backStacks.pop();
+    Promise promise = bsi.getPromise();
     deliverPromise(promise, resultCode, payload);
-    List<Fragment> stack = fragmentStacks.remove(dismissingStackTag);
     // This is needed so we can override the pop exit animation to slide down.
-    dismissingFragment = stack.get(stack.size() - 1);
+    PresentAnimation anim = bsi.getAnimation();
 
-    if (stackTagBackStack.isEmpty()) {
+    if (backStacks.isEmpty()) {
       if (finishIfEmpty) {
-        activity.finish();
-        activity.overridePendingTransition(R.anim.delay, R.anim.slide_down);
+        activity.supportFinishAfterTransition();
+        activity.overridePendingTransition(anim.popEnter, anim.popExit);
+        Log.d(TAG, "Back stacks are empty. Finishing.");
+        return;
       }
     } else {
-      currentStackTag = stackTagBackStack.peek();
+      // This will be used when the fragment delegates its onCreateAnimation to this.
+      nextPopExitAnim = anim.popExit;
     }
 
     activity.getSupportFragmentManager()
-            .popBackStackImmediate(dismissingStackTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            .popBackStackImmediate(bsi.getTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     Log.d(TAG, toString());
   }
 
-  public Animation onCreateAnimation(Fragment fragment) {
-    if (fragment == dismissingFragment) {
+  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    if (!enter && nextPopExitAnim != 0) {
       // If this fragment was pushed on to the stack, it's pop exit animation will be
       // slide out right. However, we want it to be slide down in this case.
-      dismissingFragment = null;
-      return AnimationUtils.loadAnimation(activity, R.anim.slide_down);
+      int anim = nextPopExitAnim;
+      nextPopExitAnim = 0;
+      return AnimationUtils.loadAnimation(activity, anim);
     }
     return null;
   }
@@ -256,34 +262,20 @@ public class ScreenCoordinator {
 
   @Nullable
   private Fragment getCurrentFragment() {
-    List<Fragment> stack = fragmentStacks.get(currentStackTag);
-    if (stack == null || stack.isEmpty()) {
-      return null;
-    }
-    return stack.get(stack.size() - 1);
+    return activity.getSupportFragmentManager().findFragmentById(getCurrentBackStack().getContainerId());
   }
 
-  private View getContainerForId(int id) {
-    View existingView = container.findViewById(id);
-    if (existingView != null) {
-      return existingView;
-    }
-    FrameLayout container = createContainerView();
-    container.setId(id);
-    this.container.addView(container);
-    return container;
+  private BackStack getCurrentBackStack() {
+    return backStacks.peek();
   }
 
   private void ensureContainerForCurrentStack() {
     // Ids must be > 0
-    int id = Math.abs(currentStackTag.hashCode());
-    View existingView = container.findViewById(id);
-    if (fragmentStacks.get(currentStackTag) == null) {
-      fragmentStacks.put(currentStackTag, new ArrayList<Fragment>());
-    }
+    BackStack bsi = getCurrentBackStack();
+    View existingView = container.findViewById(bsi.getContainerId());
     if (existingView == null) {
       FrameLayout stackContainer = createContainerView();
-      stackContainer.setId(id);
+      stackContainer.setId(bsi.getContainerId());
       container.addView(stackContainer);
     }
   }
@@ -296,10 +288,9 @@ public class ScreenCoordinator {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("ScreenCoordinator{");
-    sb.append("stackTagBackStack=").append(stackTagBackStack);
-    boolean hasStack = currentStackTag != null && fragmentStacks.get(currentStackTag) != null;
-    sb.append(", stackSize=").append(hasStack ? fragmentStacks.get(currentStackTag).size() : 0);
-    sb.append(", currentStackTag='").append(currentStackTag).append('\'');
+    for (int i = 0; i < backStacks.size(); i++) {
+      sb.append("Back stack ").append(i).append(":\t").append(backStacks.get(i));
+    }
     sb.append('}');
     return sb.toString();
   }
