@@ -62,7 +62,7 @@ public class ReactNativeTabActivity extends ReactAwareActivity
     bottomNavigationView.setOnNavigationItemSelectedListener(this);
     tabConfigContainer = (ViewGroup) findViewById(R.id.tab_config_container);
     tabConfigContainer.setOnHierarchyChangeListener(reactViewChangeListener);
-    ViewGroup container = (ViewGroup) findViewById(R.id.content);
+    ScreenCoordinatorLayout container = (ScreenCoordinatorLayout) findViewById(R.id.content);
     tabCoordinator = new TabCoordinator(this, container, savedInstanceState);
 
     ReactNativeFragment tabConfigFragment = ReactNativeFragment.newInstance("TabScreen", null);
