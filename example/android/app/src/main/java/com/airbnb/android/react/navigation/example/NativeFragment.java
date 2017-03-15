@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.android.react.navigation.BundleBuilder;
@@ -119,7 +118,7 @@ public class NativeFragment extends Fragment {
 
   @Override
   public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-    return ((ScreenCoordinatorComponent) getActivity()).getScreenCoordinator().onCreateAnimation(this);
+    return getScreenCoordinator().onCreateAnimation(transit, enter, nextAnim);
   }
 
   private ScreenCoordinator getScreenCoordinator() {
