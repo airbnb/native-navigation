@@ -6,18 +6,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.ViewGroup;
 
 public class TabCoordinator {
   private static final String TAG = TabCoordinator.class.getSimpleName();
 
   private final LongSparseArray<ScreenCoordinator> screenCoordinators = new LongSparseArray<>();
   private final AppCompatActivity activity;
-  private final ViewGroup container;
+  private final ScreenCoordinatorLayout container;
 
   private Integer currentTabId = null;
 
-  public TabCoordinator(AppCompatActivity activity, ViewGroup container,
+  public TabCoordinator(AppCompatActivity activity, ScreenCoordinatorLayout container,
           @Nullable Bundle savedInstanceState) {
     this.activity = activity;
     this.container = container;

@@ -40,10 +40,6 @@ class BackStack {
     return fragments.peek();
   }
 
-  int getContainerId() {
-    return Math.abs(tag.hashCode());
-  }
-
   void pushFragment(Fragment fragment) {
     fragments.push(fragment);
   }

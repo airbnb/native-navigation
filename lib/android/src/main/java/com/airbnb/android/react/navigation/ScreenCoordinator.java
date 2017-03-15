@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -56,7 +55,7 @@ public class ScreenCoordinator {
 
   private final Stack<BackStack> backStacks = new Stack<>();
   private final AppCompatActivity activity;
-  private final ViewGroup container;
+  private final ScreenCoordinatorLayout container;
 
   private int stackId = 0;
   /**
@@ -67,11 +66,12 @@ public class ScreenCoordinator {
    */
   @AnimRes private int nextPopExitAnim;
 
-  public ScreenCoordinator(AppCompatActivity activity, ViewGroup container,
+  public ScreenCoordinator(AppCompatActivity activity, ScreenCoordinatorLayout container,
       @Nullable Bundle savedInstanceState) {
-    // TODO: restore state
     this.activity = activity;
     this.container = container;
+    container.setFragmentManager(activity.getSupportFragmentManager());
+    // TODO: restore state
   }
 
   void onSaveInstanceState(Bundle outState) {
@@ -92,7 +92,6 @@ public class ScreenCoordinator {
   }
 
   public void pushScreen(Fragment fragment, @Nullable Bundle options) {
-    ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
             .setAllowOptimization(true);
     Fragment currentFragment = getCurrentFragment();
@@ -109,7 +108,7 @@ public class ScreenCoordinator {
     BackStack bsi = getCurrentBackStack();
     ft
             .detach(currentFragment)
-            .add(bsi.getContainerId(), fragment)
+            .add(container.getId(), fragment)
             .addToBackStack(null)
             .commit();
     bsi.pushFragment(fragment);
@@ -162,7 +161,6 @@ public class ScreenCoordinator {
     BackStack bsi = new BackStack(getNextStackTag(), anim, promise);
     backStacks.push(bsi);
     // TODO: dry this up with pushScreen
-    ensureContainerForCurrentStack();
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
         .setAllowOptimization(true)
         .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
@@ -172,11 +170,10 @@ public class ScreenCoordinator {
       ft.detach(currentFragment);
     }
     ft
-        .add(bsi.getContainerId(), fragment)
+        .add(container.getId(), fragment)
         .addToBackStack(bsi.getTag())
         .commit();
     activity.getSupportFragmentManager().executePendingTransactions();
-    fragment.getView().setTag(FragmentContainerLayout.TAG_BACK_STACK_INDEX, );
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
@@ -221,8 +218,6 @@ public class ScreenCoordinator {
     if (backStacks.isEmpty()) {
       if (finishIfEmpty) {
         activity.supportFinishAfterTransition();
-        activity.overridePendingTransition(anim.popEnter, anim.popExit);
-        Log.d(TAG, "Back stacks are empty. Finishing.");
         return;
       }
     } else {
@@ -264,22 +259,11 @@ public class ScreenCoordinator {
 
   @Nullable
   private Fragment getCurrentFragment() {
-    return activity.getSupportFragmentManager().findFragmentById(getCurrentBackStack().getContainerId());
+    return activity.getSupportFragmentManager().findFragmentById(container.getId());
   }
 
   private BackStack getCurrentBackStack() {
     return backStacks.peek();
-  }
-
-  private void ensureContainerForCurrentStack() {
-    // Ids must be > 0
-    BackStack bsi = getCurrentBackStack();
-    View existingView = container.findViewById(bsi.getContainerId());
-    if (existingView == null) {
-      FrameLayout stackContainer = createContainerView();
-      stackContainer.setId(bsi.getContainerId());
-      container.addView(stackContainer);
-    }
   }
 
   @NonNull

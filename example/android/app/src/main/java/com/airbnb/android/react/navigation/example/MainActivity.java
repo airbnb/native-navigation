@@ -2,9 +2,8 @@ package com.airbnb.android.react.navigation.example;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.ViewGroup;
 
+import com.airbnb.android.react.navigation.ScreenCoordinatorLayout;
 import com.airbnb.android.react.navigation.ReactAwareActivity;
 import com.airbnb.android.react.navigation.ScreenCoordinator;
 import com.airbnb.android.react.navigation.ScreenCoordinatorComponent;
@@ -18,7 +17,7 @@ public class MainActivity extends ReactAwareActivity implements ScreenCoordinato
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ViewGroup container = (ViewGroup) findViewById(R.id.content);
+    ScreenCoordinatorLayout container = (ScreenCoordinatorLayout) findViewById(R.id.content);
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
 
     if (savedInstanceState == null) {
