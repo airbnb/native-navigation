@@ -35,6 +35,9 @@ To run the example project, first clone this repo:
 git clone https://github.com/airbnb/native-navigation.git
 cd native-navigation
 ```
+
+Both [`npm`](https://nodejs.org/) and the ruby [`bundler`](http://bundler.io/) gem are needed to run the project.
+
 ```bash
 npm install
 ```
