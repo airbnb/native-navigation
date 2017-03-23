@@ -110,6 +110,10 @@ class ReactNavigation: NSObject {
       let animated = (options["animated"] as? Bool) ?? true
       let presented = ReactViewController(moduleName: screenName, props: props)
 
+      if ((options["keepCurrent"] as? Bool) ?? false) {
+          presented.modalPresentationStyle = .overCurrentContext
+      }
+
       var makeTransition: (() -> ReactSharedElementTransition)? = nil
 
       if let transitionGroup = options["transitionGroup"] as? String {
