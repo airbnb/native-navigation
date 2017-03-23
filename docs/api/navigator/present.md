@@ -5,6 +5,7 @@
 1. `screenName` (`string`): The screen identifier of the screen to be pushed.
 2. `props` (`Object`): Props to be passed into the presented screen.
 3. `options` (`Object`): Options for the navigation transition:
+  - `options.keepCurrent` (`boolean`): Whether or not to keep current screen below the new one to be pushed (to use the new like a modal with transparency, for instance)
   - `options.transitionGroup` (`string`): The shared element group ID to use for the shared element
   transition
 
