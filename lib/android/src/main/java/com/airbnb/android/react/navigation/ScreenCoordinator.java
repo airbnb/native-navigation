@@ -141,9 +141,8 @@ public class ScreenCoordinator {
       @Nullable Bundle props,
       @Nullable Bundle options,
       @Nullable Promise promise) {
-    // TODO: use options
     Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
-    presentScreen(fragment, PresentAnimation.Modal, promise);
+    presentScreen(fragment, options, PresentAnimation.Modal, promise);
   }
 
   public void presentScreen(Fragment fragment) {
@@ -155,6 +154,10 @@ public class ScreenCoordinator {
   }
 
   public void presentScreen(Fragment fragment, PresentAnimation anim, @Nullable Promise promise) {
+    presentScreen(fragment, null, anim, promise);
+  }
+
+  public void presentScreen(Fragment fragment, @Nullable Bundle options, PresentAnimation anim, @Nullable Promise promise) {
     if (fragment == null) {
       throw new IllegalArgumentException("Fragment must not be null.");
     }
@@ -166,7 +169,8 @@ public class ScreenCoordinator {
         .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     Fragment currentFragment = getCurrentFragment();
-    if (currentFragment != null) {
+    // TODO: use other options
+    if (currentFragment != null && (options == null || !options.getBoolean("keepCurrent", false))) {
       ft.detach(currentFragment);
     }
     ft

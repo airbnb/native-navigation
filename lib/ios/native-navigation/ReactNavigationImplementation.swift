@@ -331,7 +331,9 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
   public func makeNavigationController(rootViewController: UIViewController) -> UINavigationController {
     // TODO(lmr): pass initialConfig
     // TODO(lmr): do we want to provide a way to customize the NavigationBar class?
-    return UINavigationController(rootViewController: rootViewController)
+    let navigationController = UINavigationController(rootViewController: rootViewController)
+    navigationController.modalPresentationStyle = rootViewController.modalPresentationStyle
+    return navigationController
   }
 
   public func reconcileTabConfig(
