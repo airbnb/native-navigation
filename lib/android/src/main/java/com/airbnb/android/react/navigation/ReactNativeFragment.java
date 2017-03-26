@@ -129,6 +129,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
               new ReactInstanceManager.ReactInstanceEventListener() {
                 @Override
                 public void onReactContextInitialized(ReactContext context) {
+                  reactInstanceManager.removeReactInstanceEventListener(this);
                   handler.post(new Runnable() {
                     @Override
                     public void run() {
