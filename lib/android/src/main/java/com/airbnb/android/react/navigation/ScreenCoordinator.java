@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 
 import com.airbnb.android.R;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 
 import java.util.Map;
@@ -56,6 +57,7 @@ public class ScreenCoordinator {
   private final Stack<BackStack> backStacks = new Stack<>();
   private final AppCompatActivity activity;
   private final ScreenCoordinatorLayout container;
+  private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
 
   private int stackId = 0;
   /**
@@ -150,6 +152,20 @@ public class ScreenCoordinator {
     presentScreen(fragment, null);
   }
 
+  private Boolean isFragmentTranslucent(Fragment fragment) {
+    Bundle bundle = fragment.getArguments();
+    if (bundle != null) {
+      String moduleName = bundle.getString(ReactNativeIntents.EXTRA_MODULE_NAME);
+      if (moduleName != null) {
+        ReadableMap config = reactNavigationCoordinator.getInitialConfigForModuleName(moduleName);
+        if (config != null && config.hasKey("translucent") && config.getBoolean("translucent")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public void presentScreen(Fragment fragment, @Nullable Promise promise) {
     presentScreen(fragment, PresentAnimation.Modal, promise);
   }
@@ -167,7 +183,9 @@ public class ScreenCoordinator {
 
     Fragment currentFragment = getCurrentFragment();
     if (currentFragment != null) {
-      ft.detach(currentFragment);
+      if (!isFragmentTranslucent(fragment)) {
+        ft.detach(currentFragment);
+      }
     }
     ft
         .add(container.getId(), fragment)
