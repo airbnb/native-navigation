@@ -86,6 +86,7 @@ The
 #### `screenColor: Color`
 
 The background color of the entire screen.
+If the color is translucent, the old screen will be kept below this one (to use it like a modal, for instance).
 
 Defaults to `#FFFFFF`.
 
