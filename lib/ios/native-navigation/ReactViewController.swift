@@ -298,8 +298,10 @@ open class ReactViewController: UIViewController {
 
   func prepareViewControllerForPresenting() -> UIViewController {
     let navigationController = coordinator.navigation.makeNavigationController(rootViewController: self)
-    if ((initialConfig["translucent"] as? Bool) ?? false) {
+    if let screenColor = colorForKey("screenColor", initialConfig) {
+      if (screenColor.cgColor.alpha < 1.0) {
         navigationController.modalPresentationStyle = .overCurrentContext
+      }
     }
     return navigationController
   }

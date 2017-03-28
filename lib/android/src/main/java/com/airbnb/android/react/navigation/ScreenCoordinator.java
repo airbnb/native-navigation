@@ -2,6 +2,7 @@ package com.airbnb.android.react.navigation;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
@@ -158,8 +159,8 @@ public class ScreenCoordinator {
       String moduleName = bundle.getString(ReactNativeIntents.EXTRA_MODULE_NAME);
       if (moduleName != null) {
         ReadableMap config = reactNavigationCoordinator.getInitialConfigForModuleName(moduleName);
-        if (config != null && config.hasKey("translucent") && config.getBoolean("translucent")) {
-          return true;
+        if (config != null && config.hasKey("screenColor")) {
+          return Color.alpha(config.getInt("screenColor")) < 255;
         }
       }
     }
