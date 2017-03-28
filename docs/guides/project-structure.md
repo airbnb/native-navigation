@@ -29,8 +29,8 @@ file.
 Our `routes.js` file might look something like this:
 
 ```js
-export const FOO: 'MyApp/Foo';
-export const BAR: 'MyApp/Bar';
+export const FOO = 'MyApp/Foo';
+export const BAR = 'MyApp/Bar';
 ```
 
 `routes.js` is just a set of constants that correspond to screens. You can think of them like URLs
