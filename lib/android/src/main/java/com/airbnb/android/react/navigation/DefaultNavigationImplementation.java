@@ -614,8 +614,8 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     return new ColorStateList(
         new int[][]{
             new int[]{android.R.attr.state_pressed},
+            new int[]{android.R.attr.state_checked},
             new int[]{android.R.attr.state_enabled},
-            new int[]{android.R.attr.state_focused, android.R.attr.state_pressed},
             new int[]{-android.R.attr.state_enabled},
             new int[]{} // this should be empty to make default color as we want
         },
