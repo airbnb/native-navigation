@@ -46,8 +46,9 @@ public class ScreenCoordinatorLayout extends FrameLayout {
   private List<DrawingOp> drawingOps = new ArrayList<>();
 
   private FragmentManager fragmentManager;
-  boolean reverseLastTwoChildren = false;
-  boolean isDetachingCurrentScreen = false;
+  private boolean reverseLastTwoChildren = false;
+  private boolean isDetachingCurrentScreen = false;
+  private int previousChildrenCount = 0;
 
   public ScreenCoordinatorLayout(@NonNull Context context) {
     super(context);
@@ -74,23 +75,6 @@ public class ScreenCoordinatorLayout extends FrameLayout {
     if (isDetachingCurrentScreen) {
       isDetachingCurrentScreen = false;
       reverseLastTwoChildren = true;
-
-      view.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart (Animation animation) {
-          // No-op
-        }
-
-        @Override
-        public void onAnimationEnd (Animation animation) {
-          reverseLastTwoChildren = false;
-        }
-
-        @Override
-        public void onAnimationRepeat (Animation animation) {
-          // No-op
-        }
-      });
     }
 
     super.removeView(view);
@@ -99,6 +83,11 @@ public class ScreenCoordinatorLayout extends FrameLayout {
   @Override
   protected void dispatchDraw(Canvas canvas) {
     super.dispatchDraw(canvas);
+
+    if (drawingOps.size() < previousChildrenCount) {
+      reverseLastTwoChildren = false;
+    }
+    previousChildrenCount = drawingOps.size();
 
     while (drawingOps.size() > 2) {
       DrawingOp op = drawingOps.remove(0);
