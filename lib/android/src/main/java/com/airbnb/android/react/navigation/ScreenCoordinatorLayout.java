@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,8 +43,8 @@ import java.util.List;
  * if the back stack grew since the last view was added.
  */
 public class ScreenCoordinatorLayout extends FrameLayout {
-  private List<DrawingOp> drawingOpPool = new ArrayList<>();
-  private List<DrawingOp> drawingOps = new ArrayList<>();
+  private final List<DrawingOp> drawingOpPool = new ArrayList<>();
+  private final List<DrawingOp> drawingOps = new ArrayList<>();
 
   private FragmentManager fragmentManager;
   private boolean reverseLastTwoChildren = false;
@@ -80,33 +81,31 @@ public class ScreenCoordinatorLayout extends FrameLayout {
     super.removeView(view);
   }
 
+  private void drawAndRelease(int index) {
+    DrawingOp op = drawingOps.remove(index);
+    op.draw();
+    drawingOpPool.add(op);
+  }
+
   @Override
   protected void dispatchDraw(Canvas canvas) {
     super.dispatchDraw(canvas);
 
+	// check the view removal is completed (by comparing the previous children count)
     if (drawingOps.size() < previousChildrenCount) {
       reverseLastTwoChildren = false;
     }
     previousChildrenCount = drawingOps.size();
 
-    while (drawingOps.size() > 2) {
-      DrawingOp op = drawingOps.remove(0);
-      op.draw();
-      drawingOpPool.add(op);
+    if (reverseLastTwoChildren) {
+      while (drawingOps.size() > 2) {
+        drawAndRelease(0);
+      }
+      Collections.reverse(drawingOps);
     }
 
-    if (reverseLastTwoChildren) {
-      while (!drawingOps.isEmpty()) {
-        DrawingOp op = drawingOps.remove(drawingOps.size() - 1);
-        op.draw();
-        drawingOpPool.add(op);
-      }
-    } else {
-      while (!drawingOps.isEmpty()) {
-        DrawingOp op = drawingOps.remove(0);
-        op.draw();
-        drawingOpPool.add(op);
-      }
+    while (!drawingOps.isEmpty()) {
+      drawAndRelease(0);
     }
   }
 
