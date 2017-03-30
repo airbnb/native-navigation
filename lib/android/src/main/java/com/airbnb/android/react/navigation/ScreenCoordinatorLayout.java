@@ -9,11 +9,11 @@ import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * This is a custom ViewGroup that draws the fragment that at the end of the back stack on top.
@@ -43,12 +43,11 @@ import java.util.Stack;
  */
 public class ScreenCoordinatorLayout extends FrameLayout {
   private List<DrawingOp> drawingOpPool = new ArrayList<>();
-  private Stack<DrawingOp> drawingOps = new Stack<>();
-
-  private int previousBackStackEntryCount = 0;
-  private boolean reverseDrawing = false;
+  private List<DrawingOp> drawingOps = new ArrayList<>();
 
   private FragmentManager fragmentManager;
+  boolean reverseLastTwoChildren = false;
+  boolean isDetachingCurrentScreen = false;
 
   public ScreenCoordinatorLayout(@NonNull Context context) {
     super(context);
@@ -66,16 +65,34 @@ public class ScreenCoordinatorLayout extends FrameLayout {
     this.fragmentManager = fragmentManager;
   }
 
-  @Override
-  public void addView(View child, int index, ViewGroup.LayoutParams params) {
-    int backStackEntryCount = fragmentManager.getBackStackEntryCount();
-    reverseDrawing = backStackEntryCount > previousBackStackEntryCount;
-    previousBackStackEntryCount = backStackEntryCount;
-    super.addView(child, index, params);
+  public void willDetachCurrentScreen() {
+    isDetachingCurrentScreen = true;
   }
 
   @Override
-  public void removeView(View view) {
+  public void removeView(final View view) {
+    if (isDetachingCurrentScreen) {
+      isDetachingCurrentScreen = false;
+      reverseLastTwoChildren = true;
+
+      view.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart (Animation animation) {
+          // No-op
+        }
+
+        @Override
+        public void onAnimationEnd (Animation animation) {
+          reverseLastTwoChildren = false;
+        }
+
+        @Override
+        public void onAnimationRepeat (Animation animation) {
+          // No-op
+        }
+      });
+    }
+
     super.removeView(view);
   }
 
@@ -83,21 +100,31 @@ public class ScreenCoordinatorLayout extends FrameLayout {
   protected void dispatchDraw(Canvas canvas) {
     super.dispatchDraw(canvas);
 
-    while (!drawingOps.isEmpty()) {
-      DrawingOp op = drawingOps.remove(drawingOps.size() - 1);
+    while (drawingOps.size() > 2) {
+      DrawingOp op = drawingOps.remove(0);
       op.draw();
       drawingOpPool.add(op);
+    }
+
+    if (reverseLastTwoChildren) {
+      while (!drawingOps.isEmpty()) {
+        DrawingOp op = drawingOps.remove(drawingOps.size() - 1);
+        op.draw();
+        drawingOpPool.add(op);
+      }
+    } else {
+      while (!drawingOps.isEmpty()) {
+        DrawingOp op = drawingOps.remove(0);
+        op.draw();
+        drawingOpPool.add(op);
+      }
     }
   }
 
   @Override
   protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-    if (reverseDrawing) {
-      drawingOps.add(obtainDrawingOp().set(canvas, child, drawingTime));
-      return true;
-    } else {
-      return super.drawChild(canvas, child, drawingTime);
-    }
+    drawingOps.add(obtainDrawingOp().set(canvas, child, drawingTime));
+    return true;
   }
 
   private void performDraw(DrawingOp op) {

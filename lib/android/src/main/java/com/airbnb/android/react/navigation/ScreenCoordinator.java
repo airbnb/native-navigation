@@ -183,10 +183,9 @@ public class ScreenCoordinator {
         .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     Fragment currentFragment = getCurrentFragment();
-    if (currentFragment != null) {
-      if (!isFragmentTranslucent(fragment)) {
-        ft.detach(currentFragment);
-      }
+    if (currentFragment != null && !isFragmentTranslucent(fragment)) {
+      container.willDetachCurrentScreen();
+      ft.detach(currentFragment);
     }
     ft
         .add(container.getId(), fragment)
