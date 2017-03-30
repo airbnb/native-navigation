@@ -38,7 +38,6 @@ export default class Screen extends React.Component {
         onDisappear={() => console.log('onDisappear', this.context.nativeNavigationInstanceId)}
       >
         <ScrollView>
-          <Navigator.Spacer animated />
           {children}
         </ScrollView>
       </Navigator.Config>

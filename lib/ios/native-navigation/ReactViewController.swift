@@ -213,8 +213,25 @@ open class ReactViewController: UIViewController {
       }
     }
   }
-
-
+  
+  override open func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    let _ = findScrollViewAndRefreshContentInset(in: view)
+  }
+  
+  // Do something similar to RCTFindScrollViewAndRefreshContentInsetInView in RCTWrapperViewController
+  private func findScrollViewAndRefreshContentInset(in view: UIView) -> Bool {
+    if let coolView = view as? RCTAutoInsetsProtocol {
+      coolView.refreshContentInset()
+      return true
+    }
+    for subview in view.subviews {
+      if findScrollViewAndRefreshContentInset(in: subview) {
+        return true
+      }
+    }
+    return false
+  }
 
 
   // MARK: Public Setters

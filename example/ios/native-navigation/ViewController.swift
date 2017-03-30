@@ -13,37 +13,24 @@ final class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "Root"
+    title = "Example"
 
     let pushButton1 = UIButton(type: .roundedRect)
     pushButton1.setTitle("Push ScreenOne", for: .normal)
     pushButton1.addTarget(self, action: #selector(pushScreenOne(sender:)), for: .touchUpInside)
-    pushButton1.frame = CGRect(x: 0, y: 100, width: 320, height: 60)
+    pushButton1.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(pushButton1)
+    pushButton1.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    pushButton1.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor, constant: 100).isActive = true
+    
 
     let pushButton2 = UIButton(type: .roundedRect)
     pushButton2.setTitle("Push TabScreen", for: .normal)
     pushButton2.addTarget(self, action: #selector(pushTabScreen(sender:)), for: .touchUpInside)
-    pushButton2.frame = CGRect(x: 0, y: 160, width: 320, height: 60)
+    pushButton2.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(pushButton2)
-
-//    let button = UIButton(type: .roundedRect)
-//    button.setTitle("Push ScreenOne", for: .normal)
-//    button.addTarget(self, action: "pushScreenOne", for: .touchUpInside)
-//    view.addSubview(button)
-
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [button setTitle:@"Push ScreenOne" forState:UIControlStateNormal];
-//    button.frame = CGRectMake(0, 100, 320, 140);
-//    [button addTarget:self action:@selector(pushScreenOne) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button];
-//
-//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [button2 setTitle:@"Push TabBar" forState:UIControlStateNormal];
-//    button2.frame = CGRectMake(0, 300, 320, 140);
-//    [button2 addTarget:self action:@selector(pushTabBar) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button2];
-
+    pushButton2.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    pushButton2.topAnchor.constraint(equalTo: pushButton1.bottomAnchor, constant: 40).isActive = true
 
     view.backgroundColor = .white
   }
