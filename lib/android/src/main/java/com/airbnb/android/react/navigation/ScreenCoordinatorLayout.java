@@ -97,11 +97,8 @@ public class ScreenCoordinatorLayout extends FrameLayout {
     }
     previousChildrenCount = drawingOps.size();
 
-    if (reverseLastTwoChildren) {
-      while (drawingOps.size() > 2) {
-        drawAndRelease(0);
-      }
-      Collections.reverse(drawingOps);
+    if (reverseLastTwoChildren && drawingOps.size() >= 2) {
+	  Collections.swap(drawingOps, drawingOps.size() - 1, drawingOps.size() - 2);
     }
 
     while (!drawingOps.isEmpty()) {
