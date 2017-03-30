@@ -16,6 +16,10 @@ The following props are defined on the tab bar as a part of the [DefaultImplemen
 
 #### `backgroundImage: Image`
 
+#### `shadowImage: Image`
+
+#### `selectionIndicatorImage: Image`
+
 #### `elevation: number`
 
 #### `translucent: boolean`
