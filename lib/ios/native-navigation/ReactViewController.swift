@@ -297,7 +297,13 @@ open class ReactViewController: UIViewController {
   }
 
   func prepareViewControllerForPresenting() -> UIViewController {
-    return coordinator.navigation.makeNavigationController(rootViewController: self)
+    let navigationController = coordinator.navigation.makeNavigationController(rootViewController: self)
+    if let screenColor = colorForKey("screenColor", initialConfig) {
+      if (screenColor.cgColor.alpha < 1.0) {
+        navigationController.modalPresentationStyle = .overCurrentContext
+      }
+    }
+    return navigationController
   }
 
   fileprivate func reconcileScreenConfig() {

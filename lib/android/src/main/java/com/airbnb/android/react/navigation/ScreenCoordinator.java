@@ -2,6 +2,7 @@ package com.airbnb.android.react.navigation;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
@@ -20,6 +21,7 @@ import android.widget.FrameLayout;
 
 import com.airbnb.android.R;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 
 import java.util.Map;
@@ -56,6 +58,7 @@ public class ScreenCoordinator {
   private final Stack<BackStack> backStacks = new Stack<>();
   private final AppCompatActivity activity;
   private final ScreenCoordinatorLayout container;
+  private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
 
   private int stackId = 0;
   /**
@@ -150,6 +153,20 @@ public class ScreenCoordinator {
     presentScreen(fragment, null);
   }
 
+  private Boolean isFragmentTranslucent(Fragment fragment) {
+    Bundle bundle = fragment.getArguments();
+    if (bundle != null) {
+      String moduleName = bundle.getString(ReactNativeIntents.EXTRA_MODULE_NAME);
+      if (moduleName != null) {
+        ReadableMap config = reactNavigationCoordinator.getInitialConfigForModuleName(moduleName);
+        if (config != null && config.hasKey("screenColor")) {
+          return Color.alpha(config.getInt("screenColor")) < 255;
+        }
+      }
+    }
+    return false;
+  }
+
   public void presentScreen(Fragment fragment, @Nullable Promise promise) {
     presentScreen(fragment, PresentAnimation.Modal, promise);
   }
@@ -166,7 +183,8 @@ public class ScreenCoordinator {
         .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     Fragment currentFragment = getCurrentFragment();
-    if (currentFragment != null) {
+    if (currentFragment != null && !isFragmentTranslucent(fragment)) {
+      container.willDetachCurrentScreen();
       ft.detach(currentFragment);
     }
     ft

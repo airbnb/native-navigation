@@ -9,11 +9,12 @@ import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * This is a custom ViewGroup that draws the fragment that at the end of the back stack on top.
@@ -42,13 +43,13 @@ import java.util.Stack;
  * if the back stack grew since the last view was added.
  */
 public class ScreenCoordinatorLayout extends FrameLayout {
-  private List<DrawingOp> drawingOpPool = new ArrayList<>();
-  private Stack<DrawingOp> drawingOps = new Stack<>();
-
-  private int previousBackStackEntryCount = 0;
-  private boolean reverseDrawing = false;
+  private final List<DrawingOp> drawingOpPool = new ArrayList<>();
+  private final List<DrawingOp> drawingOps = new ArrayList<>();
 
   private FragmentManager fragmentManager;
+  private boolean reverseLastTwoChildren = false;
+  private boolean isDetachingCurrentScreen = false;
+  private int previousChildrenCount = 0;
 
   public ScreenCoordinatorLayout(@NonNull Context context) {
     super(context);
@@ -66,38 +67,49 @@ public class ScreenCoordinatorLayout extends FrameLayout {
     this.fragmentManager = fragmentManager;
   }
 
-  @Override
-  public void addView(View child, int index, ViewGroup.LayoutParams params) {
-    int backStackEntryCount = fragmentManager.getBackStackEntryCount();
-    reverseDrawing = backStackEntryCount > previousBackStackEntryCount;
-    previousBackStackEntryCount = backStackEntryCount;
-    super.addView(child, index, params);
+  public void willDetachCurrentScreen() {
+    isDetachingCurrentScreen = true;
   }
 
   @Override
-  public void removeView(View view) {
+  public void removeView(final View view) {
+    if (isDetachingCurrentScreen) {
+      isDetachingCurrentScreen = false;
+      reverseLastTwoChildren = true;
+    }
+
     super.removeView(view);
+  }
+
+  private void drawAndRelease(int index) {
+    DrawingOp op = drawingOps.remove(index);
+    op.draw();
+    drawingOpPool.add(op);
   }
 
   @Override
   protected void dispatchDraw(Canvas canvas) {
     super.dispatchDraw(canvas);
 
+	// check the view removal is completed (by comparing the previous children count)
+    if (drawingOps.size() < previousChildrenCount) {
+      reverseLastTwoChildren = false;
+    }
+    previousChildrenCount = drawingOps.size();
+
+    if (reverseLastTwoChildren && drawingOps.size() >= 2) {
+	  Collections.swap(drawingOps, drawingOps.size() - 1, drawingOps.size() - 2);
+    }
+
     while (!drawingOps.isEmpty()) {
-      DrawingOp op = drawingOps.remove(drawingOps.size() - 1);
-      op.draw();
-      drawingOpPool.add(op);
+      drawAndRelease(0);
     }
   }
 
   @Override
   protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-    if (reverseDrawing) {
-      drawingOps.add(obtainDrawingOp().set(canvas, child, drawingTime));
-      return true;
-    } else {
-      return super.drawChild(canvas, child, drawingTime);
-    }
+    drawingOps.add(obtainDrawingOp().set(canvas, child, drawingTime));
+    return true;
   }
 
   private void performDraw(DrawingOp op) {
