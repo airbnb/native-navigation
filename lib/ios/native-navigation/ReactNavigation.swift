@@ -135,26 +135,16 @@ class ReactNavigation: NSObject {
     }
     
     switch modalPresentationStyle {
-    case "fullScreen":
-      return .fullScreen
-    case "pageSheet":
-      return .pageSheet
-    case "formSheet":
-      return .formSheet
-    case "currentContext":
-      return .currentContext
-    case "custom":
-      return .custom
-    case "overFullScreen":
-      return .overFullScreen
-    case "overCurrentContext":
-      return .overCurrentContext
-    case "popover":
-      return .popover
-    case "none":
-      return .none
-    default:
-      return .fullScreen // This is the system default
+    case "fullScreen":          return .fullScreen
+    case "pageSheet":           return .pageSheet
+    case "formSheet":           return .formSheet
+    case "currentContext":      return .currentContext
+    case "custom":              return .custom
+    case "overFullScreen":      return .overFullScreen
+    case "overCurrentContext":  return .overCurrentContext
+    case "popover":             return .popover
+    case "none":                return .none
+    default:                    return .fullScreen // This is the system default
     }
   }
   
