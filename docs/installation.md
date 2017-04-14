@@ -131,6 +131,7 @@ target 'MyNewProject' do
     'RCTAnimation',
     'RCTImage',
     'RCTNetwork'
+
     # Add any other subspecs you want to use in your project
   ]
   
@@ -138,6 +139,22 @@ target 'MyNewProject' do
   # React Native.
 end
 ```
+
+If you are using v0.43.0+ of React Native, you have to add the DevSupport module to allow for the debug menu to work.
+E.g：
+
+```
+pod 'React', :path => './React/node_modules/react-native', :subspecs => [
+    'Core',
+    'xxx',
+    'xxx',
+    'xxx',
+    'DevSupport']
+```
+
+
+
+
 
 Now that your `Podfile` is ready, you can run `pod install`:
 
