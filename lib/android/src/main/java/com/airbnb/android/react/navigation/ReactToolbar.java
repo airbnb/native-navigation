@@ -239,14 +239,16 @@ public class ReactToolbar extends Toolbar {
 
   /* package */ void setRightButtons(Menu menu, ReadableArray buttons, final ReactInterface component) {
     mActionsHolder.clear();
-    for (int i = 0; i < buttons.size(); i++) {
+    int length = buttons.size();
+    for (int i = 0; i < length; i++) {
       ReadableMap button = buttons.getMap(i);
 
       String title = button.hasKey("title") && button.getType("title") == ReadableType.String
           ? button.getString("title")
           : String.format("Item %s", i);
 
-      MenuItem item = menu.add(Menu.NONE, Menu.NONE, i, title);
+      // use `length - i` for ordering so the button ordering is consistent with iOS
+      MenuItem item = menu.add(Menu.NONE, Menu.NONE, length - i, title);
 
       if (button.hasKey("image")) {
         setMenuItemIcon(item, button.getMap("image"));
