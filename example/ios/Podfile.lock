@@ -1,26 +1,26 @@
 PODS:
   - native-navigation (0.1.0):
     - React
-  - React (0.42.0):
-    - React/Core (= 0.42.0)
-  - React/Core (0.42.0):
+  - React (0.42.3):
+    - React/Core (= 0.42.3)
+  - React/Core (0.42.3):
     - React/cxxreact
-    - Yoga (= 0.42.0.React)
-  - React/cxxreact (0.42.0):
+    - Yoga (= 0.42.3.React)
+  - React/cxxreact (0.42.3):
     - React/jschelpers
-  - React/jschelpers (0.42.0)
-  - React/RCTAnimation (0.42.0):
+  - React/jschelpers (0.42.3)
+  - React/RCTAnimation (0.42.3):
     - React/Core
-  - React/RCTImage (0.42.0):
+  - React/RCTImage (0.42.3):
     - React/Core
     - React/RCTNetwork
-  - React/RCTNetwork (0.42.0):
+  - React/RCTNetwork (0.42.3):
     - React/Core
-  - React/RCTText (0.42.0):
+  - React/RCTText (0.42.3):
     - React/Core
-  - React/RCTWebSocket (0.42.0):
+  - React/RCTWebSocket (0.42.3):
     - React/Core
-  - Yoga (0.42.0.React)
+  - Yoga (0.42.3.React)
 
 DEPENDENCIES:
   - native-navigation (from `../../`)
@@ -42,8 +42,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   native-navigation: 23b0ef13de8bd9aaa4dbaa115e9b7055e6844987
-  React: 8ec97f0d79ba31892c526cf56425937926cc9b48
-  Yoga: 4183cc70cae189d73f996b1e40c3078aca9f96ef
+  React: 35e039680feacd0563677d49ba410112d2748559
+  Yoga: 86ce777665c8259b94ef8dbea76b84634237f4ea
 
 PODFILE CHECKSUM: 62780c26b71f717952c8247c70052484dc91c6b3
 
