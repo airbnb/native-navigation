@@ -31,8 +31,7 @@
     "type": "git",
     "url": "git+https://github.com/airbnb/native-navigation.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "Leland Richardson <leland.richardson@airbnb.com>",
   "license": "MIT",
   "bugs": {
@@ -61,7 +60,7 @@
     "gitbook-cli": "^2.3.0",
     "murmur2js": "^1.0.0",
     "react": "^15.4.1",
-    "react-native": "^0.42.0"
+    "react-native": "^0.42.3"
   },
   "rnpm": {
     "android": {
