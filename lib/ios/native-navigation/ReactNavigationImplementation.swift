@@ -86,9 +86,9 @@ func stringHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [Strin
   let b = stringForKey(key, next)
   if let a = a, let b = b {
       return a != b
-  } else if let a = a {
+  } else if let _ = a {
     return true
-  } else if let b = b {
+  } else if let _ = b {
     return true
   }
   return false
@@ -99,42 +99,42 @@ func boolHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String:
   let b = boolForKey(key, next)
   if let a = a, let b = b {
     return a != b
-  } else if let a = a {
+  } else if let _ = a {
     return true
-  } else if let b = b {
+  } else if let _ = b {
     return true
   }
   return false
 }
 
 func numberHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
-  if let before = prev[key] as? NSNumber, (before != nil) {
-    if let after = next[key] as? NSNumber, (after != nil) {
+  if let before = prev[key] as? NSNumber {
+    if let after = next[key] as? NSNumber {
       return before != after
     } else {
       return true
     }
-  } else if let after = next[key] as? NSNumber, (after != nil) {
+  } else if let _ = next[key] as? NSNumber {
     return true
   }
   return false
 }
 
 func mapHasChanged(_ key: String, _ prev: [String: AnyObject], _ next: [String: AnyObject]) -> Bool {
-  if let before = prev[key] {
-    if let after = next[key] {
+  if let _ = prev[key] {
+    if let _ = next[key] {
       return true // TODO: could do more here...
     } else {
       return true
     }
-  } else if let after = next[key] {
+  } else if let _ = next[key] {
     return true
   }
   return false
 }
 
 func colorForKey(_ key: String, _ props: [String: AnyObject]) -> UIColor? {
-  guard let val = props[key] as? NSNumber, (val != nil) else { return nil }
+  guard let val = props[key] as? NSNumber else { return nil }
   let argb: UInt = val.uintValue;
   let a = CGFloat((argb >> 24) & 0xFF) / 255.0;
   let r = CGFloat((argb >> 16) & 0xFF) / 255.0;
@@ -179,7 +179,7 @@ func boolForKey(_ key: String, _ props: [String: AnyObject]) -> Bool? {
 }
 
 func imageForKey(_ key: String, _ props: [String: AnyObject]) -> UIImage? {
-  if let json = props[key] as? NSDictionary, (json != nil) {
+  if let json = props[key] as? NSDictionary {
     return RCTConvert.uiImage(json)
   }
   return nil
@@ -318,7 +318,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     if let hidden = boolForKey("hidden", config) {
       navBarHidden = hidden
     }
-    if let prompt = stringForKey("prompt", config) {
+    if stringForKey("prompt", config) != nil {
       hasPrompt = true
     }
     if let navController = navigationController {
@@ -339,24 +339,31 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     prev: [String: AnyObject],
     next: [String: AnyObject]
   ){
+    // Image
     if mapHasChanged("image", prev, next) {
       tabBarItem.image = imageForKey("image", next)
     }
+    if mapHasChanged("selectedImage", prev, next) {
+      tabBarItem.selectedImage = imageForKey("selectedImage", next)
+    }
+    // TODO: imageInsets
+
+    // Title
     if stringHasChanged("title", prev, next) {
       tabBarItem.title = stringForKey("title", next)
     }
-    // badgeValue
-    // selectedImage
-    // titlePositionAdjustment
-    //    tabBarItem.title = title
-    //    tabBarItem.badgeColor
-    //    tabBarItem.badgeTextAttributes(for: .normal)
-    //    tabBarItem.badgeValue
-    //    tabBarItem.selectedImage
-    //    tabBarItem.imageInsets
-    //    tabBarItem.titleTextAttributes(for: .normal)
-    //    tabBarItem.titlePositionAdjustment
+    // TODO: titleTextAttributes (for various states), titlePositionAdjustment
 
+    // Badge
+    if stringHasChanged("badgeValue", prev, next) {
+      tabBarItem.badgeValue = stringForKey("badgeValue", next)
+    }
+    if #available(iOS 10.0, *), numberHasChanged("badgeColor", prev, next) {
+      if let badgeColor = colorForKey("badgeColor", next) {
+        tabBarItem.badgeColor = badgeColor
+      }
+    }
+    // TODO: badgeTextAttributes (for various states)
   }
 
   public func reconcileTabBarConfig(
@@ -371,12 +378,16 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         tabBar.isTranslucent = false
       }
     }
+    
     if numberHasChanged("tintColor", prev, next) {
       if let tintColor = colorForKey("tintColor", next) {
         tabBar.tintColor = tintColor
       } else {
-
+        // Default perhaps?
       }
+    }
+    if #available(iOS 10.0, *), numberHasChanged("unselectedItemTintColor", prev, next) {
+      tabBar.unselectedItemTintColor = colorForKey("unselectedItemTintColor", next)
     }
 
     if numberHasChanged("barTintColor", prev, next) {
@@ -386,6 +397,16 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
       }
     }
+    
+    if mapHasChanged("backgroundImage", prev, next) {
+      tabBar.backgroundImage = imageForKey("backgroundImage", next)
+    }
+    if mapHasChanged("shadowImage", prev, next) {
+      tabBar.shadowImage = imageForKey("shadowImage", next)
+    }
+    if mapHasChanged("selectionIndicatorImage", prev, next) {
+      tabBar.selectionIndicatorImage = imageForKey("selectionIndicatorImage", next)
+    }
 
 //    tabBar.alpha
 //    tabBar.backgroundColor
@@ -394,10 +415,6 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     // barStyle
     // itemSpacing float
     // itemWidth: float
-    // backgroundImage: image
-    // shadowImage: image
-    // selectionIndicatorImage: image
-    // unselectedItemTintColor: color
 
   }
 
@@ -545,14 +562,6 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     }
 
 //    viewController.navigationItem.titleView = nil
-//    viewController.navigationItem.accessibilityHint = ""
-//    viewController.navigationItem.accessibilityLabel = ""
-//    viewController.navigationItem.accessibilityValue = ""
-//    viewController.navigationItem.accessibilityTraits = 1
-
-    // TODO: 
-    // right button(s)
-    // statusbar stuff
   }
 }
 

@@ -21,6 +21,8 @@ The following props are defined on tab as a part of the [DefaultImplementation](
 
 #### `image: Image`
 
+#### `selectedImage: Image`
+
 #### `title: string`
 
 #### `titleFontSize: number`
@@ -30,6 +32,8 @@ The following props are defined on tab as a part of the [DefaultImplementation](
 #### `titleFontName: string`
 
 #### `badgeValue: number`
+
+#### `badgeColor: Color`
 
 #### `badgeFontSize: number`
 

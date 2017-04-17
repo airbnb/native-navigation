@@ -25,8 +25,8 @@ extension Dictionary {
 
   public func combineWith(values: [Key: Value]) -> [Key: Value] {
     var out = [Key: Value]()
-    out.merge(values: self);
-    out.merge(values: values);
+    let _ = out.merge(values: self);
+    let _ = out.merge(values: values);
     return out;
   }
 
