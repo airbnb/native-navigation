@@ -47,7 +47,6 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private static final String ON_APPEAR = "onAppear";
   private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
   private static final String ON_BUTTON_PRESS = "onButtonPress";
-  private static final String ON_LINK_PRESS = "onLinkPress";
   private static final String INITIAL_BAR_HEIGHT_PROP = "nativeNavigationInitialBarHeight";
   private static final int RENDER_TIMEOUT_IN_MS = 1700; // TODO(lmr): put this back down when done debugging
 
@@ -419,13 +418,6 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     super.onPrepareOptionsMenu(menu);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // it's the link
-    emitEvent(ON_LINK_PRESS, null);
-    return false;
-  }
-
   private boolean isSuccessfullyInitialized() {
     return reactNavigationCoordinator.isSuccessfullyInitialized();
   }
@@ -437,7 +429,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   public void emitEvent(String eventName, Object object) {
     if (isSuccessfullyInitialized()) {
       String key =
-              String.format(Locale.ENGLISH, "AirbnbNavigatorScreen.%s.%s", eventName, instanceId);
+              String.format(Locale.ENGLISH, "NativeNavigationScreen.%s.%s", eventName, instanceId);
       maybeEmitEvent(reactInstanceManager.getCurrentReactContext(), key, object);
     }
   }

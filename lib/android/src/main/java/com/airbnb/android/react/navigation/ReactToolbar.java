@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.views.toolbar.DrawableWithIntrinsicSize;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -237,12 +238,15 @@ public class ReactToolbar extends Toolbar {
   }
 
   /* package */ void setRightButtons(Menu menu, ReadableArray buttons, final ReactInterface component) {
-    Log.d(TAG, "");
     mActionsHolder.clear();
     for (int i = 0; i < buttons.size(); i++) {
       ReadableMap button = buttons.getMap(i);
 
-      MenuItem item = menu.add(Menu.NONE, Menu.NONE, i, button.getString("title"));
+      String title = button.hasKey("title") && button.getType("title") == ReadableType.String
+          ? button.getString("title")
+          : String.format("Item %s", i);
+
+      MenuItem item = menu.add(Menu.NONE, Menu.NONE, i, title);
 
       if (button.hasKey("image")) {
         setMenuItemIcon(item, button.getMap("image"));
