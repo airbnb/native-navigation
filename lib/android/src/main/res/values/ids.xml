@@ -3,4 +3,5 @@
     <item name="react_shared_element_transition_name" type="id" />
     <item name="react_shared_element_screen_instance_id" type="id" />
     <item name="react_shared_element_group_id" type="id" />
+    <item name="react_activity_container_id" type="id" />
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import com.airbnb.android.R;
 
 public abstract class ReactActivity extends ReactAwareActivity implements ScreenCoordinatorComponent {
   private static final String TAG = ReactActivity.class.getSimpleName();
@@ -21,6 +22,7 @@ public abstract class ReactActivity extends ReactAwareActivity implements Screen
         )
     );
     container.setForegroundGravity(Gravity.CENTER);
+    container.setId(R.id.react_activity_container_id);
     setContentView(container);
 
     screenCoordinator = new ScreenCoordinator(this, container, savedInstanceState);
