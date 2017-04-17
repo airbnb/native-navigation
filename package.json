@@ -1,6 +1,6 @@
 {
   "name": "native-navigation",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,6 @@
     "build:ios": "bundle install --binstubs ./examples/ios && bundle exec pod install --project-directory=./example/ios/",
     "build:android": "./gradlew :native-navigation:assembleDebug",
     "ci": "npm run lint",
-    "prepublish": "npm run build",
-    "postpublish": "npm run publish:pod && npm run publish:maven",
     "publish:pod": "exit 0",
     "publish:maven": "exit 0",
     "publish:mavenold": "cd lib/android/ && ./gradlew clean check uploadArchives && cd -",
