@@ -556,9 +556,16 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
       if let translucent = boolForKey("translucent", next) {
         navBar.isTranslucent = translucent
       }
-
-      //    navigationController?.navigationBar.barStyle = .blackTranslucent
-      //    navigationController?.navigationBar.shadowImage = nil
+        
+      if let barStyle = stringForKey("barStyle", next) {
+        navBar.barStyle = barStyle == "black" ? .black : .default
+      }
+        
+      if let shadowImage = imageForKey("shadowImage", next) {
+        navBar.shadowImage = shadowImage
+      } else {
+        navBar.shadowImage = nil
+      }
     }
 
 //    viewController.navigationItem.titleView = nil

@@ -119,6 +119,13 @@ Defaults to `'fade'`.
 #### `statusBarStyle: 'light' | 'default'`
 
 
+#### `barStyle: 'black' | 'default' (iOS)`
+
+Configures the bar style effectively updating the status bar color for views inside a navigator.
+
+#### `shadowImage: Image (iOS)`
+
+Image for the shadow drawn under the nav bar.
 
 
 
