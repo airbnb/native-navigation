@@ -251,7 +251,7 @@ func configurebarButtonItemFromPrefix(
   let style = stringForKey(lower("\(prefix)Style"), props)
   let titleTextAttributes = textAttributesFromPrefix(lower("\(prefix)Title"), props)
   let accessibilityLabel = stringForKey(lower("\(prefix)AccessibilityLabel"), props)
-  let testId = stringForKey(lower("\(prefix)TestId"), props)
+  let testID = stringForKey(lower("\(prefix)TestID"), props)
 
   if let prev = passedItem {
     if (
@@ -269,7 +269,7 @@ func configurebarButtonItemFromPrefix(
       )
       
       barButton.accessibilityLabel = accessibilityLabel
-      barButton.accessibilityIdentifier = testId
+      barButton.accessibilityIdentifier = testID
       
       return barButton
     } else {
@@ -287,7 +287,7 @@ func configurebarButtonItemFromPrefix(
       )
       
       barButton.accessibilityLabel = accessibilityLabel
-      barButton.accessibilityIdentifier = testId
+      barButton.accessibilityIdentifier = testID
 
       return barButton
     } else {
