@@ -239,20 +239,19 @@ func configurebarButtonItemFromPrefix(
   _ passedItem: UIBarButtonItem?
 ) -> BlockBarButtonItem? {
 
-  //    ?.customView = nil
-  //    ?.setBackButtonBackgroundImage(nil, for: .focused, barMetrics: .default)
-  //    ?.style = .done
-  //    ?.tintColor = UIColor.black
-  //    ?.width = 20
-  //    ?.accessibilityLabel = ""
-  //    ?.image = nil
-  //    ?.isEnabled = false
+  // TODO:
+  // * customView
+  // * setBackButtonBackgroundImage(nil, for: .focused, barMetrics: .default)
+  // * width
+
   let title = stringForKey(lower("\(prefix)Title"), props)
   let image = imageForKey(lower("\(prefix)Image"), props)
   let enabled = boolForKey(lower("\(prefix)Enabled"), props)
   let tintColor = colorForKey(lower("\(prefix)TintColor"), props)
   let style = stringForKey(lower("\(prefix)Style"), props)
   let titleTextAttributes = textAttributesFromPrefix(lower("\(prefix)Title"), props)
+  let accessibilityLabel = stringForKey(lower("\(prefix)AccessibilityLabel"), props)
+  let testId = stringForKey(lower("\(prefix)TestId"), props)
 
   if let prev = passedItem {
     if (
@@ -260,7 +259,7 @@ func configurebarButtonItemFromPrefix(
       enabled != prev.isEnabled ||
       tintColor != prev.tintColor
     ) {
-      return BlockBarButtonItem(
+      let barButton = BlockBarButtonItem(
         title: title ?? prev.title,
         image: image ?? prev.image,
         style: barButtonStyleFromString(style),
@@ -268,12 +267,17 @@ func configurebarButtonItemFromPrefix(
         tintColor: tintColor,
         titleTextAttributes: titleTextAttributes
       )
+      
+      barButton.accessibilityLabel = accessibilityLabel
+      barButton.accessibilityIdentifier = testId
+      
+      return barButton
     } else {
       return nil
     }
   } else {
     if (title != nil || image != nil) {
-      return BlockBarButtonItem(
+      let barButton = BlockBarButtonItem(
         title: title,
         image: image,
         style: barButtonStyleFromString(style),
@@ -281,6 +285,11 @@ func configurebarButtonItemFromPrefix(
         tintColor: tintColor,
         titleTextAttributes: titleTextAttributes
       )
+      
+      barButton.accessibilityLabel = accessibilityLabel
+      barButton.accessibilityIdentifier = testId
+
+      return barButton
     } else {
       return nil
     }
