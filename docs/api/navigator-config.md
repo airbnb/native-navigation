@@ -127,6 +127,10 @@ Configures the bar style effectively updating the status bar color for views ins
 
 Image for the shadow drawn under the nav bar.
 
+#### `image: Image`
+
+Image shown in the center of the nav bar. If set, this replaces the title that would have been shown.
+
 
 
 ## Events
@@ -216,6 +220,7 @@ type NavigatorConfigProps = {
   titleFontSize: number;
   subtitleFontName: string;
   subtitleFontSize: number;
+  image: Image;
   
   // android-only-but-should-share
   navIcon: Image;

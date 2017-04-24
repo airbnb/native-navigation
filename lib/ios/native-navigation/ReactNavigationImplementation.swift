@@ -504,6 +504,10 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     if let hidesBackButton = boolForKey("hidesBackButton", next) {
       navItem.setHidesBackButton(hidesBackButton, animated: true)
     }
+    
+    if let image = imageForKey("image", next) {
+      navItem.titleView = UIImageView(image: image)
+    }
 
     if let navController = navigationController {
 
