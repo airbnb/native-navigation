@@ -232,6 +232,8 @@ type NavigatorConfigProps = {
   isToolbarHidden: boolean;
   backIndicatorTransitionMaskImage: Image;
   translucent: boolean;
+  barStyle: string;
+  shadowImage: Image;
   
   // android-only
   statusBarColor: Color;
