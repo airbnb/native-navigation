@@ -49,8 +49,12 @@ export default class NavigationExampleScreen extends Component {
           onPress={() => Navigator.dismiss()}
         />
         <Row
-          title="Title"
+          title="Shared elements"
           onPress={() => Navigator.push('SharedElementFromScreen')}
+        />
+        <Row
+          title="Navigation bar customisation"
+          onPress={() => Navigator.push('NavigationBar')}
         />
       </Screen>
     );

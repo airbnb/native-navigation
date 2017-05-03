@@ -51,15 +51,23 @@ class BlockBarButtonItem: UIBarButtonItem {
     self.target = self
   }
 
+  convenience init(barButtonSystemItem: UIBarButtonSystemItem) {
+    self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(barButtonItemPressed))
+    self.target = self
+  }
+
   convenience init(
     title: String?,
     image: UIImage?,
+    barButtonSystemItem: UIBarButtonSystemItem?,
     style: UIBarButtonItemStyle,
     enabled: Bool?,
     tintColor: UIColor?,
     titleTextAttributes: [String: Any]?
   ) {
-    if let title = title {
+    if let barButtonSystemItem = barButtonSystemItem {
+      self.init(barButtonSystemItem: barButtonSystemItem)
+    } else if let title = title {
       self.init(title: title, style: style)
     } else {
       self.init(image: image, style: style)
@@ -192,6 +200,36 @@ func barButtonStyleFromString(_ string: String?) -> UIBarButtonItemStyle {
   }
 }
 
+func barButtonSystemItemFromString(_ string: String?) -> UIBarButtonSystemItem? {
+  switch string {
+  case .some("done"): return .done
+  case .some("cancel"): return .cancel
+  case .some("edit"): return .edit
+  case .some("save"): return .save
+  case .some("add"): return .add
+  case .some("flexibleSpace"): return .flexibleSpace
+  // case .some("fixedSpace"): return .fixedSpace
+  case .some("compose"): return .compose
+  case .some("reply"): return .reply
+  case .some("action"): return .action
+  case .some("organize"): return .organize
+  case .some("bookmarks"): return .bookmarks
+  case .some("search"): return .search
+  case .some("refresh"): return .refresh
+  case .some("stop"): return .stop
+  case .some("camera"): return .camera
+  case .some("trash"): return .trash
+  case .some("play"): return .play
+  case .some("pause"): return .pause
+  case .some("rewind"): return .rewind
+  case .some("fastForward"): return .fastForward
+  case .some("undo"): return .undo
+  case .some("redo"): return .redo
+  case .some("pageCurl"): return .pageCurl
+  default: return nil
+  }
+}
+
 func statusBarStyleFromString(_ string: String?) -> UIStatusBarStyle {
   switch(string) {
   case .some("light"): return .lightContent
@@ -233,7 +271,7 @@ func lower(_ key: String) -> String {
   return key.substring(to: i).lowercased() + key.substring(from: i)
 }
 
-func configurebarButtonItemFromPrefix(
+func configureBarButtonItemFromPrefix(
   _ prefix: String,
   _ props: [String: AnyObject],
   _ passedItem: UIBarButtonItem?
@@ -246,6 +284,8 @@ func configurebarButtonItemFromPrefix(
 
   let title = stringForKey(lower("\(prefix)Title"), props)
   let image = imageForKey(lower("\(prefix)Image"), props)
+  let systemItem = stringForKey(lower("\(prefix)SystemItem"), props)
+  let barButtonSystemItem = barButtonSystemItemFromString(systemItem)
   let enabled = boolForKey(lower("\(prefix)Enabled"), props)
   let tintColor = colorForKey(lower("\(prefix)TintColor"), props)
   let style = stringForKey(lower("\(prefix)Style"), props)
@@ -262,30 +302,32 @@ func configurebarButtonItemFromPrefix(
       let barButton = BlockBarButtonItem(
         title: title ?? prev.title,
         image: image ?? prev.image,
+        barButtonSystemItem: barButtonSystemItem,
         style: barButtonStyleFromString(style),
         enabled: enabled,
         tintColor: tintColor,
         titleTextAttributes: titleTextAttributes
       )
-      
+
       barButton.accessibilityLabel = accessibilityLabel
       barButton.accessibilityIdentifier = testID
-      
+
       return barButton
     } else {
       return nil
     }
   } else {
-    if (title != nil || image != nil) {
+    if (title != nil || image != nil || barButtonSystemItem != nil) {
       let barButton = BlockBarButtonItem(
         title: title,
         image: image,
+        barButtonSystemItem: barButtonSystemItem,
         style: barButtonStyleFromString(style),
         enabled: enabled,
         tintColor: tintColor,
         titleTextAttributes: titleTextAttributes
       )
-      
+
       barButton.accessibilityLabel = accessibilityLabel
       barButton.accessibilityIdentifier = testID
 
@@ -301,7 +343,7 @@ func configureBarButtonArrayForKey(_ key: String, _ props: [String: AnyObject]) 
     var result = [BlockBarButtonItem]()
     for item in buttons {
       if let buttonProps = item as? [String: AnyObject] {
-        if let button = configurebarButtonItemFromPrefix("", buttonProps, nil) {
+        if let button = configureBarButtonItemFromPrefix("", buttonProps, nil) {
           result.append(button)
         }
       }
@@ -387,7 +429,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         tabBar.isTranslucent = false
       }
     }
-    
+
     if numberHasChanged("tintColor", prev, next) {
       if let tintColor = colorForKey("tintColor", next) {
         tabBar.tintColor = tintColor
@@ -406,7 +448,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
       }
     }
-    
+
     if mapHasChanged("backgroundImage", prev, next) {
       tabBar.backgroundImage = imageForKey("backgroundImage", next)
     }
@@ -487,7 +529,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         }
       }
       navItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-    } else if let rightBarButtonItem = configurebarButtonItemFromPrefix("right", next, navItem.rightBarButtonItem) {
+    } else if let rightBarButtonItem = configureBarButtonItemFromPrefix("right", next, navItem.rightBarButtonItem) {
       rightBarButtonItem.actionHandler = { [weak viewController] in
         viewController?.emitEvent("onRightPress", body: nil)
       }
@@ -502,7 +544,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         }
       }
       navItem.setLeftBarButtonItems(leftBarButtonItems, animated: true)
-    } else if let leftBarButtonItem = configurebarButtonItemFromPrefix("left", next, navItem.leftBarButtonItem) {
+    } else if let leftBarButtonItem = configureBarButtonItemFromPrefix("left", next, navItem.leftBarButtonItem) {
       leftBarButtonItem.actionHandler = { [weak viewController] in
         // TODO(lmr): we want to dismiss here...
         viewController?.emitEvent("onLeftPress", body: nil)
