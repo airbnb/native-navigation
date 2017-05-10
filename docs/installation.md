@@ -372,8 +372,8 @@ dependencies {
     // ... any dependencies you already had
     
     // if you don't already depend on the support libraries, add these
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:support-annotations:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:support-annotations:25.2.0'
     
     // add native-navigation
     compile project(':native-navigation')
