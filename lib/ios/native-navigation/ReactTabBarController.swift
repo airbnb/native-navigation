@@ -40,6 +40,10 @@ open class ReactTabBarController: UITabBarController {
   fileprivate var tabViews: [TabView] = []
   private var barHeight: CGFloat
 
+  public convenience init(moduleName: String) {
+    self.init(moduleName: moduleName, props: [:])
+  }
+
   public init(moduleName: String, props: [String: AnyObject] = [:]) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
