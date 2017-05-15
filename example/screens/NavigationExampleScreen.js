@@ -13,7 +13,9 @@ import Screen from '../components/Screen';
 import Row from '../components/Row';
 
 const propTypes = {};
-const defaultProps = {};
+const defaultProps = {
+  title: 'A Screen'
+};
 const contextTypes = {
   nativeNavigationInstanceId: PropTypes.string,
 };
@@ -23,7 +25,7 @@ const { width } = Dimensions.get('window');
 export default class NavigationExampleScreen extends Component {
   render() {
     return (
-      <Screen>
+      <Screen title={this.props.title}>
         <LoremImage
           width={width}
           height={width / 1.6}
