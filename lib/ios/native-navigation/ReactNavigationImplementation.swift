@@ -449,8 +449,16 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
     let navItem = viewController.navigationItem
 
-
-    if let titleView = titleAndSubtitleViewFromProps(next) {
+    // title, subtitle, titleView
+    if let titleViewModule = stringForKey("titleView", next) {
+      if titleViewModule != stringForKey("titleView", prev) {
+        let titleView = RCTRootView(
+          bridge: ReactNavigationCoordinator.sharedInstance.bridge,
+          moduleName: titleViewModule,
+          initialProperties: [:])
+        assignTitleView(navItem: navItem, titleView: titleView)
+      }
+    } else if let titleView = titleAndSubtitleViewFromProps(next) {
       if let title = stringForKey("title", next) {
         // set the title anyway, for accessibility
         viewController.title = title
@@ -585,6 +593,18 @@ func buildFontFromProps(nameKey: String, sizeKey: String, defaultSize: CGFloat, 
     return UIFont.systemFont(ofSize: size)
   } else {
     return UIFont.systemFont(ofSize: defaultSize)
+  }
+}
+
+func assignTitleView(navItem: UINavigationItem, titleView: UIView?) {
+  guard let titleView = titleView else { return }
+
+  navItem.titleView = titleView
+
+  titleView.backgroundColor = nil
+
+  if let superViewBounds = titleView.superview?.bounds {
+    navItem.titleView?.bounds = superViewBounds
   }
 }
 
