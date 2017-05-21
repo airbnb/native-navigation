@@ -451,7 +451,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
     // title, subtitle, titleView
     if let titleViewModule = stringForKey("titleView", next) {
-      if titleViewModule != stringForKey("titleView", prev) {
+      if titleViewModule != stringForKey("titleView", prev) || navItem.titleView == nil {
         let titleView = RCTRootView(
           bridge: ReactNavigationCoordinator.sharedInstance.bridge,
           moduleName: titleViewModule,
