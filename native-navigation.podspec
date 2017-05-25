@@ -5,7 +5,7 @@ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 Pod::Spec.new do |s|
   s.name         = "native-navigation"
   s.version      = package['version']
-  s.summary      = "React Native Mapview component for iOS + Android"
+  s.summary      = "Native navigation library for React Native applications"
 
   s.authors      = { "intelligibabble" => "leland.m.richardson@gmail.com" }
   s.homepage     = "https://github.com/airbnb/native-navigation#readme"
