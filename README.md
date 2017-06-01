@@ -50,7 +50,10 @@ npm start
 
 Then, in another CLI window:
 
-To run on iOS: `npm run run:ios`
+To run on iOS:
+ 
+ * To set up the dependencies: `cd example/ios` then `bundle install` and `bundle exec pod install`
+ * To run the app: `npm run run:ios`
 
 To run on Android: `npm run run:android`
 
