@@ -125,7 +125,26 @@ class ReactNavigation: NSObject {
       }
 
       self.coordinator.registerFlow(presented, resolve: resolve, reject: reject)
-      nav.presentReactViewController(presented, animated: animated, completion: nil, makeTransition: makeTransition)
+      nav.presentReactViewController(presented, animated: animated, completion: nil, presentationStyle: self.modalPresentationStyle(from: options), makeTransition: makeTransition)
+    }
+  }
+  
+  private func modalPresentationStyle(from options: [String: Any]) -> UIModalPresentationStyle {
+    guard let modalPresentationStyle = options["modalPresentationStyle"] as? String else {
+      return .fullScreen // this is the system default
+    }
+    
+    switch modalPresentationStyle {
+    case "fullScreen":          return .fullScreen
+    case "pageSheet":           return .pageSheet
+    case "formSheet":           return .formSheet
+    case "currentContext":      return .currentContext
+    case "custom":              return .custom
+    case "overFullScreen":      return .overFullScreen
+    case "overCurrentContext":  return .overCurrentContext
+    case "popover":             return .popover
+    case "none":                return .none
+    default:                    return .fullScreen // This is the system default
     }
   }
   

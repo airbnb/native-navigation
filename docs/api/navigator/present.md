@@ -5,8 +5,11 @@
 1. `screenName` (`string`): The screen identifier of the screen to be pushed.
 2. `props` (`Object`): Props to be passed into the presented screen.
 3. `options` (`Object`): Options for the navigation transition:
-  - `options.transitionGroup` (`string`): The shared element group ID to use for the shared element
+  - `options.transitionGroup` (`string`): The shared element group ID to use for the shared element 
   transition
+  - `options.modalPresentationStyle` (`string`, iOS only): The presentation style to use when presenting
+  the view modally. Either `fullScreen` (default), `pageSheet`, `formSheet`, `currentContext`, `custom`,
+  `overFullScreen`, `overCurrentContext`, `popover` or `none`.
 
 ## Returns
 

@@ -61,12 +61,13 @@ extension UIViewController {
     animated: Bool,
     completion: (() -> Void)?
   ) {
-    presentReactViewController(viewControllerToPresent, animated: animated, completion: completion, makeTransition: nil)
+    presentReactViewController(viewControllerToPresent, animated: animated, completion: completion, presentationStyle: .fullScreen, makeTransition: nil)
   }
   public func presentReactViewController(
     _ viewControllerToPresent: ReactViewControllerProtocol,
     animated: Bool,
     completion: (() -> Void)?,
+    presentationStyle: UIModalPresentationStyle = .fullScreen,
     makeTransition: (() -> ReactSharedElementTransition)?
   ) {
     guard let irvc = viewControllerToPresent as? InternalReactViewControllerProtocol else {
@@ -76,13 +77,14 @@ extension UIViewController {
       }
       return
     }
-    internalPresentReactViewController(irvc, animated: animated, completion: completion, makeTransition: makeTransition)
+    internalPresentReactViewController(irvc, animated: animated, completion: completion, presentationStyle: presentationStyle, makeTransition: makeTransition)
   }
 
   func internalPresentReactViewController(
     _ rvc: InternalReactViewControllerProtocol,
     animated: Bool,
     completion: (() -> Void)?,
+    presentationStyle: UIModalPresentationStyle,
     makeTransition: (() -> ReactSharedElementTransition)?
   ) {
 
@@ -124,6 +126,9 @@ extension UIViewController {
         rvc.transition = transition
         viewControllerToPresent.transitioningDelegate = transition
       }
+      
+      viewControllerToPresent.modalPresentationStyle = presentationStyle
+      // TODO: preferredContentSize - for popover types
 
       self?.present(viewControllerToPresent, animated: animated, completion: {
         rvc.isCurrentlyTransitioning = false
