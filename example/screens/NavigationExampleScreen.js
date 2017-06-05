@@ -21,9 +21,16 @@ const contextTypes = {
 const { width } = Dimensions.get('window');
 
 export default class NavigationExampleScreen extends Component {
+  state = {
+    titleView: undefined,
+  }
+
   render() {
     return (
       <Screen>
+        <Navigator.Config
+          titleView={this.state.titleView}
+        />
         <LoremImage
           width={width}
           height={width / 1.6}
@@ -51,6 +58,10 @@ export default class NavigationExampleScreen extends Component {
         <Row
           title="Title"
           onPress={() => Navigator.push('SharedElementFromScreen')}
+        />
+        <Row
+          title="Custom titleView"
+          onPress={() => this.setState({titleView: 'ACustomTitleView'})}
         />
       </Screen>
     );

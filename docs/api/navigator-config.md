@@ -66,6 +66,11 @@ The subtitle of the screen. This shows up as a string below the title of the scr
 The text color of the subtitle.
 
 
+#### `titleView: string`
+
+The name of a component to render as a custom titleView. This component must be have been previously registered with `AppRegistry.registerComponent`.
+
+
 #### `alpha: number`
 
 The opacity of the navigation bar. Should be between `0` and `1`.
@@ -204,6 +209,7 @@ type NavigatorConfigProps = {
   statusBarStyle: 'light' | 'default';
   
   // ios-only-but-should-share
+  titleView: string;
   backIndicatorImage: Image;
   titleFontName: string;
   titleFontSize: number;
