@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
