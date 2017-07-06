@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-interface ReactAwareActivityFacade {
+public interface ReactAwareActivityFacade {
   // @formatter:off
   void runOnUiThread(Runnable action);
   Context getBaseContext();
