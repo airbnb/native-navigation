@@ -5,7 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.facebook.react.bridge.ReadableMap;
 
-interface NavigationImplementation {
+public interface NavigationImplementation {
   void reconcileNavigationProperties(
       ReactInterface component,
       ReactToolbar toolbar,

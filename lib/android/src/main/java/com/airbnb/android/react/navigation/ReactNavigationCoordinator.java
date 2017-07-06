@@ -18,29 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class ReactScreenConfig {
-  ReadableMap initialConfig;
-  boolean waitForRender;
-  ReactScreenMode mode;
-
-  static final ReactScreenConfig EMPTY = new ReactScreenConfig(
-      ConversionUtil.EMPTY_MAP,
-      true,
-      ReactScreenMode.SCREEN
-  );
-
-  ReactScreenConfig(
-      ReadableMap initialConfig,
-      boolean waitForRender,
-      ReactScreenMode mode
-  ) {
-    this.initialConfig = initialConfig;
-    this.waitForRender = waitForRender;
-    this.mode = mode;
-  }
-
-}
-
 public class ReactNavigationCoordinator {
   public static ReactNavigationCoordinator sharedInstance = new ReactNavigationCoordinator();
 
@@ -82,7 +59,7 @@ public class ReactNavigationCoordinator {
     return this.navigationImplementation;
   }
 
-  boolean isSuccessfullyInitialized() {
+  public boolean isSuccessfullyInitialized() {
     return isSuccessfullyInitialized;
   }
 
