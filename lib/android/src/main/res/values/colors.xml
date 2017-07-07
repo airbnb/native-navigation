@@ -2,4 +2,5 @@
     <color name="c_gray_1_5">#7d7f80</color>
     <color name="c_gray_2">#98999a</color>
     <color name="c_gray_2_5">#a4a3a2</color>
+    <color name="c_white">#ffffff</color>
 </resources>

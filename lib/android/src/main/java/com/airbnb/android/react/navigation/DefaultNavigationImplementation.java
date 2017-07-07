@@ -10,23 +10,23 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenu;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
+
 import com.airbnb.android.R;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
-
-import java.util.Objects;
 
 public class DefaultNavigationImplementation implements NavigationImplementation {
   private static final String TAG = "DefaultImplementation";
@@ -491,6 +491,9 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 //    toolbar.setCameraDistance(0.1);
 //    toolbar.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
 //    toolbar.setForegroundTintMode(PorterDuff.Mode.DARKEN);
+
+    Drawable drawable = toolbar.getNavigationIcon();
+    drawable.setColorFilter(ContextCompat.getColor(component.getActivity(), R.color.c_white), PorterDuff.Mode.SRC_ATOP);
 
     // we are just going to *always* invalidate this menu when we
     // reconcile, and handle everything in `prepareOptionsMenu`.

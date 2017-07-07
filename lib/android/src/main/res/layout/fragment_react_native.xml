@@ -9,7 +9,7 @@
         android:id="@+id/react_root_view_stub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="0dp"
         android:layout="@layout/react_root_view"/>
 
     <com.airbnb.android.react.navigation.ReactToolbar
