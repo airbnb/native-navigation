@@ -276,7 +276,7 @@ public class ScreenCoordinator {
   }
 
   @Nullable
-  private Fragment getCurrentFragment() {
+  public Fragment getCurrentFragment() {
     return activity.getSupportFragmentManager().findFragmentById(container.getId());
   }
 
