@@ -105,7 +105,7 @@ public class ScreenCoordinator {
     if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
         setupFragmentForSharedElement(currentFragment,  fragment, ft, options);
     } else {
-      PresentAnimation anim = PresentAnimation.Push;
+      PresentAnimation anim = PresentAnimation.Fade;
       ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
     }
     BackStack bsi = getCurrentBackStack();
