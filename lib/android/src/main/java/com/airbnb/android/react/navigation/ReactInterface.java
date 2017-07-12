@@ -1,6 +1,7 @@
 package com.airbnb.android.react.navigation;
 
 import android.support.v4.app.FragmentActivity;
+import android.view.ViewStub;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReadableMap;
@@ -12,6 +13,7 @@ public interface ReactInterface {
   String getInstanceId();
   ReactRootView getReactRootView();
   ReactToolbar getToolbar();
+  ViewStub getViewStub();
   boolean isDismissible();
   void signalFirstRenderComplete();
   void notifySharedElementAddition();

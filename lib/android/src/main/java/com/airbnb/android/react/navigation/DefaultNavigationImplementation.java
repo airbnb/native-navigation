@@ -381,6 +381,11 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 
         if (hidden && bar.isShowing()) {
           bar.hide();
+
+          // set viewStub margin for 0 if hide
+          ViewStub viewStub = component.getViewStub();
+          ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) viewStub.getLayoutParams();
+          marginLayoutParams.setMargins(0, 0, 0, 0);
         } else if (!hidden && !bar.isShowing()) {
           bar.show();
         }

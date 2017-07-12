@@ -72,6 +72,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
   private ReactNativeFragmentViewGroup contentContainer;
   private ReactRootView reactRootView;
+  private ViewStub viewStub = null;
   //  private ReactInterfaceManager activityManager;
   private final Handler handler = new Handler();
   private PermissionListener permissionListener;
@@ -173,9 +174,12 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     }
     props.putString(INSTANCE_ID_PROP, instanceId);
 
+    if (viewStub == null || reactRootView == null) {
+      viewStub = (ViewStub) getView().findViewById(R.id.react_root_view_stub);
+    }
+
     if (reactRootView == null) {
-      ViewStub reactViewStub = (ViewStub) getView().findViewById(R.id.react_root_view_stub);
-      reactRootView = (ReactRootView) reactViewStub.inflate();
+      reactRootView = (ReactRootView) viewStub.inflate();
     }
 
     getImplementation().reconcileNavigationProperties(
@@ -372,6 +376,11 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   @Override
   public ReactToolbar getToolbar() {
     return toolbar;
+  }
+
+  @Override
+  public ViewStub getViewStub() {
+    return viewStub;
   }
 
   @Override
