@@ -79,7 +79,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private ReactToolbar toolbar;
   private View loadingView;
 
-  static ReactNativeFragment newInstance(String moduleName, @Nullable Bundle props) {
+  public static ReactNativeFragment newInstance(String moduleName, @Nullable Bundle props) {
     ReactNativeFragment frag = new ReactNativeFragment();
     Bundle args = new BundleBuilder()
             .putString(ReactNativeIntents.EXTRA_MODULE_NAME, moduleName)
