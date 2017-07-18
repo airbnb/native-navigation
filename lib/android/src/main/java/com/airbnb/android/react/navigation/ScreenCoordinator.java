@@ -11,10 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -209,6 +212,29 @@ public class ScreenCoordinator {
 
   public void pop() {
     BackStack bsi = getCurrentBackStack();
+
+    View decorView = activity.getWindow().getDecorView();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+      decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+        @Override
+        public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+          WindowInsets defaultInsets = null;
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            defaultInsets = v.onApplyWindowInsets(insets);
+            return defaultInsets.replaceSystemWindowInsets(
+                    defaultInsets.getSystemWindowInsetLeft(),
+                    defaultInsets.getSystemWindowInsetTop(),
+                    defaultInsets.getSystemWindowInsetRight(),
+                    defaultInsets.getSystemWindowInsetBottom());
+          }
+
+          return null;
+        }
+      });
+    }
+
+    ViewCompat.requestApplyInsets(decorView);
+
     if (bsi.getSize() == 1) {
       dismiss();
       return;
