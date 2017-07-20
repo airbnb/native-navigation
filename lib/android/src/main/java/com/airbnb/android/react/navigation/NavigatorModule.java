@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_IS_DISMISS;
-import static com.airbnb.android.react.navigation.ScreenCoordinator.EXTRA_PAYLOAD;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.VERSION_CONSTANT_KEY;
+import static com.airbnb.android.react.navigation.ScreenCoordinator.EXTRA_PAYLOAD;
 
 class NavigatorModule extends ReactContextBaseJavaModule {
   private static final int VERSION = 2;
@@ -113,8 +113,13 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     if (activity == null) {
       return;
     }
-    Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
-    startActivityWithPromise(activity, intent, promise, options);
+
+    boolean startedFragment = coordinator.startFragmentForKey(name, props, options);
+
+    if (!startedFragment) {
+      Intent intent = coordinator.intentForKey(activity.getBaseContext(), name, props);
+      startActivityWithPromise(activity, intent, promise, options);
+    }
   }
 
   @SuppressWarnings("UnusedParameters")

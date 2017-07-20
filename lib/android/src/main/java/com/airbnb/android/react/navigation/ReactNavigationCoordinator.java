@@ -8,7 +8,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
+
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
@@ -49,6 +52,7 @@ public class ReactNavigationCoordinator {
   private boolean isSuccessfullyInitialized = false;
   private static final int APP_INITIALIZE_TOAST_DELAY = 3000;
 
+  @Nullable ScreenCoordinator screenCoordinator;
 
   private ReactNavigationCoordinator() {
   }
@@ -71,6 +75,7 @@ public class ReactNavigationCoordinator {
         }
       });
   }
+
   public void injectImplementation(NavigationImplementation implementation) {
     if (this.navigationImplementation != null) {
       // TODO: throw error. can only initialize once.
@@ -125,12 +130,17 @@ public class ReactNavigationCoordinator {
    *
    * @see ReactExposedActivityParams#toIntent(Context, ReadableMap)
    */
-  Intent intentForKey(Context context, String key, ReadableMap arguments) {
+  @NonNull Intent intentForKey(Context context, String key, ReadableMap arguments) {
+    if (exposedActivities == null) {
+      throw new IllegalArgumentException("No Activities registered.");
+    }
+
     for (ReactExposedActivityParams exposedActivity : exposedActivities) {
       if (exposedActivity.key().equals(key)) {
         return exposedActivity.toIntent(context, arguments);
       }
     }
+
     throw new IllegalArgumentException(
         String.format("Tried to push Activity with key '%s', but it could not be found", key));
   }
@@ -201,5 +211,12 @@ public class ReactNavigationCoordinator {
         Toast.makeText(application, "This app must have permissions to draw over other apps in order to run React Native in dev mode", Toast.LENGTH_LONG).show();
       }
     }, APP_INITIALIZE_TOAST_DELAY);
+  }
+
+  boolean startFragmentForKey(String name, ReadableMap props, ReadableMap options) {
+    if (screenCoordinator == null) {
+      throw new IllegalStateException("screenCoordinator == null");
+    }
+    return screenCoordinator.pushNativeScreen(name, ConversionUtil.toBundle(props), ConversionUtil.toBundle(options));
   }
 }

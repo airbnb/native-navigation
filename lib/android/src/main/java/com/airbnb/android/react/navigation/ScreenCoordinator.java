@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
+import android.support.annotation.CallSuper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
 
@@ -34,8 +37,9 @@ import static com.airbnb.android.react.navigation.ReactNativeIntents.EXTRA_CODE;
  */
 public class ScreenCoordinator {
   private static final String TAG = ScreenCoordinator.class.getSimpleName();
-  static final String EXTRA_PAYLOAD = "payload";
   private static final String TRANSITION_GROUP = "transitionGroup";
+
+  static final String EXTRA_PAYLOAD = "payload";
 
   enum PresentAnimation {
     Modal(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down),
@@ -61,6 +65,7 @@ public class ScreenCoordinator {
   private ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
 
   private int stackId = 0;
+
   /**
    * When we dismiss a back stack, the fragment manager would normally execute the latest fragment's
    * pop exit animation. However, if we present A as a modal, push, B, then dismiss(), the latest
@@ -68,6 +73,8 @@ public class ScreenCoordinator {
    * We want the dismiss animation to be the popExit of the original present transaction.
    */
   @AnimRes private int nextPopExitAnim;
+
+  private Map<String, NativeScreenFactory> factories = new LinkedHashMap<>();
 
   public ScreenCoordinator(AppCompatActivity activity, ScreenCoordinatorLayout container,
       @Nullable Bundle savedInstanceState) {
@@ -79,6 +86,38 @@ public class ScreenCoordinator {
 
   void onSaveInstanceState(Bundle outState) {
     // TODO
+  }
+
+  @CallSuper
+  public void onResume() {
+    reactNavigationCoordinator.screenCoordinator = this;
+  }
+
+  @CallSuper
+  public void onPause() {
+    reactNavigationCoordinator.screenCoordinator = null;
+  }
+
+  /**
+   * Register a {@linkplain NativeScreenFactory} for {@code moduleName}.
+   */
+  public void registerScreen(String moduleName, @NonNull NativeScreenFactory nativeScreenFactory) {
+    factories.put(moduleName, nativeScreenFactory);
+  }
+
+  /**
+   * Will try to push a native screen if a {@link NativeScreenFactory factory} is available for {@code moduleName}.
+   * Will return {@code true} if a screen was pushed, otherwise false.
+   */
+  @CheckResult
+  boolean pushNativeScreen(String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
+    NativeScreenFactory nativeScreenFactory = factories.get(moduleName);
+    if (nativeScreenFactory != null) {
+      pushScreen(nativeScreenFactory.newScreen(props), options);
+      return true;
+    }
+
+    return false;
   }
 
   public void pushScreen(String moduleName) {

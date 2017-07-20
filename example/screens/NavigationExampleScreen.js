@@ -56,6 +56,10 @@ export default class NavigationExampleScreen extends Component {
           title="Navigation bar customisation"
           onPress={() => Navigator.push('NavigationBar')}
         />
+        <Row
+          title="Start Native Screen 2"
+          onPress={() => Navigator.push('NativeFragment2')}
+        />
       </Screen>
     );
   }
