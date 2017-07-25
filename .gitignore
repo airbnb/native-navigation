@@ -47,3 +47,8 @@ Pods/
 
 .vscode
 .bundle/
+
+# Only apps should have lockfiles
+yarn.lock
+npm-shrinkwrap.json
+package-lock.json
