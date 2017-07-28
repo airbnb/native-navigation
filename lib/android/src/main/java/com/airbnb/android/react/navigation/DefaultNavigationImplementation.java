@@ -71,7 +71,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     defaults.displayHomeAsUp = true;
     defaults.homeButtonEnabled = true;
     defaults.showHome = true;
-    defaults.showTitle = true;
+    defaults.showTitle = false;
     defaults.showCustom = false;
     defaults.useLogo = false;
     defaults.useShowHideAnimation = false;
@@ -83,7 +83,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   private static int TextAlignmentFromString(String s) {
     switch(s) {
       case "center":
-          return View.TEXT_ALIGNMENT_CENTER;
+        return View.TEXT_ALIGNMENT_CENTER;
       case "right":
         return View.TEXT_ALIGNMENT_VIEW_END;
       case "left":
@@ -93,11 +93,11 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   public float getBarHeight(
-      ReactInterface component,
-      ReactToolbar toolbar,
-      ActionBar actionBar,
-      ReadableMap config,
-      boolean firstCall
+          ReactInterface component,
+          ReactToolbar toolbar,
+          ActionBar actionBar,
+          ReadableMap config,
+          boolean firstCall
   ) {
 
     Activity activity = component.getActivity();
@@ -119,17 +119,17 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 
   @TargetApi(Build.VERSION_CODES.M)
   private void reconcileStatusBarStyleOnM(
-      Activity activity,
-      ReadableMap prev,
-      ReadableMap next,
-      boolean firstCall
+          Activity activity,
+          ReadableMap prev,
+          ReadableMap next,
+          boolean firstCall
   ) {
     if (firstCall || stringHasChanged("statusBarStyle", prev, next)) {
       View decorView = activity.getWindow().getDecorView();
       if (next.hasKey("statusBarStyle")) {
         String style = next.getString("statusBarStyle");
         decorView.setSystemUiVisibility(
-            style.equals("default") ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : 0);
+                style.equals("default") ? View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : 0);
       } else {
         decorView.setSystemUiVisibility(0);
       }
@@ -138,10 +138,10 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   private void reconcileStatusBarStyleOnLollipop(
-      final Activity activity,
-      ReadableMap prev,
-      ReadableMap next,
-      boolean firstCall
+          final Activity activity,
+          ReadableMap prev,
+          ReadableMap next,
+          boolean firstCall
   ) {
     if (firstCall || numberHasChanged("statusBarColor", prev, next)) {
       boolean animated = false;
@@ -157,7 +157,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       if (animated) {
         int curColor = activity.getWindow().getStatusBarColor();
         ValueAnimator colorAnimation = ValueAnimator.ofObject(
-            new ArgbEvaluator(), curColor, color);
+                new ArgbEvaluator(), curColor, color);
 
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
           @Override
@@ -166,8 +166,8 @@ public class DefaultNavigationImplementation implements NavigationImplementation
           }
         });
         colorAnimation
-            .setDuration(300)
-            .setStartDelay(0);
+                .setDuration(300)
+                .setStartDelay(0);
         colorAnimation.start();
       } else {
         activity.getWindow().setStatusBarColor(color);
@@ -188,10 +188,10 @@ public class DefaultNavigationImplementation implements NavigationImplementation
           public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
             WindowInsets defaultInsets = v.onApplyWindowInsets(insets);
             return defaultInsets.replaceSystemWindowInsets(
-                defaultInsets.getSystemWindowInsetLeft(),
-                0,
-                defaultInsets.getSystemWindowInsetRight(),
-                defaultInsets.getSystemWindowInsetBottom());
+                    defaultInsets.getSystemWindowInsetLeft(),
+                    0,
+                    defaultInsets.getSystemWindowInsetRight(),
+                    defaultInsets.getSystemWindowInsetBottom());
           }
         });
       } else {
@@ -203,26 +203,26 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   private void reconcileStatusBarStyle(
-      Activity activity,
-      ReadableMap prev,
-      ReadableMap next,
-      boolean firstCall
+          Activity activity,
+          ReadableMap prev,
+          ReadableMap next,
+          boolean firstCall
   ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       reconcileStatusBarStyleOnM(
-          activity,
-          prev,
-          next,
-          firstCall
+              activity,
+              prev,
+              next,
+              firstCall
       );
     }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       reconcileStatusBarStyleOnLollipop(
-          activity,
-          prev,
-          next,
-          firstCall
+              activity,
+              prev,
+              next,
+              firstCall
       );
     }
 
@@ -245,12 +245,12 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   // The problem we have now is that we don't know when a "default" is different
   // than the system default, so those properties start off out of sync...
   public void reconcileNavigationProperties(
-      ReactInterface component,
-      ReactToolbar toolbar,
-      ActionBar bar,
-      ReadableMap prev,
-      ReadableMap next,
-      boolean firstCall
+          ReactInterface component,
+          ReactToolbar toolbar,
+          ActionBar bar,
+          ReadableMap prev,
+          ReadableMap next,
+          boolean firstCall
   ) {
     Log.d(TAG, "reconcileNavigationProperties");
 
@@ -328,7 +328,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       if (firstCall || numberHasChanged("elevation", prev, next)) {
         if (next.hasKey("elevation")) {
           Double elevation = next.getDouble("elevation");
-            toolbar.setElevation(elevation.floatValue());
+          toolbar.setElevation(elevation.floatValue());
         } else {
           toolbar.setElevation(defaults.elevation);
         }
@@ -365,6 +365,24 @@ public class DefaultNavigationImplementation implements NavigationImplementation
         toolbar.setOverflowIconSource(next.getMap("overflowIcon"));
       } else {
 
+      }
+    }
+
+    if (firstCall || boolHasChanged("displayHomeAsUp", prev, next)) {
+      if (next.hasKey("displayHomeAsUp")) {
+        boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
+        if (displayHomeAsUp) {
+          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+        } else {
+          toolbar.setNavigationIcon(null);
+        }
+      } else {
+        bar.setDisplayHomeAsUpEnabled(defaults.displayHomeAsUp);
+        if (defaults.displayHomeAsUp) {
+          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+        } else {
+          toolbar.setNavigationIcon(null);
+        }
       }
     }
 
@@ -469,10 +487,10 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     reconcileStatusBarStyle(
-      component.getActivity(),
-      prev,
-      next,
-      firstCall
+            component.getActivity(),
+            prev,
+            next,
+            firstCall
     );
 
     // TODO(lmr): this doesnt appear to work like i think it should.
@@ -493,7 +511,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 //    toolbar.setForegroundTintMode(PorterDuff.Mode.DARKEN);
 
     Drawable drawable = toolbar.getNavigationIcon();
-    drawable.setColorFilter(ContextCompat.getColor(component.getActivity(), R.color.c_white), PorterDuff.Mode.SRC_ATOP);
+    if (drawable != null) drawable.setColorFilter(ContextCompat.getColor(component.getActivity(), R.color.c_white), PorterDuff.Mode.SRC_ATOP);
 
     // we are just going to *always* invalidate this menu when we
     // reconcile, and handle everything in `prepareOptionsMenu`.
@@ -501,12 +519,12 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   public void prepareOptionsMenu(
-      final ReactInterface component,
-      ReactToolbar toolbar,
-      ActionBar bar,
-      Menu menu,
-      ReadableMap prev,
-      ReadableMap next
+          final ReactInterface component,
+          ReactToolbar toolbar,
+          ActionBar bar,
+          Menu menu,
+          ReadableMap prev,
+          ReadableMap next
   ) {
     Log.d(TAG, "prepareOptionsMenu");
 
@@ -539,11 +557,11 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   public boolean onOptionsItemSelected(
-      final ReactInterface component,
-      ReactToolbar toolbar,
-      ActionBar bar,
-      MenuItem item,
-      ReadableMap properties
+          final ReactInterface component,
+          ReactToolbar toolbar,
+          ActionBar bar,
+          MenuItem item,
+          ReadableMap properties
   ) {
     // TODO(lmr): we need to make this possible somehow
 //    if (item.getItemId() == android.R.id.home) {
@@ -568,20 +586,20 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   public void makeTabItem(
-      ReactBottomNavigation bottomNavigation,
-      Menu menu,
-      int index,
-      Integer itemId,
-      ReadableMap config
+          ReactBottomNavigation bottomNavigation,
+          Menu menu,
+          int index,
+          Integer itemId,
+          ReadableMap config
   ) {
 
     Log.d(TAG, "makeTabItem");
 
     MenuItem item = menu.add(
-        Menu.NONE,
-        itemId,
-        Menu.NONE,
-        config.getString("title")
+            Menu.NONE,
+            itemId,
+            Menu.NONE,
+            config.getString("title")
     );
 
     if (config.hasKey("image")) {
@@ -615,28 +633,28 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 
 
     return new ColorStateList(
-        new int[][]{
-            new int[]{android.R.attr.state_pressed},
-            new int[]{android.R.attr.state_checked},
-            new int[]{android.R.attr.state_enabled},
-            new int[]{-android.R.attr.state_enabled},
-            new int[]{} // this should be empty to make default color as we want
-        },
-        new int[]{
-            activeColor,
-            selectedColor,
-            normalColor,
-            disabledColor,
-            normalColor
-        }
+            new int[][]{
+                    new int[]{android.R.attr.state_pressed},
+                    new int[]{android.R.attr.state_checked},
+                    new int[]{android.R.attr.state_enabled},
+                    new int[]{-android.R.attr.state_enabled},
+                    new int[]{} // this should be empty to make default color as we want
+            },
+            new int[]{
+                    activeColor,
+                    selectedColor,
+                    normalColor,
+                    disabledColor,
+                    normalColor
+            }
     );
   }
 
   public void reconcileTabBarProperties(
-      ReactBottomNavigation bottomNavigation,
-      Menu menu,
-      ReadableMap prev,
-      ReadableMap next
+          ReactBottomNavigation bottomNavigation,
+          Menu menu,
+          ReadableMap prev,
+          ReadableMap next
   ) {
 
     // TODO(lmr):
@@ -704,22 +722,22 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   private static boolean boolHasChanged(
-      String key,
-      ReadableMap prev,
-      ReadableMap next
+          String key,
+          ReadableMap prev,
+          ReadableMap next
   ) {
     if (shouldBail(key, ReadableType.Boolean, prev, next)) {
       return false;
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        next.getBoolean(key) != prev.getBoolean(key);
+            next.getBoolean(key) != prev.getBoolean(key);
   }
 
   private static boolean stringHasChanged(
-      String key,
-      ReadableMap prev,
-      ReadableMap next
+          String key,
+          ReadableMap prev,
+          ReadableMap next
   ) {
 
     if (shouldBail(key, ReadableType.String, prev, next)) {
@@ -727,26 +745,26 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        !next.getString(key).equals(prev.getString(key));
+            !next.getString(key).equals(prev.getString(key));
   }
 
   private static boolean numberHasChanged(
-      String key,
-      ReadableMap prev,
-      ReadableMap next
+          String key,
+          ReadableMap prev,
+          ReadableMap next
   ) {
     if (shouldBail(key, ReadableType.Number, prev, next)) {
       return false;
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        next.getDouble(key) != prev.getDouble(key);
+            next.getDouble(key) != prev.getDouble(key);
   }
 
   private static boolean mapHasChanged(
-      String key,
-      ReadableMap prev,
-      ReadableMap next
+          String key,
+          ReadableMap prev,
+          ReadableMap next
   ) {
 
     if (shouldBail(key, ReadableType.Map, prev, next)) {
@@ -754,13 +772,13 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        !mapEqual(next.getMap(key), prev.getMap(key));
+            !mapEqual(next.getMap(key), prev.getMap(key));
   }
 
   private static boolean arrayHasChanged(
-      String key,
-      ReadableMap prev,
-      ReadableMap next
+          String key,
+          ReadableMap prev,
+          ReadableMap next
   ) {
 
     if (shouldBail(key, ReadableType.Array, prev, next)) {
@@ -768,12 +786,12 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     return next.hasKey(key) != prev.hasKey(key) ||
-        !arrayEqual(next.getArray(key), prev.getArray(key));
+            !arrayEqual(next.getArray(key), prev.getArray(key));
   }
 
   private static boolean mapEqual(
-      ReadableMap a,
-      ReadableMap b
+          ReadableMap a,
+          ReadableMap b
   ) {
     ReadableMapKeySetIterator iterator = b.keySetIterator();
     while (iterator.hasNextKey()) {
@@ -807,8 +825,8 @@ public class DefaultNavigationImplementation implements NavigationImplementation
   }
 
   private static boolean arrayEqual(
-      ReadableArray a,
-      ReadableArray b
+          ReadableArray a,
+          ReadableArray b
   ) {
     if (b.size() != a.size()) return false;
 
