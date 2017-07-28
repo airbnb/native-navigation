@@ -8,6 +8,9 @@ Navigator.registerScreen(
   'SharedElementFromScreen',
   () => require('./screens/SharedElementFromScreen')
 );
+Navigator.registerScreen('NavigationBar', () =>
+  require('./screens/NavigationBar')
+);
 Navigator.registerScreen(
   'ScreenOne',
   () => require('./screens/NavigationExampleScreen'),

@@ -180,7 +180,8 @@ type Button = {
   
   // ios-only
   style: 'plain' | 'default';
-  
+  systemItem: 'done' | 'cancel' | 'edit' | 'save' | 'add' | 'flexibleSpace' | 'compose' | 'reply' | 'action' | 'organize' | 'bookmarks' | 'search' | 'refresh' | 'stop' | 'camera' | 'trash' | 'play' | 'pause' | 'rewind' | 'fastForward' | 'undo' | 'redo' | 'pageCurl';
+
   // android-only
 };
 
