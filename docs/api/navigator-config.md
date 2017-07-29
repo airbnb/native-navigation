@@ -220,8 +220,6 @@ type NavigatorConfigProps = {
   rightTitle: string;
   rightImage: Image;
   rightButtons: Array<Button>;
-  leftTitle: string;
-  leftImage: Image;
   leftButtons: Array<Button>;
   screenColor: Color;
   hidden: boolean;
@@ -237,6 +235,8 @@ type NavigatorConfigProps = {
   titleFontSize: number;
   subtitleFontName: string;
   subtitleFontSize: number;
+  leftTitle: string;
+  leftImage: Image;
   
   // android-only-but-should-share
   navIcon: Image;
