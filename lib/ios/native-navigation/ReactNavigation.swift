@@ -65,7 +65,8 @@ class ReactNavigation: NSObject {
     DispatchQueue.main.async {
       guard let nav = self.coordinator.topNavigationController() else { return }
       guard let current = self.coordinator.topViewController() as? ReactViewController else {
-        print("Called push() when topViewController() isn't a ReactViewController")
+        let screen = ReactViewController(moduleName: screenName, props: props)
+        nav.pushReactViewController(screen, animated: true)
         return
       }
 
