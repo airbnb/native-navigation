@@ -65,7 +65,10 @@ public class ReactNativeTabActivity extends ReactAwareActivity
     ScreenCoordinatorLayout container = (ScreenCoordinatorLayout) findViewById(R.id.content);
     tabCoordinator = new TabCoordinator(this, container, savedInstanceState);
 
-    ReactNativeFragment tabConfigFragment = ReactNativeFragment.newInstance("TabScreen", null);
+    ReactNativeFragment tabConfigFragment = ReactNativeFragment.newInstance(
+            getIntent().getStringExtra(ReactNativeIntents.EXTRA_MODULE_NAME),
+            null
+    );
     getSupportFragmentManager().beginTransaction()
             .add(R.id.tab_config_container, tabConfigFragment)
             .commitNow();
