@@ -1,9 +1,12 @@
 package com.airbnb.android.react.navigation;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -248,6 +251,18 @@ public class ReactToolbar extends Toolbar {
 
       // use `length - i` for ordering so the button ordering is consistent with iOS
       MenuItem item = menu.add(Menu.NONE, Menu.NONE, length - i, title);
+
+      if (button.hasKey("systemItem")) {
+        item.setIcon(android.R.drawable.ic_menu_share);
+
+        if (button.hasKey("tintColor")) {
+          Drawable menuItemIcon = item.getIcon();
+
+          final Drawable wrapped = DrawableCompat.wrap(menuItemIcon);
+          menuItemIcon.mutate();
+          DrawableCompat.setTint(wrapped, Color.argb(255, 255, 255, 255));
+        }
+      }
 
       if (button.hasKey("image")) {
         setMenuItemIcon(item, button.getMap("image"));
