@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.widget.FrameLayout.LayoutParams;
 
 import com.airbnb.android.R;
 import com.facebook.react.bridge.ReadableArray;
@@ -319,6 +320,21 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       if (next.hasKey("backgroundColor")) {
         Integer backgroundColor = next.getInt("backgroundColor");
         toolbar.setBackgroundColor(backgroundColor);
+
+        if (Color.alpha(backgroundColor) == 0) {
+          LayoutParams reactViewLayout = (LayoutParams) component.getReactRootView().getLayoutParams();
+          reactViewLayout.setMargins(0, 0, 0, 0);
+          component.getReactRootView().setLayoutParams(reactViewLayout);
+
+          LayoutParams toolbarLayout = (LayoutParams) toolbar.getLayoutParams();
+
+          int marginTop = (int) TypedValue.applyDimension(
+                  TypedValue.COMPLEX_UNIT_DIP, 20, component.getActivity().getResources()
+                          .getDisplayMetrics());
+
+          toolbarLayout.setMargins(0, marginTop, 0, 0);
+          toolbar.setLayoutParams(toolbarLayout);
+        }
       } else {
         toolbar.setBackgroundColor(defaults.backgroundColor);
       }
