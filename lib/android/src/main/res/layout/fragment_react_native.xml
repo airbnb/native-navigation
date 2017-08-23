@@ -9,14 +9,13 @@
         android:id="@+id/react_root_view_stub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout="@layout/react_root_view"/>
 
     <com.airbnb.android.react.navigation.ReactToolbar
         android:theme="@style/AppTheme"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
         android:layout_height="?attr/actionBarSize"/>
 
     <View
