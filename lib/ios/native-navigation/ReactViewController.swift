@@ -293,6 +293,7 @@ open class ReactViewController: UIViewController {
    * tell the coordinator that presented us to dismiss us.
    */
   public func dismiss(_ payload: [String: AnyObject]) {
+    dismissPayload = payload
     delegate?.didDismiss(self, withPayload: payload)
   }
 

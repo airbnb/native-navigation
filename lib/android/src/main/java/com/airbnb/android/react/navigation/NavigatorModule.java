@@ -159,7 +159,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
           return;
         }
         ensureCoordinatorComponent(activity);
-        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss(Activity.RESULT_OK, payloadToMap(payload));
       }
     });
   }
