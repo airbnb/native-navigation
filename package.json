@@ -1,6 +1,6 @@
 {
   "name": "@bam.tech/native-navigation",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
