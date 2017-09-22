@@ -95,10 +95,14 @@ open class ReactViewController: UIViewController {
   // MARK: Lifecycle
 
   public convenience init(moduleName: String) {
-    self.init(moduleName: moduleName, props: [:])
+    self.init(moduleName: moduleName, props: [:], title: nil, hidesBottomBarWhenPushed: false)
   }
 
-  public init(moduleName: String, props: [String: AnyObject]) {
+  public convenience init(moduleName: String, props: [String: AnyObject]) {
+    self.init(moduleName: moduleName, props: props, title: nil, hidesBottomBarWhenPushed: false)
+  }
+
+  public init(moduleName: String, props: [String: AnyObject], title: String?, hidesBottomBarWhenPushed: Bool) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
 
@@ -110,6 +114,9 @@ open class ReactViewController: UIViewController {
     self.renderedConfig = EMPTY_MAP
 
     super.init(nibName: nil, bundle: nil)
+
+    self.title = title;
+    self.hidesBottomBarWhenPushed = hidesBottomBarWhenPushed;
 
     if let initialConfig = coordinator.getScreenProperties(moduleName) {
       self.initialConfig = initialConfig
@@ -137,7 +144,6 @@ open class ReactViewController: UIViewController {
   deinit {
     coordinator.unregisterViewController(nativeNavigationInstanceId)
   }
-
 
   // MARK: UIViewController Overrides
 
@@ -453,4 +459,3 @@ extension ReactViewController : ReactAnimationToContentVendor {
     )
   }
 }
-
