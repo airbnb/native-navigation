@@ -17,7 +17,7 @@ public class NativeNavigationPackage implements ReactPackage {
         new NavigatorModule(reactContext, ReactNavigationCoordinator.sharedInstance));
   }
 
-  @Override public List<Class<? extends JavaScriptModule>> createJSModules() {
+  public List<Class<? extends JavaScriptModule>> createJSModules() {
     return Collections.emptyList();
   }
 
