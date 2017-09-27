@@ -209,7 +209,6 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     contentContainer = (ReactNativeFragmentViewGroup) v.findViewById(R.id.content_container);
     contentContainer.setKeyListener(this);
     activity = (AppCompatActivity) getActivity();
-    activity.setSupportActionBar(toolbar);
 
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
       @Override
@@ -222,6 +221,10 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
         }
       }
     });
+
+    // Set support action bar after setNavigationOnClickListener to allow override of the click listener in the activity
+    activity.setSupportActionBar(toolbar);
+
 
     String moduleName = getArguments().getString(EXTRA_REACT_MODULE_NAME);
     Log.d(TAG, "onCreateView " + moduleName);
