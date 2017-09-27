@@ -65,7 +65,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     defaults.screenColor = Color.WHITE;
     defaults.backgroundColor = Color.GRAY;
     defaults.statusBarColor = Color.TRANSPARENT;
-    defaults.statusBarTranslucent = true;
+    defaults.statusBarTranslucent = false;
     defaults.elevation = 4.0f;
     defaults.alpha = 1.0f;
     defaults.overflowIconSource = null;
