@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -261,10 +263,20 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       foregroundColor = next.getInt("foregroundColor");
     }
 
-    if (stringHasChanged("title", prev, next)) {
+    if (stringHasChanged("title", prev, next) || stringHasChanged("titleFontName", prev, next)) {
       if (next.hasKey("title")) {
         String title = next.getString("title");
-        toolbar.setTitle(title);
+
+        if (next.hasKey("titleFontName")) {
+          String titleFontName = next.getString("titleFontName");
+          SpannableString titleWithFont = new SpannableString(title);
+          titleWithFont.setSpan(new TypefaceSpan(component.getActivity(), titleFontName, 0), 0, titleWithFont.length(),
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+          toolbar.setTitle(titleWithFont);
+        } else {
+          toolbar.setTitle(title);
+        }
       } else {
         toolbar.setTitle(null);
       }
