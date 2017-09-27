@@ -335,8 +335,6 @@ public class DefaultNavigationImplementation implements NavigationImplementation
           toolbarLayout.setMargins(0, marginTop, 0, 0);
           toolbar.setLayoutParams(toolbarLayout);
         }
-      } else {
-        toolbar.setBackgroundColor(defaults.backgroundColor);
       }
     }
 
