@@ -394,6 +394,14 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       }
     }
 
+    if (firstCall || numberHasChanged("contentInsetStartWithNavigation", prev, next)) {
+      if (next.hasKey("contentInsetStartWithNavigation")) {
+        toolbar.setContentInsetStartWithNavigation(next.getInt("contentInsetStartWithNavigation"));
+      } else {
+
+      }
+    }
+
     if (firstCall || boolHasChanged("displayHomeAsUp", prev, next)) {
       if (next.hasKey("displayHomeAsUp")) {
         boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
