@@ -41,7 +41,6 @@
     "react-native": ">=0.42"
   },
   "dependencies": {
-    "@bam.tech/native-navigation": "^0.2.17",
     "prop-types": "^15.5.10",
     "react-native-safe-module": "^1.1.0"
   },
