@@ -500,6 +500,9 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
 
     let navItem = viewController.navigationItem
 
+    if let backButtonTitle = stringForKey("backButtonTitle", next) {
+        navItem.backBarButtonItem = UIBarButtonItem(title: backButtonTitle, style:.plain, target:nil, action:nil)
+    }
 
     if let titleView = titleAndSubtitleViewFromProps(next) {
       if let title = stringForKey("title", next) {
