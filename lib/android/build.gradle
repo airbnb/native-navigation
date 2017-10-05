@@ -2,12 +2,26 @@ apply plugin: 'com.android.library'
 apply from: 'gradle-maven-push.gradle'
 
 android {
+  //allow publish all variants of a library (by default its false)
+  //so we can include in our projects the library dependencies with different variants
+  publishNonDefault true
+
   compileSdkVersion 25
   buildToolsVersion "25.0.2"
 
   defaultConfig {
     minSdkVersion 16
     targetSdkVersion 25
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+    }
+
+    debug {
+      minifyEnabled false
+    }
   }
 
   packagingOptions {
