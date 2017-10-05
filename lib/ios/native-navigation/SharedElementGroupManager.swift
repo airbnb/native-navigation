@@ -45,10 +45,4 @@ final class SharedElementGroupManager: RCTViewManager {
   override func view() -> UIView! {
     return SharedElementGroup()
   }
-
-  override func constantsToExport() -> [String: Any] {
-    return [
-      "VERSION": VERSION
-    ]
-  }
 }

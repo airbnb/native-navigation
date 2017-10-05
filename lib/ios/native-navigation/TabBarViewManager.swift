@@ -44,10 +44,4 @@ final class TabBarViewManager: RCTViewManager {
   override func view() -> UIView! {
     return TabBar()
   }
-
-  override func constantsToExport() -> [String: Any] {
-    return [
-      "VERSION": VERSION
-    ]
-  }
 }

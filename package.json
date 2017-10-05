@@ -1,6 +1,6 @@
 {
   "name": "@bam.tech/native-navigation",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "lint": "eslint ./",
     "build": "npm run build:js && npm run build:android && npm run build:ios",
     "build:js": "exit 0",
-    "build:ios": "bundle install --binstubs ./examples/ios && bundle exec pod install --project-directory=./example/ios/",
+    "build:ios":
+      "bundle install --binstubs ./examples/ios && bundle exec pod install --project-directory=./example/ios/",
     "build:android": "./gradlew :native-navigation:assembleDebug",
     "ci": "npm run lint",
     "publish:pod": "exit 0",
@@ -22,7 +23,8 @@
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git fetch https://github.com/airbnb/native-navigation.git gh-pages && git checkout -b gh-pages && git add . && git commit -am 'update book' && git push https://github.com/airbnb/native-navigation.git gh-pages --force",
+    "docs:publish":
+      "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git fetch https://github.com/airbnb/native-navigation.git gh-pages && git checkout -b gh-pages && git add . && git commit -am 'update book' && git push https://github.com/airbnb/native-navigation.git gh-pages --force",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

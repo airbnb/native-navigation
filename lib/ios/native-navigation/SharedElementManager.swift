@@ -53,9 +53,4 @@ final class SharedElementManager: RCTViewManager {
     return SharedElement()
   }
 
-  override func constantsToExport() -> [String: Any] {
-    return [
-      "VERSION": VERSION
-    ]
-  }
 }
