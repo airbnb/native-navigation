@@ -40,9 +40,9 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   private static final String TAG = ReactNativeFragment.class.getSimpleName();
   private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
-  static final String EXTRA_REACT_MODULE_NAME = "REACT_MODULE_NAME";
-  static final String EXTRA_REACT_PROPS = "REACT_PROPS";
-  static final String EXTRA_IS_MODAL = "IS_MODAL";
+  public static final String EXTRA_REACT_MODULE_NAME = "REACT_MODULE_NAME";
+  public static final String EXTRA_REACT_PROPS = "REACT_PROPS";
+  public static final String EXTRA_IS_MODAL = "IS_MODAL";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
   private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
