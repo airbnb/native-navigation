@@ -65,7 +65,6 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     defaults = new Defaults();
     defaults.foregroundColor = Color.BLACK;
     defaults.screenColor = Color.WHITE;
-    defaults.backgroundColor = Color.GRAY;
     defaults.statusBarColor = Color.TRANSPARENT;
     defaults.statusBarTranslucent = false;
     defaults.elevation = 4.0f;
@@ -755,7 +754,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     return false;
   }
 
-  private static boolean boolHasChanged(
+  protected static boolean boolHasChanged(
           String key,
           ReadableMap prev,
           ReadableMap next
@@ -768,7 +767,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
             next.getBoolean(key) != prev.getBoolean(key);
   }
 
-  private static boolean stringHasChanged(
+  protected static boolean stringHasChanged(
           String key,
           ReadableMap prev,
           ReadableMap next
@@ -782,7 +781,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
             !next.getString(key).equals(prev.getString(key));
   }
 
-  private static boolean numberHasChanged(
+  protected static boolean numberHasChanged(
           String key,
           ReadableMap prev,
           ReadableMap next
@@ -795,7 +794,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
             next.getDouble(key) != prev.getDouble(key);
   }
 
-  private static boolean mapHasChanged(
+  protected static boolean mapHasChanged(
           String key,
           ReadableMap prev,
           ReadableMap next
@@ -809,7 +808,7 @@ public class DefaultNavigationImplementation implements NavigationImplementation
             !mapEqual(next.getMap(key), prev.getMap(key));
   }
 
-  private static boolean arrayHasChanged(
+  protected static boolean arrayHasChanged(
           String key,
           ReadableMap prev,
           ReadableMap next
