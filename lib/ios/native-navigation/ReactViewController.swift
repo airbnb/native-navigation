@@ -178,11 +178,11 @@ open class ReactViewController: UIViewController {
 
   override open func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
-    if (!self.isMovingToParentViewController) {
-      reconcileScreenConfig()
-    }
-
+    // TODO: Native Navigation - know why this was here
+    // When we have this, the navbar behaviour is inconsistent
+    // if (!self.isMovingToParentViewController) {
+    reconcileScreenConfig()
+    // }
     handleLeadingButtonVisibleChange()
   }
 
@@ -283,7 +283,9 @@ open class ReactViewController: UIViewController {
   // this gets fired after things are set up and we are now waiting for the first navigation config from JS
   // to get passed back
   func startedWaitingForRealNavigation() {
-    reconcileScreenConfig()
+    // TODO: know why this was here
+    // This was commented because otherwise, when moving to a transparent navbar, the navbar becomes black
+    // reconcileScreenConfig()
     // TODO(lmr): this is no longer an option in initialConfig
     if let waitForRender = boolForKey("waitForRender", initialConfig) {
       if (!waitForRender && isPendingNavigationTransition) {
@@ -357,7 +359,9 @@ open class ReactViewController: UIViewController {
   private func updateNavigationImpl(props: [String: AnyObject]) {
     prevConfig = renderedConfig
     renderedConfig = initialConfig.combineWith(values: props)
-    reconcileScreenConfig()
+    // TODO: Navigation implementation does not reload when updating javascript since we commented this.
+    // But if we let it, when moving from a page with a navbar not transparent to a transparent navbar, the first view jumps while it should not be updated
+    // reconcileScreenConfig()
     updateBarHeightIfNeeded()
   }
 
