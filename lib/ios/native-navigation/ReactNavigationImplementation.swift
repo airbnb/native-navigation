@@ -611,15 +611,17 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
         navBar.isTranslucent = translucent
       }
 
-      if let backgroundImage = stringForKey("backgroundAssetName", next) {
-        if let image = UIImage(named: backgroundImage) {
-            navBar.setBackgroundImage(image.resizableImage(withCapInsets: UIEdgeInsets.zero, resizingMode: .stretch), for: .default)
+      if let backgroundAssetNameValue = next["backgroundAssetName"] {
+        if let backgroundAssetName = backgroundAssetNameValue as? String {
+            if let image = UIImage(named: backgroundAssetName) {
+                navBar.setBackgroundImage(image.resizableImage(withCapInsets: UIEdgeInsets.zero, resizingMode: .stretch), for: .default)
+            }
+            navBar.isTranslucent = false
+            navBar.alpha = 1.0
+        } else {
+          navBar.setBackgroundImage(UIImage(), for:.default)
+          navBar.shadowImage = UIImage()
         }
-        navBar.isTranslucent = false
-        navBar.alpha = 1.0
-      } else {
-        navBar.setBackgroundImage(UIImage(), for:.default)
-        navBar.shadowImage = UIImage()
       }
 
       //    navigationController?.navigationBar.barStyle = .blackTranslucent
