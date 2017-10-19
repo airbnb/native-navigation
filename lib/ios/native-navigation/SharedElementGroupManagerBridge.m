@@ -14,4 +14,8 @@
 RCT_EXPORT_VIEW_PROPERTY(nativeNavigationInstanceId, NSString);
 RCT_REMAP_VIEW_PROPERTY(id, identifier, NSString);
 
++(BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
 @end

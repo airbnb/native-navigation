@@ -40,4 +40,8 @@ RCT_EXTERN_METHOD(dismiss:(NSDictionary *)payload animated:(BOOL)animated)
 RCT_EXTERN_METHOD(pop:(NSDictionary *)payload animated:(BOOL)animated)
 RCT_EXTERN_METHOD(replace:(NSString *)screenName withProps:(NSDictionary *)props animated:(BOOL)animated)
 
++(BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
 @end

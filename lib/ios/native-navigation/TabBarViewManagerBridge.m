@@ -13,4 +13,8 @@
 
 RCT_EXPORT_VIEW_PROPERTY(config, NSDictionary);
 
++(BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
 @end

@@ -1,13 +1,14 @@
 {
   "name": "@bam.tech/native-navigation",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "description": "Native Navigation for React Native",
   "main": "index.js",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "run:packager": "./node_modules/react-native/packager/packager.sh",
     "run:ios": "react-native run-ios --project-path ./example/ios",
-    "start:android": "adb shell am start -n com.airbnb.android.react.navigation.example/.MainActivity",
+    "start:android":
+      "adb shell am start -n com.airbnb.android.react.navigation.example/.MainActivity",
     "run:android": "./gradlew installDebug && npm run start:android",
     "lint": "eslint ./",
     "build": "npm run build:js && npm run build:android && npm run build:ios",
@@ -18,7 +19,8 @@
     "ci": "npm run lint",
     "publish:pod": "exit 0",
     "publish:maven": "exit 0",
-    "publish:mavenold": "cd lib/android/ && ./gradlew clean check uploadArchives && cd -",
+    "publish:mavenold":
+      "cd lib/android/ && ./gradlew clean check uploadArchives && cd -",
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
