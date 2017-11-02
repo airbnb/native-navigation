@@ -73,7 +73,7 @@ public class ScreenCoordinator {
   @AnimRes private int nextPopExitAnim;
 
   public ScreenCoordinator(AppCompatActivity activity, ScreenCoordinatorLayout container,
-      @Nullable Bundle savedInstanceState) {
+                           @Nullable Bundle savedInstanceState) {
     this.activity = activity;
     this.container = container;
     container.setFragmentManager(activity.getSupportFragmentManager());
@@ -106,7 +106,7 @@ public class ScreenCoordinator {
     }
 
     if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
-        setupFragmentForSharedElement(currentFragment,  fragment, ft, options);
+      setupFragmentForSharedElement(currentFragment,  fragment, ft, options);
     } else {
       PresentAnimation anim = PresentAnimation.Fade;
       ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
@@ -148,10 +148,10 @@ public class ScreenCoordinator {
   }
 
   public void presentScreen(
-      String moduleName,
-      @Nullable Bundle props,
-      @Nullable Bundle options,
-      @Nullable Promise promise) {
+          String moduleName,
+          @Nullable Bundle props,
+          @Nullable Bundle options,
+          @Nullable Promise promise) {
     // TODO: use options
     Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
     presentScreen(fragment, PresentAnimation.Modal, promise);
@@ -183,12 +183,17 @@ public class ScreenCoordinator {
     if (fragment == null) {
       throw new IllegalArgumentException("Fragment must not be null.");
     }
-    BackStack bsi = new BackStack(getNextStackTag(), anim, promise);
+    BackStack bsi = getCurrentBackStack();
+
+    if (bsi == null) {
+      bsi = new BackStack(getNextStackTag(), anim, promise);
+    }
+
     backStacks.push(bsi);
     // TODO: dry this up with pushScreen
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
-        .setAllowOptimization(true)
-        .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
+            .setAllowOptimization(true)
+            .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     Fragment currentFragment = getCurrentFragment();
     if (currentFragment != null && !isFragmentTranslucent(fragment)) {
@@ -196,9 +201,9 @@ public class ScreenCoordinator {
       ft.detach(currentFragment);
     }
     ft
-        .add(container.getId(), fragment)
-        .addToBackStack(bsi.getTag())
-        .commit();
+            .add(container.getId(), fragment)
+            .addToBackStack(bsi.getTag())
+            .commit();
     activity.getSupportFragmentManager().executePendingTransactions();
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
@@ -254,7 +259,7 @@ public class ScreenCoordinator {
   }
 
   public void dismiss(int resultCode, Map<String, Object> payload) {
-    dismiss(resultCode, payload, true);
+    dismiss(resultCode, payload, false);
   }
 
   private void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {
