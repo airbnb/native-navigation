@@ -432,7 +432,7 @@ extension ReactViewController : ReactAnimationFromContentVendor {
     animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
     return ReactAnimationFromContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
-      sharedElements: snapshot.sharedElements.mapValues { $0.view }
+      sharedElements: snapshot.sharedElements.mapValues({ $0.view })
     )
   }
 
@@ -449,7 +449,7 @@ extension ReactViewController : ReactAnimationToContentVendor {
     animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
     return ReactAnimationToContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
-      sharedElements: snapshot.sharedElements.mapValues { $0.view }
+      sharedElements: snapshot.sharedElements.mapValues({ $0.view })
     )
   }
 }
