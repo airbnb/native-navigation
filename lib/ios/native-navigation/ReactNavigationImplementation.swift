@@ -373,10 +373,10 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
       hasPrompt = true
     }
     if let navController = navigationController {
-      return navController.navigationBar.frame.height + (statusBarHidden ? 0 : 20)
+      return navController.navigationBar.frame.height + (statusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height)
     }
     // make a best guess based on config
-    return (statusBarHidden ? 0 : 20) + (navBarHidden ? 0 : 44) + (hasPrompt ? 30 : 0)
+    return (statusBarHidden ? 0 :  UIApplication.shared.statusBarFrame.height) + (navBarHidden ? 0 : 44) + (hasPrompt ? 30 : 0)
   }
 
   public func makeNavigationController(rootViewController: UIViewController) -> UINavigationController {
