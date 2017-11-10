@@ -419,6 +419,17 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       }
     }
 
+    if (firstCall || boolHasChanged("hidden", prev, next)) {
+      if (next.hasKey("hidden")) {
+        boolean hidden = next.getBoolean("hidden");
+        if (hidden) {
+          toolbar.setVisibility(View.GONE);
+        } else {
+          toolbar.setVisibility(View.VISIBLE);
+        }
+      }
+    }
+
     if (bar != null) {
 
       // ActionBar only properties...
