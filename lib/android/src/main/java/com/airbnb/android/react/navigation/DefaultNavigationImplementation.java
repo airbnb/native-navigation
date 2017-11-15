@@ -243,6 +243,16 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
   }
 
+  private static int getStatusBarHeight(ReactInterface component) {
+    int resourceId = component.getActivity().getResources().getIdentifier("status_bar_height", "dimen", "android");
+
+    if (resourceId > 0) {
+      return component.getActivity().getResources().getDimensionPixelSize(resourceId);
+    }
+
+    return 0;
+  }
+
   // NOTE(lmr):
   // The problem we have now is that we don't know when a "default" is different
   // than the system default, so those properties start off out of sync...
@@ -329,22 +339,24 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 
     if (firstCall || numberHasChanged("backgroundColor", prev, next)) {
       if (next.hasKey("backgroundColor")) {
-        Integer backgroundColor = next.getInt("backgroundColor");
+        final Integer backgroundColor = next.getInt("backgroundColor");
         toolbar.setBackgroundColor(backgroundColor);
 
-        if (Color.alpha(backgroundColor) == 0) {
+        final boolean isToolbarTransparent = Color.alpha(backgroundColor) == 0;
+
+        if (isToolbarTransparent) {
           LayoutParams reactViewLayout = (LayoutParams) component.getReactRootView().getLayoutParams();
           reactViewLayout.setMargins(0, 0, 0, 0);
           component.getReactRootView().setLayoutParams(reactViewLayout);
 
-          LayoutParams toolbarLayout = (LayoutParams) toolbar.getLayoutParams();
+          final boolean isStatusBarTranslucent = next.hasKey("statusBarTranslucent") && next.getBoolean("statusBarTranslucent");
 
-          int marginTop = (int) TypedValue.applyDimension(
-                  TypedValue.COMPLEX_UNIT_DIP, 20, component.getActivity().getResources()
-                          .getDisplayMetrics());
+          if (isStatusBarTranslucent) {
+            LayoutParams toolbarLayout = (LayoutParams) toolbar.getLayoutParams();
 
-          toolbarLayout.setMargins(0, marginTop, 0, 0);
-          toolbar.setLayoutParams(toolbarLayout);
+            toolbarLayout.setMargins(0, getStatusBarHeight(component), 0, 0);
+            toolbar.setLayoutParams(toolbarLayout);
+          }
         }
       }
     }
