@@ -118,7 +118,6 @@ public class ScreenCoordinator {
     }
 
     ft
-            .detach(currentFragment)
             .add(container.getId(), fragment)
             .addToBackStack(null)
             .commit();
@@ -195,11 +194,6 @@ public class ScreenCoordinator {
             .setAllowOptimization(true)
             .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
-    Fragment currentFragment = getCurrentFragment();
-    if (currentFragment != null && !isFragmentTranslucent(fragment)) {
-      container.willDetachCurrentScreen();
-      ft.detach(currentFragment);
-    }
     ft
             .add(container.getId(), fragment)
             .addToBackStack(bsi.getTag())
