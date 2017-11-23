@@ -120,7 +120,7 @@ target 'MyNewProject' do
   pod 'native-navigation', :path => '../node_modules/native-navigation'
 
   # To use CocoaPods with React Native, you need to add this specific Yoga spec as well
-  pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/yoga.podspec'
 
   # You don't necessarily need all of these subspecs, but this would be a typical setup.
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
