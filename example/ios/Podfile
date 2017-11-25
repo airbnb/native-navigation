@@ -7,6 +7,7 @@ target 'native-navigation' do
   pod 'native-navigation', :path => '../../'
   pod 'React', :path => '../../node_modules/react-native', :subspecs => [
     'Core',
+    'DevSupport',
     'BatchedBridge',
     'RCTText',
     'RCTNetwork',
