@@ -292,12 +292,15 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     if (firstCall || numberHasChanged("titleColor", prev, next)) {
-      if (next.hasKey("titleColor")) {
-        Integer titleColor = next.getInt("titleColor");
-        toolbar.setTitleTextColor(titleColor);
-      } else {
-        toolbar.setTitleTextColor(foregroundColor);
-      }
+      final int titleColor = next.hasKey("titleColor") ? next.getInt("titleColor") : foregroundColor;
+
+      toolbar.setTitleTextColor(titleColor);
+
+      Drawable navigationIcon = toolbar.getNavigationIcon();
+      if (navigationIcon != null) navigationIcon.setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
+
+      Drawable menuButton = toolbar.getOverflowIcon();
+      if (menuButton != null) menuButton.setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     if (stringHasChanged("subtitle", prev, next)) {
@@ -565,9 +568,6 @@ public class DefaultNavigationImplementation implements NavigationImplementation
 //    toolbar.setCameraDistance(0.1);
 //    toolbar.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
 //    toolbar.setForegroundTintMode(PorterDuff.Mode.DARKEN);
-
-    Drawable drawable = toolbar.getNavigationIcon();
-    if (drawable != null) drawable.setColorFilter(ContextCompat.getColor(component.getActivity(), R.color.c_white), PorterDuff.Mode.SRC_ATOP);
 
     // we are just going to *always* invalidate this menu when we
     // reconcile, and handle everything in `prepareOptionsMenu`.
