@@ -46,7 +46,7 @@ final class SharedElementGroupManager: RCTViewManager {
     return SharedElementGroup()
   }
 
-  override func constantsToExport() -> [String: Any] {
+  override func constantsToExport() -> [AnyHashable: Any] {
     return [
       "VERSION": VERSION
     ]
