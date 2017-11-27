@@ -2,16 +2,19 @@ package com.airbnb.android.react.navigation;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.views.toolbar.DrawableWithIntrinsicSize;
 
@@ -245,12 +248,24 @@ public class ReactToolbar extends Toolbar {
     for (int i = 0; i < length; i++) {
       ReadableMap button = buttons.getMap(i);
 
-      String title = button.hasKey("title") && button.getType("title") == ReadableType.String
+      final String title = button.hasKey("title") && button.getType("title") == ReadableType.String
           ? button.getString("title")
           : String.format("Item %s", i);
 
+      SpannableString titleSpan = new SpannableString(title);
+
+      if (button.hasKey("titleColor")) {
+        titleSpan.setSpan(new ForegroundColorSpan(button.getInt("titleColor")), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      }
+
+      if (button.hasKey("titleFontName")) {
+        titleSpan = new SpannableString(titleSpan);
+        titleSpan.setSpan(new TypefaceSpan(component.getActivity(), button.getString("titleFontName"), 0), 0, titleSpan.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      }
+
       // use `length - i` for ordering so the button ordering is consistent with iOS
-      MenuItem item = menu.add(Menu.NONE, Menu.NONE, length - i, title);
+      final MenuItem item = menu.add(Menu.NONE, Menu.NONE, length - i, titleSpan);
 
       if (button.hasKey("systemItem")) {
         item.setIcon(android.R.drawable.ic_menu_share);
@@ -267,8 +282,11 @@ public class ReactToolbar extends Toolbar {
       if (button.hasKey("image")) {
         setMenuItemIcon(item, button.getMap("image"));
       }
-      item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
       final Object data = i;
+      // Disable this to be able to easily change color and font
+      // TODO: configure this with a Javascript prop
+//      item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
       item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {

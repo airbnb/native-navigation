@@ -81,6 +81,7 @@ class BlockBarButtonItem: UIBarButtonItem {
     if let titleTextAttributes = titleTextAttributes {
       // TODO(lmr): what about other control states? do we care?
       setTitleTextAttributes(titleTextAttributes, for: .normal)
+      setTitleTextAttributes(titleTextAttributes, for: .selected)
     }
   }
 
