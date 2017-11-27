@@ -1,20 +1,47 @@
 PODS:
+  - boost (1.59.0):
+    - boost/graph-includes (= 1.59.0)
+    - boost/math-includes (= 1.59.0)
+    - boost/numeric-includes (= 1.59.0)
+    - boost/pointer_cast-includes (= 1.59.0)
+    - boost/preprocessor-includes (= 1.59.0)
+    - boost/shared_ptr-includes (= 1.59.0)
+    - boost/string_algorithms-includes (= 1.59.0)
+  - boost/graph-includes (1.59.0)
+  - boost/math-includes (1.59.0)
+  - boost/numeric-includes (1.59.0)
+  - boost/pointer_cast-includes (1.59.0)
+  - boost/preprocessor-includes (1.59.0)
+  - boost/shared_ptr-includes (1.59.0)
+  - boost/string_algorithms-includes (1.59.0)
+  - DoubleConversion (1.1.5)
+  - Folly (2016.09.26.00):
+    - boost
+    - DoubleConversion
+    - GLog
+  - GLog (0.3.4)
   - native-navigation (0.2.1):
     - React
   - React (0.50.4):
     - React/Core (= 0.50.4)
-  - React/BatchedBridge (0.50.4):
-    - React/Core
-    - React/cxxreact_legacy
   - React/Core (0.50.4):
     - yoga (= 0.50.4.React)
-  - React/cxxreact_legacy (0.50.4):
-    - React/jschelpers_legacy
+  - React/CxxBridge (0.50.4):
+    - Folly (= 2016.09.26.00)
+    - React/Core
+    - React/cxxreact
+  - React/cxxreact (0.50.4):
+    - boost
+    - Folly (= 2016.09.26.00)
+    - React/jschelpers
   - React/DevSupport (0.50.4):
     - React/Core
     - React/RCTWebSocket
   - React/fishhook (0.50.4)
-  - React/jschelpers_legacy (0.50.4)
+  - React/jschelpers (0.50.4):
+    - Folly (= 2016.09.26.00)
+    - React/PrivateDatabase
+  - React/PrivateDatabase (0.50.4)
   - React/RCTAnimation (0.50.4):
     - React/Core
   - React/RCTBlob (0.50.4):
@@ -33,9 +60,12 @@ PODS:
   - yoga (0.50.4.React)
 
 DEPENDENCIES:
+  - DoubleConversion (from `../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
+  - GLog (from `../../node_modules/react-native/third-party-podspecs/GLog.podspec`)
   - native-navigation (from `../../`)
-  - React/BatchedBridge (from `../../node_modules/react-native`)
   - React/Core (from `../../node_modules/react-native`)
+  - React/CxxBridge (from `../../node_modules/react-native`)
   - React/DevSupport (from `../../node_modules/react-native`)
   - React/RCTAnimation (from `../../node_modules/react-native`)
   - React/RCTImage (from `../../node_modules/react-native`)
@@ -45,6 +75,12 @@ DEPENDENCIES:
   - yoga (from `../../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
 EXTERNAL SOURCES:
+  DoubleConversion:
+    :podspec: ../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec
+  Folly:
+    :podspec: ../../node_modules/react-native/third-party-podspecs/Folly.podspec
+  GLog:
+    :podspec: ../../node_modules/react-native/third-party-podspecs/GLog.podspec
   native-navigation:
     :path: ../../
   React:
@@ -53,10 +89,14 @@ EXTERNAL SOURCES:
     :path: ../../node_modules/react-native/ReactCommon/yoga/yoga.podspec
 
 SPEC CHECKSUMS:
+  boost: 30a15ffb6d9aa4646dd3caffc960753f4cb4ca4e
+  DoubleConversion: ebb6747c5b66026ad4f97b789c3ceac6f18e57a6
+  Folly: b7255b29f1d693c375d642d0f04f0592181156d9
+  GLog: 3e4e4ae9746ce6bf6e9420c7fc1e08ad59c8ba1a
   native-navigation: bfb4dd993e94160c9d71804332c39f7e56f0283b
   React: 6d7efef18e0241eb832cf4c085405169a15080ed
   yoga: b9aebf996711e50fc31f5608c10aa108a5a0c29e
 
-PODFILE CHECKSUM: 00deef7d2177ada6c3f046178b7bbf2116990b0e
+PODFILE CHECKSUM: 2fb86f88c222dc5cebd1e277c564850e039b1ab6
 
 COCOAPODS: 1.3.1
