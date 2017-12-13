@@ -295,12 +295,16 @@ public class DefaultNavigationImplementation implements NavigationImplementation
       final int titleColor = next.hasKey("titleColor") ? next.getInt("titleColor") : foregroundColor;
 
       toolbar.setTitleTextColor(titleColor);
+    }
+
+    if (firstCall || numberHasChanged("foregroundColor", prev, next)) {
+      toolbar.setTitleTextColor(foregroundColor);
 
       Drawable navigationIcon = toolbar.getNavigationIcon();
-      if (navigationIcon != null) navigationIcon.setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
+      if (navigationIcon != null) navigationIcon.setColorFilter(foregroundColor, PorterDuff.Mode.SRC_ATOP);
 
       Drawable menuButton = toolbar.getOverflowIcon();
-      if (menuButton != null) menuButton.setColorFilter(titleColor, PorterDuff.Mode.SRC_ATOP);
+      if (menuButton != null) menuButton.setColorFilter(foregroundColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     if (stringHasChanged("subtitle", prev, next)) {
