@@ -1,6 +1,6 @@
 # `<Navigator.Config />`
 
-The `Config` component is a a component that is used to configure the current screen and navigation
+The `Config` component is a component that is used to configure the current screen and navigation
 bar. The component itself does not result in any UI being rendered in the current react view hierarchy,
 but instead is used as a declarative interface for the screen.
 
