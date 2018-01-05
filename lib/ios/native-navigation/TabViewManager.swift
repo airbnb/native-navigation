@@ -47,11 +47,18 @@ final class TabView: UIView {
       return viewController
     }
 
-    // TODO(lmr): handle non-RN tabs
+    let coordinator = ReactNavigationCoordinator.sharedInstance
+    
     if let route = route {
-      let vc = ReactViewController(moduleName: route, props: props).prepareViewControllerForPresenting()
-      vc.tabBarItem = tabBarItem
-      viewController = vc
+      guard let flow = coordinator.delegate?.flowCoordinatorForId?(route) as? UIViewController else {
+        let vc = ReactViewController(moduleName: route, props: props).prepareViewControllerForPresenting()
+        vc.tabBarItem = tabBarItem
+        return vc
+      }
+      (flow as! ReactFlowCoordinator).start(props)
+      flow.tabBarItem = tabBarItem
+    
+      viewController = coordinator.navigation.makeNavigationController(rootViewController: flow)
     }
 
     return viewController
