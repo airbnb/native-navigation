@@ -180,10 +180,34 @@ type Button = {
   
   // ios-only
   style: 'plain' | 'default';
-  systemItem: 'done' | 'cancel' | 'edit' | 'save' | 'add' | 'flexibleSpace' | 'compose' | 'reply' | 'action' | 'organize' | 'bookmarks' | 'search' | 'refresh' | 'stop' | 'camera' | 'trash' | 'play' | 'pause' | 'rewind' | 'fastForward' | 'undo' | 'redo' | 'pageCurl';
+  systemItem: SystemItem;
 
   // android-only
 };
+
+type SystemItem = 'done' 
+  | 'cancel' 
+  | 'edit' 
+  | 'save' 
+  | 'add' 
+  | 'flexibleSpace' 
+  | 'compose' 
+  | 'reply' 
+  | 'action' 
+  | 'organize' 
+  | 'bookmarks' 
+  | 'search' 
+  | 'refresh' 
+  | 'stop' 
+  | 'camera' 
+  | 'trash' 
+  | 'play' 
+  | 'pause' 
+  | 'rewind' 
+  | 'fastForward' 
+  | 'undo' 
+  | 'redo' 
+  | 'pageCurl'
 
 type NavigatorConfigProps = {
 
@@ -196,6 +220,7 @@ type NavigatorConfigProps = {
   rightTitle: string;
   rightImage: Image;
   rightButtons: Array<Button>;
+  leftButtons: Array<Button>;
   screenColor: Color;
   hidden: boolean;
   backgroundColor: Color; 
@@ -210,12 +235,13 @@ type NavigatorConfigProps = {
   titleFontSize: number;
   subtitleFontName: string;
   subtitleFontSize: number;
+  leftTitle: string;
+  leftImage: Image;
   
   // android-only-but-should-share
   navIcon: Image;
   logo: Image;
   textAlign: 'left' | 'center' | 'right';
-  leftButtons: Array<Button>;
   
   // ios-only
   prompt: string;
@@ -226,6 +252,8 @@ type NavigatorConfigProps = {
   isToolbarHidden: boolean;
   backIndicatorTransitionMaskImage: Image;
   translucent: boolean;
+  rightSystemItem: SystemItem;
+  leftSystemItem: SystemItem;
   
   // android-only
   statusBarColor: Color;
