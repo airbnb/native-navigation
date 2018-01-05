@@ -45,7 +45,7 @@ lock people in to any one deep linking library.
 
 Beyond a 1.0 release, there are a lot of ideas we have for this library that we are excited to work 
 on! While these are not necessary for a 1.0 release, we hope to work on them in parallel, or have 
-interested commmunity members help out!
+interested community members help out!
 
 These features include (but are certainly not limited to!):
 
