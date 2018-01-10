@@ -1,6 +1,7 @@
 package com.airbnb.android.react.navigation.example;
 
 import android.app.Application;
+
 import com.airbnb.android.react.navigation.NativeNavigationPackage;
 import com.airbnb.android.react.navigation.ReactNavigationCoordinator;
 import com.facebook.react.ReactApplication;
@@ -22,7 +23,7 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
+      return Arrays.asList(
           new MainReactPackage(),
           new NativeNavigationPackage()
       );
@@ -48,5 +49,4 @@ public class MainApplication extends Application implements ReactApplication {
     coordinator.injectReactInstanceManager(mReactNativeHost.getReactInstanceManager());
     coordinator.start(this);
   }
-
 }
