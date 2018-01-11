@@ -9,9 +9,11 @@
   <application>
     <activity
       android:name="com.airbnb.android.react.navigation.ReactNativeActivity"
-      android:launchMode="singleTop"/>
+      android:launchMode="singleTop"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
     <activity
       android:name="com.airbnb.android.react.navigation.ReactNativeTabActivity"
-      android:launchMode="singleTop"/>
+      android:launchMode="singleTop"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
   </application>
 </manifest>
