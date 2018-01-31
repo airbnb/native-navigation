@@ -39,7 +39,7 @@ import React
 
 // this is a convenience class to allow us to easily assign lambdas as press handlers
 class BlockBarButtonItem: UIBarButtonItem {
-  var actionHandler: ((Void) -> Void)?
+  var actionHandler: (() -> Void)?
 
   convenience init(title: String?, style: UIBarButtonItemStyle) {
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))
@@ -84,7 +84,7 @@ class BlockBarButtonItem: UIBarButtonItem {
     }
   }
 
-  func barButtonItemPressed(sender: UIBarButtonItem) {
+  @objc func barButtonItemPressed(sender: UIBarButtonItem) {
     actionHandler?()
   }
 }

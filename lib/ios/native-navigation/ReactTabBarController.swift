@@ -172,7 +172,6 @@ open class ReactTabBarController: UITabBarController {
   }
 }
 
-private let DELAY: Int64 = Int64(1.2 * Double(NSEC_PER_SEC))
 private var IN_PROGRESS: Bool = false
 
 extension ReactTabBarController: UITabBarControllerDelegate {
