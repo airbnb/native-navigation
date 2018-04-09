@@ -99,9 +99,29 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         }
         ensureCoordinatorComponent(activity);
         ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
-            screenName,
-            ConversionUtil.toBundle(props),
-            ConversionUtil.toBundle(options));
+                screenName,
+                ConversionUtil.toBundle(props),
+                ConversionUtil.toBundle(options));
+      }
+    });
+  }
+
+  @SuppressWarnings("UnusedParameters")
+  @ReactMethod
+  public void resetTo(final String screenName, final ReadableMap props,
+                   final ReadableMap options) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().resetTo(
+                screenName,
+                ConversionUtil.toBundle(props),
+                ConversionUtil.toBundle(options));
       }
     });
   }

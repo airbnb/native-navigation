@@ -93,6 +93,11 @@ public class ScreenCoordinator {
     pushScreen(fragment, options);
   }
 
+  public void resetTo(String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
+    Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
+    resetTo(fragment, options);
+  }
+
   public void pushScreen(Fragment fragment) {
     pushScreen(fragment, null);
   }
@@ -120,6 +125,31 @@ public class ScreenCoordinator {
     ft
             .add(container.getId(), fragment)
             .addToBackStack(null)
+            .commit();
+    bsi.popFragment();
+    bsi.pushFragment(fragment);
+    Log.d(TAG, toString());
+  }
+
+  public void resetTo(Fragment fragment, @Nullable Bundle options) {
+    FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
+            .setAllowOptimization(true);
+    Fragment currentFragment = getCurrentFragment();
+    if (currentFragment == null) {
+      throw new IllegalStateException("There is no current fragment. You must present one first.");
+    }
+
+    PresentAnimation anim = PresentAnimation.Fade;
+    ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
+
+    BackStack bsi = getCurrentBackStack();
+
+    if (bsi == null) {
+      bsi = new BackStack(getNextStackTag(), null, null);
+    }
+
+    ft
+            .replace(container.getId(), fragment)
             .commit();
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
