@@ -383,7 +383,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
   public func makeNavigationController(rootViewController: UIViewController) -> UINavigationController {
     // TODO(lmr): pass initialConfig
     // TODO(lmr): do we want to provide a way to customize the NavigationBar class?
-    return UINavigationController(rootViewController: rootViewController)
+    return ReactNavigationController(rootViewController: rootViewController)
   }
 
   public func reconcileTabConfig(
@@ -469,6 +469,19 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     // itemWidth: float
 
   }
+  
+  private func getOrientationFromString(_ orientation: String?) -> UIInterfaceOrientationMask {
+    switch orientation {
+      case "portrait"?: return .portrait;
+      case "landscapeLeft"?: return .landscapeLeft;
+      case "landscapeRight"?: return .landscapeRight;
+      case "portraitUpsideDown"?: return .portraitUpsideDown;
+      case "portraitUpsideDown"?: return .portraitUpsideDown;
+      case "allButUpsideDown"?: return .allButUpsideDown;
+      case "all"?: return .all;
+      default: return .portrait;
+    }
+  }
 
   public func reconcileScreenConfig(
     viewController: ReactViewController,
@@ -476,6 +489,9 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
     prev: [String: AnyObject],
     next: [String: AnyObject]
   ) {
+    viewController.setOrientation(orientation: getOrientationFromString(stringForKey("orientation", next)))
+
+    
     // status bar
     if let statusBarHidden = boolForKey("statusBarHidden", next) {
       viewController.setStatusBarHidden(statusBarHidden)
