@@ -48,12 +48,12 @@ final class ViewController: UIViewController {
     view.backgroundColor = .white
   }
 
-  func pushScreenOne(sender: UIButton) {
+  @objc func pushScreenOne(sender: UIButton) {
     let screenOne = ReactViewController(moduleName: "ScreenOne")
     navigationController?.pushReactViewController(screenOne, animated: true)
   }
 
-  func pushTabScreen(sender: UIButton) {
+  @objc func pushTabScreen(sender: UIButton) {
     let tabScreen = ReactTabBarController(moduleName: "TabScreen")
     self.presentReactViewController(tabScreen, animated: true, completion: nil)
   }
