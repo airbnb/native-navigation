@@ -31,6 +31,11 @@ RCT_EXTERN_METHOD(present:(NSString *)screenName
                   options:(NSDictionary *)options
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(resetTo:(NSString *)screenName
+                  withProps:(NSDictionary *)props
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(presentNative:(NSString *)name
                   withProps:(NSDictionary *)props
                   options:(NSDictionary *)options
