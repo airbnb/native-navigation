@@ -88,7 +88,7 @@ class ReactNavigation: NSObject {
       }
 
       self.coordinator.registerFlow(pushed, resolve: resolve, reject: reject)
-        nav.pushReactViewController(pushed, animated: animated, delay: nil, makeTransition: makeTransition)
+      nav.pushReactViewController(pushed, animated: animated, delay: nil, makeTransition: makeTransition)
     }
   }
 
