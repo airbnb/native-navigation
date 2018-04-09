@@ -39,7 +39,7 @@ import React
 
 // this is a convenience class to allow us to easily assign lambdas as press handlers
 class BlockBarButtonItem: UIBarButtonItem {
-  var actionHandler: ((Void) -> Void)?
+  var actionHandler: (() -> Void)?
 
   convenience init(title: String?, style: UIBarButtonItemStyle) {
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))
@@ -63,7 +63,7 @@ class BlockBarButtonItem: UIBarButtonItem {
     style: UIBarButtonItemStyle,
     enabled: Bool?,
     tintColor: UIColor?,
-    titleTextAttributes: [String: Any]?
+    titleTextAttributes: [NSAttributedStringKey: Any]?
   ) {
     if let barButtonSystemItem = barButtonSystemItem {
       self.init(barButtonSystemItem: barButtonSystemItem)
@@ -84,7 +84,7 @@ class BlockBarButtonItem: UIBarButtonItem {
     }
   }
 
-  func barButtonItemPressed(sender: UIBarButtonItem) {
+  @objc func barButtonItemPressed(sender: UIBarButtonItem) {
     actionHandler?()
   }
 }
@@ -248,19 +248,19 @@ func statusBarAnimationFromString(_ string: String?) -> UIStatusBarAnimation {
 func textAttributesFromPrefix(
   _ prefix: String,
   _ props: [String: AnyObject]
-) -> [String: Any]? {
-  var attributes: [String: Any] = [:]
+) -> [NSAttributedStringKey: Any]? {
+  var attributes: [NSAttributedStringKey: Any] = [:]
   if let color = colorForKey("\(prefix)Color", props) {
-    attributes[NSForegroundColorAttributeName] = color
+    attributes[NSAttributedStringKey.foregroundColor] = color
   } else if let color = colorForKey("foregroundColor", props) {
-    attributes[NSForegroundColorAttributeName] = color
+    attributes[NSAttributedStringKey.foregroundColor] = color
   }
   let fontName = stringForKey("\(prefix)FontName", props)
   let fontSize = floatForKey("\(prefix)FontSize", props)
   // TODO(lmr): use system font if no fontname is given
   if let name = fontName, let size = fontSize {
     if let font = UIFont(name: name, size: size) {
-      attributes[NSFontAttributeName] = font
+      attributes[NSAttributedStringKey.font] = font
     }
   }
   return attributes.count == 0 ? nil : attributes
