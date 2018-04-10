@@ -22,7 +22,6 @@ public class ReactModalActivity extends ReactAwareActivity {
         getSupportFragmentManager().beginTransaction()
                 .setAllowOptimization(true)
                 .add(R.id.content, fragment)
-                .addToBackStack(null)
                 .commit();
         getSupportFragmentManager().executePendingTransactions();
         supportPostponeEnterTransition();
@@ -31,12 +30,10 @@ public class ReactModalActivity extends ReactAwareActivity {
     @Override
     public void finish() {
         super.finish();
-        this.getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.getSupportFragmentManager().popBackStack();
     }
 }
