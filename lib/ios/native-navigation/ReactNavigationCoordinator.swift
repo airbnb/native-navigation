@@ -116,7 +116,7 @@ open class ReactNavigationCoordinator: NSObject {
 
   var sceneInitialPropertiesMap: [String: [String: AnyObject]] = [:]
 
-  func registerScreenProperties(_ sceneName: String, properties: [String: AnyObject]) {
+  open func registerScreenProperties(_ sceneName: String, properties: [String: AnyObject]) {
     sceneInitialPropertiesMap[sceneName] = properties
   }
 
