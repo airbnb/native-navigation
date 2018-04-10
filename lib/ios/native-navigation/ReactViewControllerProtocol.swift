@@ -247,4 +247,61 @@ extension UINavigationController {
       }
     }
   }
+    
+    func internalResetToReactViewControllers(
+        _ viewController: InternalReactViewControllerProtocol,
+        animated: Bool,
+        delay: Int64 = DELAY) {
+        
+        // we debounce this call globally
+        if (IN_PROGRESS) {
+            return
+        }
+        IN_PROGRESS = true
+        
+        viewController.eagerNavigationController = self
+        
+        // this should never evaluate true, but is here just to trigger loadView()
+        guard (viewController.viewController().view != nil) else {
+            IN_PROGRESS = false
+            return
+        }
+        
+        
+        let realPush: () -> Void = { [weak self] in
+            IN_PROGRESS = false
+            viewController.onNavigationBarTypeUpdated = nil
+            viewController.isPendingNavigationTransition = false
+            viewController.isCurrentlyTransitioning = true
+            
+            self?.setViewControllers([viewController.viewController()], animated: animated)
+            viewController.eagerNavigationController = nil
+            viewController.realNavigationDidHappen()
+            self?.transitionCoordinator?.animate(alongsideTransition: nil, completion: { context in
+                viewController.isCurrentlyTransitioning = false
+                // The completion handler of the AIRNavigationController will be called
+                // synchronously from this context, but AFTER this block is called. To
+                // get around this, we call it async.
+                DispatchQueue.main.async(execute: {
+                    viewController.onTransitionCompleted?()
+                    viewController.emitEvent("onEnterTransitionComplete", body: nil)
+                })
+            })
+        }
+        
+        viewController.isPendingNavigationTransition = true
+        viewController.onNavigationBarTypeUpdated = realPush
+        viewController.startedWaitingForRealNavigation()
+        
+        // we delay pushing the view controller just a little bit (50ms) so that the react view can render
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)) {
+            if (viewController.isPendingNavigationTransition) {
+                print("Push Fallback Timer Called!")
+                realPush()
+            } else {
+                viewController.eagerNavigationController = nil
+                viewController.onNavigationBarTypeUpdated = nil
+            }
+        }
+    }
 }

@@ -90,6 +90,7 @@ open class ReactViewController: UIViewController {
   fileprivate var statusBarStyle: UIStatusBarStyle = UIStatusBarStyle.default
   fileprivate var statusBarIsDirty: Bool = false
   fileprivate var leadingButtonVisible: Bool = true
+  private var orientation: UIInterfaceOrientationMask = .portrait
   private var barHeight: CGFloat
 
   // MARK: Lifecycle
@@ -220,8 +221,9 @@ open class ReactViewController: UIViewController {
     }
   }
 
-
-
+  open func getOrientation() -> UIInterfaceOrientationMask {
+    return self.orientation
+  }
 
   // MARK: Public Setters
 
@@ -241,6 +243,10 @@ open class ReactViewController: UIViewController {
 
   open func setStatusBarAnimation(_ animation: UIStatusBarAnimation) {
     statusBarAnimation = animation
+  }
+
+  public func setOrientation(orientation: UIInterfaceOrientationMask) {
+    self.orientation = orientation
   }
 
   func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {

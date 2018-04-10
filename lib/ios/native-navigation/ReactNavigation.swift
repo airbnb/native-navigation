@@ -92,6 +92,24 @@ class ReactNavigation: NSObject {
       nav.pushReactViewController(pushed, animated: animated, makeTransition: makeTransition)
     }
   }
+    
+  func resetTo(_ screenName: String, withProps props: [String: AnyObject], options: [String: AnyObject], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    print("resetTo \(screenName)")
+    
+    DispatchQueue.main.async {
+        guard let nav = self.coordinator.topNavigationController() else { return }
+        
+        let pushed = ReactViewController(moduleName: screenName, props: props)
+        let current = self.coordinator.topViewController()
+        
+        if let currentAsReact = current as? ReactViewController {
+            pushed.delegate = currentAsReact.delegate
+        }
+        
+        self.coordinator.registerFlow(pushed, resolve: resolve, reject: reject)
+        nav.internalResetToReactViewControllers(pushed, animated: false)
+    }
+  }
 
   func pushNative(_ name: String, withProps props: [String: AnyObject], options: [String: AnyObject], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     print("pushNative: \(name)")

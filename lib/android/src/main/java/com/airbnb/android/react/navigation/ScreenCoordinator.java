@@ -93,6 +93,11 @@ public class ScreenCoordinator {
     pushScreen(fragment, options);
   }
 
+  public void resetTo(String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
+    Fragment fragment = ReactNativeFragment.newInstance(moduleName, props);
+    resetTo(fragment, options);
+  }
+
   public void pushScreen(Fragment fragment) {
     pushScreen(fragment, null);
   }
@@ -121,6 +126,31 @@ public class ScreenCoordinator {
             .add(container.getId(), fragment)
             .addToBackStack(null)
             .commit();
+    bsi.pushFragment(fragment);
+    Log.d(TAG, toString());
+  }
+
+  public void resetTo(Fragment fragment, @Nullable Bundle options) {
+    FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
+            .setAllowOptimization(true);
+    Fragment currentFragment = getCurrentFragment();
+    if (currentFragment == null) {
+      throw new IllegalStateException("There is no current fragment. You must present one first.");
+    }
+
+    PresentAnimation anim = PresentAnimation.Fade;
+    ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
+
+    BackStack bsi = getCurrentBackStack();
+
+    if (bsi == null) {
+      bsi = new BackStack(getNextStackTag(), null, null);
+    }
+
+    ft
+            .replace(container.getId(), fragment)
+            .commit();
+    bsi.popFragment();
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
@@ -217,27 +247,27 @@ public class ScreenCoordinator {
   public void pop() {
     BackStack bsi = getCurrentBackStack();
 
-    View decorView = activity.getWindow().getDecorView();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-      decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-        @Override
-        public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-          WindowInsets defaultInsets = null;
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            defaultInsets = v.onApplyWindowInsets(insets);
-            return defaultInsets.replaceSystemWindowInsets(
-                    defaultInsets.getSystemWindowInsetLeft(),
-                    defaultInsets.getSystemWindowInsetTop(),
-                    defaultInsets.getSystemWindowInsetRight(),
-                    defaultInsets.getSystemWindowInsetBottom());
-          }
+//    View decorView = activity.getWindow().getDecorView();
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//      decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+//        @Override
+//        public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+//          WindowInsets defaultInsets = null;
+//          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//            defaultInsets = v.onApplyWindowInsets(insets);
+//            return defaultInsets.replaceSystemWindowInsets(
+//                    defaultInsets.getSystemWindowInsetLeft(),
+//                    defaultInsets.getSystemWindowInsetTop(),
+//                    defaultInsets.getSystemWindowInsetRight(),
+//                    defaultInsets.getSystemWindowInsetBottom());
+//          }
+//
+//          return null;
+//        }
+//      });
+//    }
 
-          return null;
-        }
-      });
-    }
-
-    ViewCompat.requestApplyInsets(decorView);
+//    ViewCompat.requestApplyInsets(decorView);
 
     if (bsi.getSize() == 1) {
       dismiss();
@@ -253,7 +283,8 @@ public class ScreenCoordinator {
   }
 
   public void dismiss(int resultCode, Map<String, Object> payload) {
-    dismiss(resultCode, payload, false);
+    // BREAKING UCL exit after dismissing last activity
+    dismiss(resultCode, payload, activity instanceof ReactActivity);
   }
 
   private void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {

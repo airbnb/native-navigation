@@ -89,7 +89,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
   public void push(final String screenName, final ReadableMap props,
-      final ReadableMap options) {
+                   final ReadableMap options) {
     handler.post(new Runnable() {
       @Override
       public void run() {
@@ -99,9 +99,29 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         }
         ensureCoordinatorComponent(activity);
         ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
-            screenName,
-            ConversionUtil.toBundle(props),
-            ConversionUtil.toBundle(options));
+                screenName,
+                ConversionUtil.toBundle(props),
+                ConversionUtil.toBundle(options));
+      }
+    });
+  }
+
+  @SuppressWarnings("UnusedParameters")
+  @ReactMethod
+  public void resetTo(final String screenName, final ReadableMap props,
+                   final ReadableMap options) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+        ensureCoordinatorComponent(activity);
+        ((ScreenCoordinatorComponent) activity).getScreenCoordinator().resetTo(
+                screenName,
+                ConversionUtil.toBundle(props),
+                ConversionUtil.toBundle(options));
       }
     });
   }
@@ -133,6 +153,22 @@ class NavigatorModule extends ReactContextBaseJavaModule {
             ConversionUtil.toBundle(props),
             ConversionUtil.toBundle(options),
             promise);
+      }
+    });
+  }
+
+  @SuppressWarnings("UnusedParameters")
+  @ReactMethod
+  public void showModal(final String screenName, final ReadableMap props, final ReadableMap options, final Promise promise) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+
+        ReactNativeUtils.presentScreen(getCurrentActivity(), screenName, ConversionUtil.toBundle(props));
       }
     });
   }
@@ -175,6 +211,13 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         if (activity == null) {
           return;
         }
+
+        if (activity instanceof ReactModalActivity) {
+          final ReactModalActivity modalActivity = (ReactModalActivity) activity;
+          modalActivity.finish();
+          return;
+        }
+
         ensureCoordinatorComponent(activity);
         ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
       }

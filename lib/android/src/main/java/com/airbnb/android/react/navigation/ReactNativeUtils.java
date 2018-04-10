@@ -36,6 +36,14 @@ public final class ReactNativeUtils {
     presentScreen(context, moduleName, null);
   }
 
+  public static void presentScreen(Activity context, String moduleName, @Nullable Bundle props) {
+    Bundle options = ActivityOptionsCompat
+            .makeCustomAnimation(context, R.anim.slide_up, R.anim.delay)
+            .toBundle();
+    Intent intent = intent(context, moduleName, props, true);
+    context.startActivity(intent, options);
+  }
+
   public static void presentScreen(Context context, String moduleName, @Nullable Bundle props) {
     Bundle options = ActivityOptionsCompat
             .makeCustomAnimation(context, R.anim.slide_up, R.anim.delay)
@@ -55,7 +63,7 @@ public final class ReactNativeUtils {
   }
 
   private static Intent intent(Context context, String moduleName, Bundle props, boolean isModal) {
-    return new Intent(context, ReactNativeActivity.class)
+    return new Intent(context, ReactModalActivity.class)
             .putExtra(ReactNativeFragment.EXTRA_IS_MODAL, isModal)
             .putExtra(ReactNativeFragment.EXTRA_REACT_MODULE_NAME, moduleName)
             .putExtra(ReactNativeFragment.EXTRA_REACT_PROPS, props);

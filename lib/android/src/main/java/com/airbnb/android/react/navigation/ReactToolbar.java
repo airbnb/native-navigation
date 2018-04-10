@@ -269,6 +269,7 @@ public class ReactToolbar extends Toolbar {
 
       if (button.hasKey("systemItem")) {
         item.setIcon(android.R.drawable.ic_menu_share);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (button.hasKey("tintColor")) {
           Drawable menuItemIcon = item.getIcon();
@@ -281,6 +282,7 @@ public class ReactToolbar extends Toolbar {
 
       if (button.hasKey("image")) {
         setMenuItemIcon(item, button.getMap("image"));
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
       }
       final Object data = i;
       // Disable this to be able to easily change color and font
