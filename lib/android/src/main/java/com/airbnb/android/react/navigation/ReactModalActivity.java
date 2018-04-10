@@ -28,12 +28,10 @@ public class ReactModalActivity extends ReactAwareActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onDestroy() {
+        ((ReactNativeFragment) getSupportFragmentManager().findFragmentById(R.id.content))
+                .getReactRootView()
+                .unmountReactApplication();
+        super.onDestroy();
     }
 }
