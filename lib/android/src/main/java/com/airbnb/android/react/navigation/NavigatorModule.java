@@ -89,7 +89,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
   @SuppressWarnings("UnusedParameters")
   @ReactMethod
   public void push(final String screenName, final ReadableMap props,
-      final ReadableMap options) {
+                   final ReadableMap options) {
     handler.post(new Runnable() {
       @Override
       public void run() {
@@ -157,6 +157,22 @@ class NavigatorModule extends ReactContextBaseJavaModule {
     });
   }
 
+  @SuppressWarnings("UnusedParameters")
+  @ReactMethod
+  public void showModal(final String screenName, final ReadableMap props, final ReadableMap options, final Promise promise) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+          return;
+        }
+
+        ReactNativeUtils.presentScreen(getCurrentActivity(), screenName, ConversionUtil.toBundle(props));
+      }
+    });
+  }
+
   @SuppressWarnings({"UnusedParameters", "unused"})
   @ReactMethod
   public void presentNative(String name, ReadableMap props, ReadableMap options, Promise promise) {
@@ -195,6 +211,13 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         if (activity == null) {
           return;
         }
+
+        if (activity instanceof ReactModalActivity) {
+          final ReactModalActivity modalActivity = (ReactModalActivity) activity;
+          modalActivity.finish();
+          return;
+        }
+
         ensureCoordinatorComponent(activity);
         ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
       }

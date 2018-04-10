@@ -196,11 +196,12 @@ public class DefaultNavigationImplementation implements NavigationImplementation
                     defaultInsets.getSystemWindowInsetBottom());
           }
         });
+        ViewCompat.requestApplyInsets(decorView);
       } else {
-        decorView.setOnApplyWindowInsetsListener(null);
+//        decorView.setOnApplyWindowInsetsListener(null);
       }
 
-      ViewCompat.requestApplyInsets(decorView);
+//      ViewCompat.requestApplyInsets(decorView);
     }
   }
 
@@ -421,21 +422,21 @@ public class DefaultNavigationImplementation implements NavigationImplementation
     }
 
     if (firstCall || boolHasChanged("displayHomeAsUp", prev, next)) {
-      if (next.hasKey("displayHomeAsUp")) {
-        boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
-        if (displayHomeAsUp) {
-          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-        } else {
-          toolbar.setNavigationIcon(null);
-        }
+//      if (next.hasKey("displayHomeAsUp")) {
+//        boolean displayHomeAsUp = next.getBoolean("displayHomeAsUp");
+//        if (displayHomeAsUp) {
+//          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+//        } else {
+//          toolbar.setNavigationIcon(null);
+//        }
       } else {
-        bar.setDisplayHomeAsUpEnabled(defaults.displayHomeAsUp);
-        if (defaults.displayHomeAsUp) {
-          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-        } else {
-          toolbar.setNavigationIcon(null);
-        }
-      }
+//        bar.setDisplayHomeAsUpEnabled(defaults.displayHomeAsUp);
+//        if (defaults.displayHomeAsUp) {
+//          toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+//        } else {
+//          toolbar.setNavigationIcon(null);
+//        }
+//      }
     }
 
     if (firstCall || boolHasChanged("hidden", prev, next)) {

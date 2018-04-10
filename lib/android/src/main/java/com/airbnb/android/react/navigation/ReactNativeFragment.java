@@ -210,6 +210,11 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     contentContainer.setKeyListener(this);
     activity = (AppCompatActivity) getActivity();
 
+    // Set support action bar before setNavigationOnClickListener otherwise clicking back won't work on scratch RN application
+    if (activity instanceof ReactActivity) {
+      activity.setSupportActionBar(toolbar);
+    }
+
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -222,8 +227,10 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
       }
     });
 
-    // Set support action bar after setNavigationOnClickListener to allow override of the click listener in the activity
-    activity.setSupportActionBar(toolbar);
+    // Set support action bar after setNavigationOnClickListener to allow override of the click listener in the activity for existing native apps
+    if (!(activity instanceof ReactActivity)) {
+      activity.setSupportActionBar(toolbar);
+    }
 
 
     String moduleName = getArguments().getString(EXTRA_REACT_MODULE_NAME);
