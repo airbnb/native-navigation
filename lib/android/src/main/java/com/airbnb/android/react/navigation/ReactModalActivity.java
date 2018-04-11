@@ -1,5 +1,6 @@
 package com.airbnb.android.react.navigation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,9 +16,16 @@ public class ReactModalActivity extends ReactAwareActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
 
-        String moduleName = getIntent().getStringExtra(ReactNativeIntents.EXTRA_MODULE_NAME);
+        // TODO: this restarts the app when the modal is recreated, we should recreate the React app associated with the modal and show it instead
+        if (!ReactNavigationCoordinator.sharedInstance.isSuccessfullyInitialized()) {
+            final Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return;
+        }
 
         setContentView(R.layout.activity_react_native);
+
         final ReactNativeFragment fragment = ReactNativeFragment.newInstance(getIntent().getExtras());
         getSupportFragmentManager().beginTransaction()
                 .setAllowOptimization(true)
