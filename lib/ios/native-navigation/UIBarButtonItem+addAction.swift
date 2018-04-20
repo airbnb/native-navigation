@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public class ClosureWrapper : NSObject {
   let _callback : (Void) -> Void
   init(callback : @escaping (Void) -> Void) {

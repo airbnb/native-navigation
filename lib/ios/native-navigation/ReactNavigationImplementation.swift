@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
-import React
-
+#if !NN_NO_COCOAPODS
+  import React
+#endif
 
 @objc public protocol ReactNavigationImplementation: class {
 

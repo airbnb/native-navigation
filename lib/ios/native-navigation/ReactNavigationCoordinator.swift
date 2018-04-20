@@ -6,7 +6,9 @@
 //  Copyright © 2016 Airbnb. All rights reserved.
 //
 
-import React
+#if !NN_NO_COCOAPODS
+  import React
+#endif
 import UIKit
 
 @objc public protocol ReactNavigationCoordinatorDelegate {

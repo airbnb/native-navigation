@@ -1,0 +1,5 @@
+//
+//  ReactNavigationCoordinatorDelegate.h
+//
+
+@protocol ReactNavigationCoordinatorDelegate;

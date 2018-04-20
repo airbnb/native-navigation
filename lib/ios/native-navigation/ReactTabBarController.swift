@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import React
+#if !NN_NO_COCOAPODS
+  import React
+#endif
 
 open class ReactTabBarController: UITabBarController {
 
