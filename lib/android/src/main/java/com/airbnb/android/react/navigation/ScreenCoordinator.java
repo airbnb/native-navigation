@@ -241,6 +241,13 @@ public class ScreenCoordinator {
   }
 
   public void onBackPressed() {
+    if (getCurrentFragment() != null && getCurrentFragment() instanceof ReactNativeFragment) {
+      final ReactNativeFragment fragment = (ReactNativeFragment) getCurrentFragment();
+      if (fragment.isOnBackPressImplemented()) {
+        fragment.onBackPressed();
+        return;
+      }
+    }
     pop();
   }
 

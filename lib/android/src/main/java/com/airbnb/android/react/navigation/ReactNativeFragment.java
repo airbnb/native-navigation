@@ -45,6 +45,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   public static final String EXTRA_IS_MODAL = "IS_MODAL";
   private static final String ON_DISAPPEAR = "onDisappear";
   private static final String ON_APPEAR = "onAppear";
+  private static final String ON_BACK_PRESS = "onBackPress";
   private static final String INSTANCE_ID_PROP = "nativeNavigationInstanceId";
   private static final String ON_BUTTON_PRESS = "onButtonPress";
   private static final String INITIAL_BAR_HEIGHT_PROP = "nativeNavigationInitialBarHeight";
@@ -309,7 +310,6 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     super.onPause();
     emitEvent(ON_DISAPPEAR, null);
   }
-
   @Override
   public void onResume() {
     super.onResume();
@@ -369,6 +369,11 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     getActivity().finish();
   }
 
+  public boolean isOnBackPressImplemented() {
+    return renderedConfig.hasKey("onBackPressImplemented")
+            && renderedConfig.getBoolean("onBackPressImplemented");
+  }
+
   @Override
   public String getInstanceId() {
     return instanceId;
@@ -426,6 +431,10 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
             this.renderedConfig
     );
     super.onPrepareOptionsMenu(menu);
+  }
+
+  public void onBackPressed() {
+    emitEvent(ON_BACK_PRESS, null);
   }
 
   private boolean isSuccessfullyInitialized() {
