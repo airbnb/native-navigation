@@ -359,6 +359,11 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     getActivity().finish();
   }
 
+  public boolean onBackPressImplemented() {
+    return renderedConfig.hasKey("onBackPressImplemented")
+            && renderedConfig.getBoolean("onBackPressImplemented");
+  }
+
   @Override
   public String getInstanceId() {
     return instanceId;
