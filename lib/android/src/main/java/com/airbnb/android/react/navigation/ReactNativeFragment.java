@@ -370,8 +370,8 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
   }
 
   public boolean isOnBackPressImplemented() {
-    return renderedConfig.hasKey("onBackPressImplemented")
-            && renderedConfig.getBoolean("onBackPressImplemented");
+    return renderedConfig.hasKey("overrideBackPressInJs")
+            && renderedConfig.getBoolean("overrideBackPressInJs");
   }
 
   @Override
