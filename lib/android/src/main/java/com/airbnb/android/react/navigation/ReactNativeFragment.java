@@ -352,17 +352,27 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
         emitEvent(ON_APPEAR, null);
     }
 
+    /**
+     * we wanted to also emit onAppear event on pop (backbutton pressed),
+     * so we can track screen reappearing after back
+     */
     @Override
     public void onDetach() {
         super.onDetach();
+
         final FragmentManager fragmentManager = getFragmentManager();
+
         if (fragmentManager != null) {
-            final List<Fragment> fma = fragmentManager.getFragments();
-            final int size = fma.size();
-            if (size > 0) {
-                Fragment f = fma.get(size - 1);
-                if (f != null && f instanceof ReactNativeFragment) {
-                    ((ReactNativeFragment) f).emitOnAppear();
+            final List<Fragment> fragments = fragmentManager.getFragments();
+
+            final int fragmentCount = fragments.size();
+
+            if (fragmentCount > 0) {
+                // the current fragment has already been removed from the fragment stack
+                Fragment previousFragment = fragments.get(fragmentCount - 1);
+
+                if (previousFragment != null && previousFragment instanceof ReactNativeFragment) {
+                    ((ReactNativeFragment) previousFragment).emitOnAppear();
                 }
             }
         }
