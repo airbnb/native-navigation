@@ -12,11 +12,15 @@ import android.widget.Toast;
 
 import com.facebook.react.BuildConfig;
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +29,8 @@ public class ReactNavigationCoordinator {
 
   private ReactInstanceManager reactInstanceManager;
   private NavigationImplementation navigationImplementation = new DefaultNavigationImplementation();
+  private final Collection<ReactInstanceManager.ReactInstanceEventListener> initializationListeners =
+          Collections.synchronizedSet(new HashSet<ReactInstanceManager.ReactInstanceEventListener>());
   private boolean isSuccessfullyInitialized = false;
   private static final int APP_INITIALIZE_TOAST_DELAY = 3000;
 
@@ -44,12 +50,17 @@ public class ReactNavigationCoordinator {
     this.reactInstanceManager.addReactInstanceEventListener(
       new ReactInstanceManager.ReactInstanceEventListener() {
         @Override
-        public void onReactContextInitialized(ReactContext context) {
+        public void onReactContextInitialized(final ReactContext context) {
           reactInstanceManager.removeReactInstanceEventListener(this);
           isSuccessfullyInitialized = true;
+          for (ReactInstanceManager.ReactInstanceEventListener listener : initializationListeners) {
+            listener.onReactContextInitialized(context);
+          }
+          initializationListeners.clear();
         }
       });
   }
+
   public void injectImplementation(NavigationImplementation implementation) {
     if (this.navigationImplementation != null) {
       // TODO: throw error. can only initialize once.
@@ -63,6 +74,27 @@ public class ReactNavigationCoordinator {
 
   public boolean isSuccessfullyInitialized() {
     return isSuccessfullyInitialized;
+  }
+
+  /**
+   * Instead of using {@link ReactInstanceManager#addReactInstanceEventListener} directly, we should
+   * use this method.  This prevents a race condition when checking against
+   * {@link #isSuccessfullyInitialized}, because the listener callbacks are called asynchronously
+   * from {@link ReactInstanceManager#setupReactContext(ReactApplicationContext)} via
+   * {@link Handler#post(Runnable)}
+   *
+   * Should not be called if {@link #isSuccessfullyInitialized()} returns true
+   *
+   * @param listener The listener you want to add. It will be automatically removed once called
+   * @throws IllegalStateException if already initialized (i.e. if {@link #isSuccessfullyInitialized()}
+   *                               returns true
+   */
+  public void addInitializationListener(ReactInstanceManager.ReactInstanceEventListener listener) {
+    if (isSuccessfullyInitialized()) {
+        throw new IllegalStateException("Cannot add initialization listener, because React " +
+                "instance is already initialized");
+    }
+    initializationListeners.add(listener);
   }
 
   public void injectExposedActivities(List<ReactExposedActivityParams> exposedActivities) {

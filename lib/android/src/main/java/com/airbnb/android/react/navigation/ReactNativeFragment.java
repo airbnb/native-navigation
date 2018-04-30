@@ -125,7 +125,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     if (!isSuccessfullyInitialized()) {
       // TODO(lmr): need a different way of doing this
       // TODO(lmr): move to utils
-      reactInstanceManager.addReactInstanceEventListener(
+      reactNavigationCoordinator.addInitializationListener(
               new ReactInstanceManager.ReactInstanceEventListener() {
                 @Override
                 public void onReactContextInitialized(ReactContext context) {
@@ -310,6 +310,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     super.onPause();
     emitEvent(ON_DISAPPEAR, null);
   }
+
   @Override
   public void onResume() {
     super.onResume();
