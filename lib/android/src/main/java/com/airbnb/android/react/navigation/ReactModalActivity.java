@@ -2,13 +2,12 @@ package com.airbnb.android.react.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 import com.airbnb.android.R;
-import com.facebook.react.bridge.ReadableMap;
 
 public class ReactModalActivity extends ReactAwareActivity {
+
     private static final String TAG = ReactNativeActivity.class.getSimpleName();
 
     @Override

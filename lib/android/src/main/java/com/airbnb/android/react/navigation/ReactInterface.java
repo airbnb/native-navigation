@@ -5,10 +5,9 @@ import android.support.v4.app.FragmentActivity;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReadableMap;
 
-import java.util.Map;
-
 public interface ReactInterface {
-  // @formatter:off
+
+    // @formatter:off
   String getInstanceId();
   ReactRootView getReactRootView();
   ReactToolbar getToolbar();

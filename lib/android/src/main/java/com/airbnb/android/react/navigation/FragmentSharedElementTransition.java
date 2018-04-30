@@ -12,11 +12,11 @@ import android.transition.TransitionSet;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class FragmentSharedElementTransition extends TransitionSet {
 
-  public FragmentSharedElementTransition() {
-    addTransition(new ChangeBounds());
-    addTransition(new Fade());
-    addTransition(new ChangeImageTransform());
-    addTransition(new ChangeTransform());
-    setInterpolator(new FastOutSlowInInterpolator());
-  }
+    public FragmentSharedElementTransition() {
+        addTransition(new ChangeBounds());
+        addTransition(new Fade());
+        addTransition(new ChangeImageTransform());
+        addTransition(new ChangeTransform());
+        setInterpolator(new FastOutSlowInInterpolator());
+    }
 }

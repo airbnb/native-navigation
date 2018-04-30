@@ -12,22 +12,25 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class NativeNavigationPackage implements ReactPackage {
-  @Override public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Collections.<NativeModule>singletonList(
-        new NavigatorModule(reactContext, ReactNavigationCoordinator.sharedInstance));
-  }
 
-  public List<Class<? extends JavaScriptModule>> createJSModules() {
-    return Collections.emptyList();
-  }
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        return Collections.<NativeModule> singletonList(
+                new NavigatorModule(reactContext, ReactNavigationCoordinator.sharedInstance));
+    }
 
-  @SuppressWarnings("rawtypes") @Override
-  public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Arrays.<ViewManager>asList(
-        new SharedElementGroupManager(),
-        new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance),
-        new TabBarViewManager(),
-        new TabViewManager()
-    );
-  }
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+        return Collections.emptyList();
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Arrays.<ViewManager> asList(
+                new SharedElementGroupManager(),
+                new SharedElementViewManager(ReactNavigationCoordinator.sharedInstance),
+                new TabBarViewManager(),
+                new TabViewManager()
+        );
+    }
 }

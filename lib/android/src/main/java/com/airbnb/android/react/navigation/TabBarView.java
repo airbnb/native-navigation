@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.facebook.react.bridge.ReadableMap;
 
 /**
@@ -13,26 +14,27 @@ import com.facebook.react.bridge.ReadableMap;
  */
 public class TabBarView extends ViewGroup {
 
-  private ReadableMap prevConfig = ConversionUtil.EMPTY_MAP;
-  private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
+    private ReadableMap prevConfig = ConversionUtil.EMPTY_MAP;
 
-  public TabBarView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    setVisibility(View.GONE);
-  }
+    private ReadableMap renderedConfig = ConversionUtil.EMPTY_MAP;
 
-  @Override
-  protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    public TabBarView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setVisibility(View.GONE);
+    }
 
-  }
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-  public void setConfig(ReadableMap config) {
-    this.prevConfig = this.renderedConfig;
-    this.renderedConfig = config;
-  }
+    }
 
-  public ReadableMap getConfig() {
-    return renderedConfig;
-  }
+    public void setConfig(ReadableMap config) {
+        this.prevConfig = this.renderedConfig;
+        this.renderedConfig = config;
+    }
+
+    public ReadableMap getConfig() {
+        return renderedConfig;
+    }
 
 }
