@@ -9,58 +9,61 @@ import java.util.Stack;
 
 class BackStack {
 
-  private final Stack<Fragment> fragments = new Stack<>();
-  private final String tag;
-  private final ScreenCoordinator.PresentAnimation animation;
-  private final Promise promise;
+    private final Stack<Fragment> fragments = new Stack<>();
 
-  BackStack(String tag, ScreenCoordinator.PresentAnimation animation, Promise promise) {
-    this.tag = tag;
-    this.animation = animation;
-    this.promise = promise;
-  }
+    private final String tag;
 
-  String getTag() {
-    return tag;
-  }
+    private final ScreenCoordinator.PresentAnimation animation;
 
-  ScreenCoordinator.PresentAnimation getAnimation() {
-    return animation;
-  }
+    private final Promise promise;
 
-  Promise getPromise() {
-    return promise;
-  }
-
-  @Nullable
-  Fragment peekFragment() {
-    if (fragments.isEmpty()) {
-      return null;
+    BackStack(String tag, ScreenCoordinator.PresentAnimation animation, Promise promise) {
+        this.tag = tag;
+        this.animation = animation;
+        this.promise = promise;
     }
-    return fragments.peek();
-  }
 
-  void pushFragment(Fragment fragment) {
-    fragments.push(fragment);
-  }
-
-  Fragment popFragment() {
-    if (fragments.isEmpty()) {
-      throw new IllegalStateException("Cannot pop empty stack.");
+    String getTag() {
+        return tag;
     }
-    return fragments.remove(fragments.size() - 1);
-  }
 
-  int getSize() {
-    return fragments.size();
-  }
+    ScreenCoordinator.PresentAnimation getAnimation() {
+        return animation;
+    }
 
-  @Override
-  public String toString() {
-    return "BackStack{" + ", tag='" + tag +
-            ", size=" + fragments.size() +
-            ", animation=" + animation +
-            ", promise?=" + (promise != null) +
-            '}';
-  }
+    Promise getPromise() {
+        return promise;
+    }
+
+    @Nullable
+    Fragment peekFragment() {
+        if (fragments.isEmpty()) {
+            return null;
+        }
+        return fragments.peek();
+    }
+
+    void pushFragment(Fragment fragment) {
+        fragments.push(fragment);
+    }
+
+    Fragment popFragment() {
+        if (fragments.isEmpty()) {
+            throw new IllegalStateException("Cannot pop empty stack.");
+        }
+        return fragments.remove(fragments.size() - 1);
+    }
+
+    int getSize() {
+        return fragments.size();
+    }
+
+    @Override
+    public String toString() {
+        return "BackStack{" + ", tag='" + tag +
+                ", size=" + fragments.size() +
+                ", animation=" + animation +
+                ", promise?=" + (promise != null) +
+                '}';
+    }
 }

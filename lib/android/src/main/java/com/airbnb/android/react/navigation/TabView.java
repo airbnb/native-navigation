@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
+
 import com.facebook.react.bridge.ReadableMap;
 
 /**
@@ -14,50 +15,56 @@ import com.facebook.react.bridge.ReadableMap;
  */
 public class TabView extends View {
 
-  private String route;
-  private String title;
-  private ReadableMap prevConfig;
-  private ReadableMap renderedConfig;
-  private Bundle props;
-  private Fragment fragment;
+    private String route;
 
-  public TabView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    setVisibility(View.GONE);
-  }
+    private String title;
 
-  public void setRoute(String route) {
-    this.route = route;
-  }
+    private ReadableMap prevConfig;
 
-  public void setProps(ReadableMap props) {
-    this.props = ConversionUtil.toBundle(props);
-  }
+    private ReadableMap renderedConfig;
 
-  public void setConfig(ReadableMap config) {
-    this.prevConfig = this.renderedConfig;
-    this.renderedConfig = config;
-  }
+    private Bundle props;
 
-  public ReadableMap getPrevConfig() {
-    return prevConfig;
-  }
+    private Fragment fragment;
 
-  public ReadableMap getRenderedConfig() {
-    return renderedConfig;
-  }
-
-  public Fragment getFragment() {
-    if (fragment == null) {
-      fragment = instantiateFragment();
+    public TabView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setVisibility(View.GONE);
     }
-    return fragment;
-  }
-  public String getRoute() {
-    return route;
-  }
 
-  private ReactNativeFragment instantiateFragment() {
-    return ReactNativeFragment.newInstance(route, props);
-  }
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public void setProps(ReadableMap props) {
+        this.props = ConversionUtil.toBundle(props);
+    }
+
+    public void setConfig(ReadableMap config) {
+        this.prevConfig = this.renderedConfig;
+        this.renderedConfig = config;
+    }
+
+    public ReadableMap getPrevConfig() {
+        return prevConfig;
+    }
+
+    public ReadableMap getRenderedConfig() {
+        return renderedConfig;
+    }
+
+    public Fragment getFragment() {
+        if (fragment == null) {
+            fragment = instantiateFragment();
+        }
+        return fragment;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    private ReactNativeFragment instantiateFragment() {
+        return ReactNativeFragment.newInstance(route, props);
+    }
 }

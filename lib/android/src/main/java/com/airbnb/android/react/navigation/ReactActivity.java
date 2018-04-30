@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.ViewGroup;
+
 import com.airbnb.android.R;
 
 public abstract class ReactActivity extends ReactAwareActivity implements ScreenCoordinatorComponent {

@@ -12,11 +12,12 @@ import com.facebook.react.views.text.ReactFontManager;
  * Style a {@link android.text.Spannable} with a custom {@link android.graphics.Typeface}.
  *
  * @author Tristan Waddington
- * Taken from https://stackoverflow.com/questions/8607707/how-to-set-a-custom-font-in-the-actionbar-title/15181195#15181195
- *
- * Adapted for React Native usage
+ *         Taken from https://stackoverflow.com/questions/8607707/how-to-set-a-custom-font-in-the-actionbar-title/15181195#15181195
+ *         <p>
+ *         Adapted for React Native usage
  */
 public class TypefaceSpan extends MetricAffectingSpan {
+
     private Typeface typeface;
 
     /**

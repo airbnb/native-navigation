@@ -3,8 +3,11 @@ package com.airbnb.android.react.navigation;
 import com.facebook.react.bridge.ReadableMap;
 
 class ReactScreenConfig {
+
     ReadableMap initialConfig;
+
     boolean waitForRender;
+
     ReactScreenMode mode;
 
     static final ReactScreenConfig EMPTY = new ReactScreenConfig(

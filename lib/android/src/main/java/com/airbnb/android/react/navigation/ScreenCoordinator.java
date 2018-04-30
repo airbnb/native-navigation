@@ -11,13 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -243,10 +240,12 @@ public class ScreenCoordinator {
   public void onBackPressed() {
     if (getCurrentFragment() != null && getCurrentFragment() instanceof ReactNativeFragment) {
       final ReactNativeFragment fragment = (ReactNativeFragment) getCurrentFragment();
+
       if (fragment.isOnBackPressImplemented()) {
         fragment.onBackPressed();
         return;
       }
+
     }
     pop();
   }

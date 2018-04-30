@@ -12,28 +12,30 @@ import java.util.Map;
 import static com.airbnb.android.react.navigation.ReactNativeUtils.VERSION_CONSTANT_KEY;
 
 public class SharedElementGroupManager extends ViewGroupManager<ReactViewGroup> {
-  private static final String REACT_CLASS = "NativeNavigationSharedElementGroup";
-  private static final int VERSION = 1;
 
-  @Override
-  public Map<String, Object> getExportedViewConstants() {
-    return MapBuilder.<String, Object>builder()
-        .put(VERSION_CONSTANT_KEY, VERSION)
-        .build();
-  }
+    private static final String REACT_CLASS = "NativeNavigationSharedElementGroup";
 
-  @Override
-  public String getName() {
-    return REACT_CLASS;
-  }
+    private static final int VERSION = 1;
 
-  @Override
-  public ReactViewGroup createViewInstance(ThemedReactContext context) {
-    return new ReactViewGroup(context);
-  }
+    @Override
+    public Map<String, Object> getExportedViewConstants() {
+        return MapBuilder.<String, Object> builder()
+                .put(VERSION_CONSTANT_KEY, VERSION)
+                .build();
+    }
 
-  @ReactProp(name = "id")
-  public void setIdentifier(ReactViewGroup view, String id) {
-    view.setTag(R.id.react_shared_element_group_id, id);
-  }
+    @Override
+    public String getName() {
+        return REACT_CLASS;
+    }
+
+    @Override
+    public ReactViewGroup createViewInstance(ThemedReactContext context) {
+        return new ReactViewGroup(context);
+    }
+
+    @ReactProp(name = "id")
+    public void setIdentifier(ReactViewGroup view, String id) {
+        view.setTag(R.id.react_shared_element_group_id, id);
+    }
 }
