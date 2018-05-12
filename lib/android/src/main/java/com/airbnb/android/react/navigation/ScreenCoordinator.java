@@ -24,6 +24,8 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Stack;
 
@@ -36,6 +38,7 @@ public class ScreenCoordinator {
   private static final String TAG = ScreenCoordinator.class.getSimpleName();
   static final String EXTRA_PAYLOAD = "payload";
   private static final String TRANSITION_GROUP = "transitionGroup";
+  private static final String STACK_PREFIX = "STACK";
 
   enum PresentAnimation {
     Modal(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down),
@@ -74,7 +77,38 @@ public class ScreenCoordinator {
     this.activity = activity;
     this.container = container;
     container.setFragmentManager(activity.getSupportFragmentManager());
-    // TODO: restore state
+    restoreStack();
+  }
+
+  /**
+   * If there are Fragments in the Activity stack, restore them into our backStacks. We know the
+   * order in which to restore the Fragments by tagging them with the total size of our backStacks
+   * at the time they were added.
+   *
+   * This is useful when the app goes to background on a device with "Don't keep activities"
+   * turned on or when the Activity is otherwise killed.
+   */
+  private void restoreStack() {
+    boolean hasFragments = true;
+    int stackPosition = 0;
+
+    while (hasFragments) {
+      String fragmentTag = String.valueOf(stackPosition);
+      Fragment pushedFragment = activity.getSupportFragmentManager().findFragmentByTag(fragmentTag);
+      Fragment presentedFragment = activity.getSupportFragmentManager().findFragmentByTag(STACK_PREFIX + fragmentTag);
+
+      if (presentedFragment != null) {
+        BackStack backStack = new BackStack(getNextStackTag(), PresentAnimation.Modal, null);
+        backStacks.push(backStack);
+        getCurrentBackStack().pushFragment(presentedFragment);
+      } else if (pushedFragment != null) {
+        getCurrentBackStack().pushFragment(pushedFragment);
+      } else {
+        hasFragments = false;
+      }
+
+      stackPosition++;
+    }
   }
 
   void onSaveInstanceState(Bundle outState) {
@@ -111,7 +145,7 @@ public class ScreenCoordinator {
     BackStack bsi = getCurrentBackStack();
     ft
             .detach(currentFragment)
-            .add(container.getId(), fragment)
+            .add(container.getId(), fragment, String.valueOf(getTotalBackStackSize()))
             .addToBackStack(null)
             .commit();
     bsi.pushFragment(fragment);
@@ -187,8 +221,11 @@ public class ScreenCoordinator {
       container.willDetachCurrentScreen();
       ft.detach(currentFragment);
     }
+
+    // Use STACK_PREFIX here because each `presentScreen` creates a new BackStack. We need to
+    // know when that's the case when restoring the fragments.
     ft
-        .add(container.getId(), fragment)
+        .add(container.getId(), fragment, STACK_PREFIX + String.valueOf(getTotalBackStackSize()))
         .addToBackStack(bsi.getTag())
         .commit();
     activity.getSupportFragmentManager().executePendingTransactions();
@@ -282,6 +319,18 @@ public class ScreenCoordinator {
 
   private BackStack getCurrentBackStack() {
     return backStacks.peek();
+  }
+
+  private int getTotalBackStackSize() {
+    int totalSize = 0;
+    if (backStacks.size() > 0) {
+
+      List<BackStack> stackList = new ArrayList<BackStack>(backStacks);
+      for (BackStack bsi : stackList) {
+        totalSize += bsi.getSize();
+      }
+    }
+    return totalSize;
   }
 
   @NonNull
