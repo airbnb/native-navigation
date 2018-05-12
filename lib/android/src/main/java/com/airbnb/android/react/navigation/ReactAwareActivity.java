@@ -29,6 +29,12 @@ public abstract class ReactAwareActivity extends AppCompatActivity
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    reactInstanceManager.onHostDestroy(this);
+  }
+
+  @Override
   public void invokeDefaultOnBackPressed() {
     onBackPressed();
   }
