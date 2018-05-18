@@ -273,20 +273,24 @@ extension UINavigationController {
             viewController.onNavigationBarTypeUpdated = nil
             viewController.isPendingNavigationTransition = false
             viewController.isCurrentlyTransitioning = true
-            
-            self?.setViewControllers([viewController.viewController()], animated: animated)
-            viewController.eagerNavigationController = nil
-            viewController.realNavigationDidHappen()
-            self?.transitionCoordinator?.animate(alongsideTransition: nil, completion: { context in
-                viewController.isCurrentlyTransitioning = false
-                // The completion handler of the AIRNavigationController will be called
-                // synchronously from this context, but AFTER this block is called. To
-                // get around this, we call it async.
-                DispatchQueue.main.async(execute: {
-                    viewController.onTransitionCompleted?()
-                    viewController.emitEvent("onEnterTransitionComplete", body: nil)
-                })
+
+            if let navController = ReactNavigationCoordinator.sharedInstance.topNavigationController(), let transition = self?.getResetTransition() {
+                navController.view.layer.add(transition, forKey: kCATransition)
+                navController.setViewControllers([viewController.viewController()], animated: false)
+
+                viewController.eagerNavigationController = nil
+                viewController.realNavigationDidHappen()
+                self?.transitionCoordinator?.animate(alongsideTransition: nil, completion: { context in
+                    viewController.isCurrentlyTransitioning = false
+                    // The completion handler of the AIRNavigationController will be called
+                    // synchronously from this context, but AFTER this block is called. To
+                    // get around this, we call it async.
+                    DispatchQueue.main.async(execute: {
+                      viewController.onTransitionCompleted?()
+                      viewController.emitEvent("onEnterTransitionComplete", body: nil)
+                    })
             })
+          }
         }
         
         viewController.isPendingNavigationTransition = true
@@ -304,4 +308,13 @@ extension UINavigationController {
             }
         }
     }
+  
+  func getResetTransition() -> CATransition {
+    let transition = CATransition.init()
+    transition.duration = 0.3
+    transition.type = kCATransitionFade
+    transition.subtype = kCATransitionFromTop
+    
+    return transition
+  }
 }
