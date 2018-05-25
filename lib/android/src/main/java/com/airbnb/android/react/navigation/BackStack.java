@@ -58,6 +58,10 @@ class BackStack {
         return fragments.size();
     }
 
+    boolean isEmpty() {
+        return getSize() == 0;
+    }
+
     @Override
     public String toString() {
         return "BackStack{" + ", tag='" + tag +

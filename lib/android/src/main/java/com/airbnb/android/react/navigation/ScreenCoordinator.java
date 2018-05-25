@@ -147,7 +147,9 @@ public class ScreenCoordinator {
     ft
             .replace(container.getId(), fragment)
             .commit();
-    bsi.popFragment();
+    if (!bsi.isEmpty()) {
+      bsi.popFragment();
+    }
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
@@ -251,7 +253,7 @@ public class ScreenCoordinator {
   }
 
   public void pop() {
-    BackStack bsi = getCurrentBackStack();
+    final BackStack bsi = getCurrentBackStack();
 
 //    View decorView = activity.getWindow().getDecorView();
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -275,12 +277,23 @@ public class ScreenCoordinator {
 
 //    ViewCompat.requestApplyInsets(decorView);
 
+    // When using resetTo and double tapping the back button, we crash on the second tap because
+    // there is no back stack.
+    // Not the best way of fixing this - ideally the backstack state should mirror the state of the
+    // FragmentManager
+    if (bsi == null) {
+      Log.w(TAG, "Attempting to call ScreenCoordinator.pop() when BackStack is null");
+      return;
+    }
+
     if (bsi.getSize() == 1) {
       dismiss();
       return;
     }
     bsi.popFragment();
-    activity.getSupportFragmentManager().popBackStack();
+    // We use popBackStackImmediate() here to force the pop to happen synchronously. This is so the
+    // user doesn't crash the app by double tapping the back button when navigating forward.
+    activity.getSupportFragmentManager().popBackStackImmediate();
     Log.d(TAG, toString());
   }
 
