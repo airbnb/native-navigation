@@ -169,28 +169,27 @@ public class DefaultNavigationImplementation implements NavigationImplementation
                 animated = !("none".equals(next.getString("statusBarAnimation")));
             }
 
-            Integer color = defaults.statusBarColor;
             if (next.hasKey("statusBarColor")) {
-                color = next.getInt("statusBarColor");
-            }
+                Integer color = next.getInt("statusBarColor");
 
-            if (animated) {
-                int curColor = activity.getWindow().getStatusBarColor();
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(
-                        new ArgbEvaluator(), curColor, color);
+                if (animated) {
+                    int curColor = activity.getWindow().getStatusBarColor();
+                    ValueAnimator colorAnimation = ValueAnimator.ofObject(
+                            new ArgbEvaluator(), curColor, color);
 
-                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        activity.getWindow().setStatusBarColor((Integer) animator.getAnimatedValue());
-                    }
-                });
-                colorAnimation
-                        .setDuration(300)
-                        .setStartDelay(0);
-                colorAnimation.start();
-            } else {
-                activity.getWindow().setStatusBarColor(color);
+                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animator) {
+                            activity.getWindow().setStatusBarColor((Integer) animator.getAnimatedValue());
+                        }
+                    });
+                    colorAnimation
+                            .setDuration(300)
+                            .setStartDelay(0);
+                    colorAnimation.start();
+                } else {
+                    activity.getWindow().setStatusBarColor(color);
+                }
             }
         }
 
