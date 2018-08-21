@@ -125,6 +125,10 @@ public class ScreenCoordinator {
             .commit();
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
+
+    if (currentFragment instanceof ReactNativeFragment) {
+      ((ReactNativeFragment) currentFragment).emitOnDisappear();
+    }
   }
 
   public void resetTo(Fragment fragment, @Nullable Bundle options) {
