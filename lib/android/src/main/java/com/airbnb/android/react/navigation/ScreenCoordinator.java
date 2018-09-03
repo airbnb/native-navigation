@@ -310,7 +310,7 @@ public class ScreenCoordinator {
     dismiss(resultCode, payload, activity instanceof ReactActivity);
   }
 
-  private void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {
+  public void dismiss(int resultCode, Map<String, Object> payload, boolean finishIfEmpty) {
     BackStack bsi = backStacks.pop();
     Promise promise = bsi.getPromise();
     deliverPromise(promise, resultCode, payload);
