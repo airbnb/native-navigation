@@ -337,7 +337,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
     @Override
     public void onPause() {
         super.onPause();
-        emitEvent(ON_DISAPPEAR, null);
+        this.emitOnDisappear();
     }
 
     @Override
@@ -346,6 +346,10 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
         Log.d(TAG, "onResume");
         updateBarHeightIfNeeded();
         emitOnAppear();
+    }
+
+    public void emitOnDisappear() {
+        emitEvent(ON_DISAPPEAR, null);
     }
 
     public void emitOnAppear() {
