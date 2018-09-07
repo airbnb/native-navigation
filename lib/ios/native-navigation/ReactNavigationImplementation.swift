@@ -594,6 +594,11 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
       if let hidden = boolForKey("hidden", next) {
         navController.setNavigationBarHidden(hidden, animated: true)
       }
+        
+      if let interactivePopGestureEnabled = boolForKey("interactivePopGestureEnabled", next), interactivePopGestureEnabled {
+        navController.interactivePopGestureRecognizer?.delegate = nil
+        navController.interactivePopGestureRecognizer?.isEnabled = true
+      }
 
       if let isToolbarHidden = boolForKey("isToolbarHidden", next) {
         navController.setToolbarHidden(isToolbarHidden, animated: true)

@@ -227,6 +227,7 @@ type NavigatorConfigProps = {
   backIndicatorTransitionMaskImage: Image;
   translucent: boolean;
   backButtonTitle: string;
+  interactivePopGestureEnabled: boolean;
 
   // android-only
   statusBarColor: Color;
