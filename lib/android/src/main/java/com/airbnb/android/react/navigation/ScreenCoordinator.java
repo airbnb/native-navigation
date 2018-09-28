@@ -132,15 +132,12 @@ public class ScreenCoordinator {
   }
 
   public void resetTo(Fragment fragment, @Nullable Bundle options) {
-    FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
+    final FragmentManager fragmentManager = activity.getSupportFragmentManager();
+    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction()
             .setAllowOptimization(true);
-    Fragment currentFragment = getCurrentFragment();
-    if (currentFragment == null) {
-      throw new IllegalStateException("There is no current fragment. You must present one first.");
-    }
 
     PresentAnimation anim = PresentAnimation.Fade;
-    ft.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
+    fragmentTransaction.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     BackStack bsi = getCurrentBackStack();
 
@@ -148,12 +145,16 @@ public class ScreenCoordinator {
       bsi = new BackStack(getNextStackTag(), null, null);
     }
 
-    ft
-            .replace(container.getId(), fragment)
-            .commit();
-    if (!bsi.isEmpty()) {
+    fragmentManager.popBackStackImmediate();
+    while (!bsi.isEmpty()) {
       bsi.popFragment();
     }
+
+    fragmentTransaction
+      .replace(container.getId(), fragment)
+      // When resetting we don't care about state loss
+      .commitAllowingStateLoss();
+
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
   }
