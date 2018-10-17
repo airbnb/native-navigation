@@ -13,15 +13,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewStub;
+import android.view.*;
 import android.view.animation.Animation;
-
+import android.view.animation.AnimationUtils;
 import com.airbnb.android.R;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
@@ -316,12 +310,28 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
             // disappear unless we delay it until after the fragment animation.
             if (transit == FragmentTransaction.TRANSIT_NONE && nextAnim == 0) {
                 reactRootView.unmountReactApplication();
-            } else {
-                contentContainer.unmountReactApplicationAfterAnimation(reactRootView);
-
+                reactRootView = null;
+            } else if (nextAnim != 0) {
+                final Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if(reactRootView != null) {
+                            reactRootView.unmountReactApplication();
+                            reactRootView = null;
+                        }
+                    }
+                });
+                return anim;
             }
-            reactRootView = null;
         }
+
         if (getActivity() instanceof ScreenCoordinatorComponent) {
             ScreenCoordinator screenCoordinator =
                     ((ScreenCoordinatorComponent) getActivity()).getScreenCoordinator();
@@ -333,6 +343,7 @@ public class ReactNativeFragment extends Fragment implements ReactInterface,
         }
         return null;
     }
+
 
     @Override
     public void onPause() {
