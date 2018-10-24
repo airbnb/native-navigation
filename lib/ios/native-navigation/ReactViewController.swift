@@ -369,7 +369,9 @@ open class ReactViewController: UIViewController {
     renderedConfig = initialConfig.combineWith(values: props)
     // TODO: Navigation implementation does not reload when updating javascript since we commented this.
     // But if we let it, when moving from a page with a navbar not transparent to a transparent navbar, the first view jumps while it should not be updated
-    // reconcileScreenConfig()
+    if (renderedConfig["enableLiveReload"] as? Bool == true) {
+      reconcileScreenConfig()
+    }
     updateBarHeightIfNeeded()
   }
 
