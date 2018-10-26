@@ -225,20 +225,7 @@ open class ReactViewController: UIViewController {
 
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
-
-    //    On iOS when rotating a screen, the view can take a while to re-layout
-    //    Even if we send an event here back to the javascript to animate opacity via Javascript, the fadeout can occur too late.
-    //    This offers the ability to apply a fadeout/fadein while the layouting happens.
-    if boolForKey("fadeOnRotation", renderedConfig) == true {
-      self.view.superview?.backgroundColor = colorForKey("screenColor", self.renderedConfig)
-
-      UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseOut, animations: {
-        self.view.alpha = 0.0
-      }, completion: nil)
-      UIView.animate(withDuration: 0.8, delay: 1.0, options: .curveEaseOut, animations: {
-        self.view.alpha = 1.0
-      }, completion: nil)
-    }
+    emitEvent("onViewWillTransition", body: nil)
   }
 
   open func getOrientation() -> UIInterfaceOrientationMask {
