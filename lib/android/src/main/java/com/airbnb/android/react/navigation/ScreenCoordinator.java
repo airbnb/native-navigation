@@ -36,6 +36,7 @@ public class ScreenCoordinator {
   private static final String TAG = ScreenCoordinator.class.getSimpleName();
   static final String EXTRA_PAYLOAD = "payload";
   private static final String TRANSITION_GROUP = "transitionGroup";
+  private static final String ADD_TO_BACKSTACK_OPTION = "addToAndroidBackStack";
 
   enum PresentAnimation {
     Modal(R.anim.slide_up, R.anim.delay, R.anim.delay, R.anim.slide_down),
@@ -101,7 +102,7 @@ public class ScreenCoordinator {
 
   public void pushScreen(Fragment fragment, @Nullable Bundle options) {
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
-            .setAllowOptimization(true);
+            .setReorderingAllowed(true);
     Fragment currentFragment = getCurrentFragment();
     if (currentFragment == null) {
       throw new IllegalStateException("There is no current fragment. You must present one first.");
@@ -117,11 +118,12 @@ public class ScreenCoordinator {
 
     if (bsi == null) {
       bsi = new BackStack(getNextStackTag(), null, null);
+      backStacks.push(bsi);
     }
 
     ft
             .add(container.getId(), fragment)
-            .addToBackStack(null)
+            .addToBackStack(bsi.getTag())
             .commit();
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
@@ -132,9 +134,13 @@ public class ScreenCoordinator {
   }
 
   public void resetTo(Fragment fragment, @Nullable Bundle options) {
+    final boolean addToAndroidBackStack = options != null &&
+            options.containsKey(ADD_TO_BACKSTACK_OPTION) &&
+            options.getBoolean(ADD_TO_BACKSTACK_OPTION);
+
     final FragmentManager fragmentManager = activity.getSupportFragmentManager();
     final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction()
-            .setAllowOptimization(true);
+            .setReorderingAllowed(true);
 
     PresentAnimation anim = PresentAnimation.Fade;
     fragmentTransaction.setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
@@ -143,17 +149,24 @@ public class ScreenCoordinator {
 
     if (bsi == null) {
       bsi = new BackStack(getNextStackTag(), null, null);
+      backStacks.push(bsi);
     }
 
-    fragmentManager.popBackStackImmediate();
-    while (!bsi.isEmpty()) {
-      bsi.popFragment();
+    if (!addToAndroidBackStack) {
+      while (!bsi.isEmpty()) {
+        bsi.popFragment();
+      }
+
+      fragmentManager.popBackStackImmediate();
     }
 
-    fragmentTransaction
-      .replace(container.getId(), fragment)
+    fragmentTransaction.replace(container.getId(), fragment);
+
+    if (addToAndroidBackStack) {
+      fragmentTransaction.addToBackStack(bsi.getTag());
+    }
       // When resetting we don't care about state loss
-      .commitAllowingStateLoss();
+    fragmentTransaction.commitAllowingStateLoss();
 
     bsi.pushFragment(fragment);
     Log.d(TAG, toString());
