@@ -226,6 +226,9 @@ open class ReactViewController: UIViewController {
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
     emitEvent("onViewWillTransition", body: nil)
+    coordinator.animate(alongsideTransition: nil, completion: {
+      _ in self.navigationController?.navigationBar.setNeedsLayout()
+    })
   }
 
   open func getOrientation() -> UIInterfaceOrientationMask {
