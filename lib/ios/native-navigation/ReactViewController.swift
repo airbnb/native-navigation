@@ -225,7 +225,15 @@ open class ReactViewController: UIViewController {
 
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
-    emitEvent("onViewWillTransition", body: nil)
+    let previousSize = self.view.frame.size;
+
+    emitEvent("onViewWillTransition", body: [
+      "width": size.width,
+      "height": size.height,
+      "previousWidth": previousSize.width,
+      "previousHeight": previousSize.height
+    ] as AnyObject)
+
     coordinator.animate(alongsideTransition: nil, completion: {
       _ in self.navigationController?.navigationBar.setNeedsLayout()
     })
