@@ -125,7 +125,7 @@ public class ScreenCoordinator {
             .add(container.getId(), fragment)
             .addToBackStack(bsi.getTag())
             .commit();
-    bsi.pushFragment(fragment);
+    bsi.pushFragment();
     Log.d(TAG, toString());
 
     if (currentFragment instanceof ReactNativeFragment) {
@@ -165,10 +165,10 @@ public class ScreenCoordinator {
     if (addToAndroidBackStack) {
       fragmentTransaction.addToBackStack(bsi.getTag());
     }
-      // When resetting we don't care about state loss
+    // When resetting we don't care about state loss
     fragmentTransaction.commitAllowingStateLoss();
 
-    bsi.pushFragment(fragment);
+    bsi.pushFragment();
     Log.d(TAG, toString());
   }
 
@@ -229,13 +229,10 @@ public class ScreenCoordinator {
     if (fragment == null) {
       throw new IllegalArgumentException("Fragment must not be null.");
     }
-    BackStack bsi = getCurrentBackStack();
 
-    if (bsi == null) {
-      bsi = new BackStack(getNextStackTag(), anim, promise);
-    }
-
+    BackStack bsi = new BackStack(getNextStackTag(), anim, promise);
     backStacks.push(bsi);
+
     // TODO: dry this up with pushScreen
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
             .setAllowOptimization(true)
@@ -246,7 +243,7 @@ public class ScreenCoordinator {
             .addToBackStack(bsi.getTag())
             .commit();
     activity.getSupportFragmentManager().executePendingTransactions();
-    bsi.pushFragment(fragment);
+    bsi.pushFragment();
     Log.d(TAG, toString());
   }
 
