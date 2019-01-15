@@ -7,7 +7,6 @@ android {
   publishNonDefault true
 
   compileSdkVersion 25
-  buildToolsVersion "25.0.3"
 
   defaultConfig {
     minSdkVersion 16
@@ -49,11 +48,11 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:appcompat-v7:25.4.0'
-  compile 'com.android.support:support-annotations:25.4.0'
-  compile 'com.android.support:design:25.4.0'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.3'
-  compile 'com.facebook.fresco:fresco:1.3.0'
-  compile 'com.facebook.fresco:imagepipeline-okhttp3:1.3.0'
-  provided 'com.facebook.react:react-native:+'
+  api 'com.android.support:appcompat-v7:25.4.0'
+  api 'com.android.support:support-annotations:25.4.0'
+  api 'com.android.support:design:25.4.0'
+  api 'com.fasterxml.jackson.core:jackson-databind:2.8.3'
+  api 'com.facebook.fresco:fresco:1.3.0'
+  api 'com.facebook.fresco:imagepipeline-okhttp3:1.3.0'
+  compileOnly 'com.facebook.react:react-native:+'
 }
