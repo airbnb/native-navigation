@@ -24,7 +24,9 @@
     "docs:watch": "npm run docs:prepare && gitbook serve",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git fetch https://github.com/airbnb/native-navigation.git gh-pages && git checkout -b gh-pages && git add . && git commit -am 'update book' && git push https://github.com/airbnb/native-navigation.git gh-pages --force",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "commitmsg": "validate-commit-msg",
+    "commit": "git-cz"
   },
   "repository": {
     "type": "git",
@@ -50,6 +52,8 @@
     "babel-plugin-module-resolver": "^2.3.0",
     "babel-preset-airbnb": "^1.1.1",
     "babel-preset-react-native": "1.9.0",
+    "commitizen": "^3.0.5",
+    "cz-conventional-changelog": "^2.1.0",
     "eslint": "^3.3.1",
     "eslint-config-airbnb": "^10.0.1",
     "eslint-import-resolver-babel-module": "^2.2.1",
@@ -58,14 +62,21 @@
     "eslint-plugin-prefer-object-spread": "^1.1.0",
     "eslint-plugin-react": "^6.1.2",
     "gitbook-cli": "^2.3.0",
+    "husky": "^1.3.1",
     "murmur2js": "^1.0.0",
     "react": "^15.4.1",
     "react-native": "^0.42.3",
-    "semantic-release": "^15.13.3"
+    "semantic-release": "^15.13.3",
+    "validate-commit-msg": "^2.14.0"
   },
   "rnpm": {
     "android": {
       "sourceDir": "./lib/android"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
