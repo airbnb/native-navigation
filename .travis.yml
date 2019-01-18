@@ -1,6 +1,15 @@
 language: node_js
 
 node_js:
-  - "6"
+  - 10
 
-script: npm run ci
+jobs:
+  include:
+    - stage: release
+      node_js: lts/*
+      script: skip
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - npx semantic-release
