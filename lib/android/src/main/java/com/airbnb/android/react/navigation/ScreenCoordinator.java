@@ -139,7 +139,7 @@ public class ScreenCoordinator {
     ft
             .add(container.getId(), fragment)
             .addToBackStack(bsi.getTag())
-            .commit();
+            .commitAllowingStateLoss();
     bsi.pushFragment();
     Log.d(TAG, toString());
 
@@ -168,11 +168,7 @@ public class ScreenCoordinator {
     }
 
     if (!addToAndroidBackStack) {
-      while (!bsi.isEmpty()) {
-        bsi.popFragment();
-      }
-
-      fragmentManager.popBackStackImmediate();
+      bsi.reset();
     }
 
     fragmentTransaction.replace(container.getId(), fragment);
@@ -250,13 +246,13 @@ public class ScreenCoordinator {
 
     // TODO: dry this up with pushScreen
     FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction()
-            .setAllowOptimization(true)
+            .setReorderingAllowed(true)
             .setCustomAnimations(anim.enter, anim.exit, anim.popEnter, anim.popExit);
 
     ft
             .add(container.getId(), fragment)
             .addToBackStack(bsi.getTag())
-            .commit();
+            .commitAllowingStateLoss();
     activity.getSupportFragmentManager().executePendingTransactions();
     bsi.pushFragment();
     Log.d(TAG, toString());
