@@ -42,9 +42,13 @@ class BackStack {
         return fragmentCount;
     }
 
-    void setFragmentCount(int fragmentCount) { this.fragmentCount = fragmentCount; }
+    void setFragmentCount(int fragmentCount) {
+        this.fragmentCount = fragmentCount;
+    }
 
-    void reset() { this.setFragmentCount(0); }
+    void reset() {
+        this.setFragmentCount(0);
+    }
 
     boolean isEmpty() {
         return getSize() == 0;
