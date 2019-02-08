@@ -75,7 +75,22 @@ public class ScreenCoordinator {
     this.activity = activity;
     this.container = container;
     container.setFragmentManager(activity.getSupportFragmentManager());
+
+    if (savedInstanceState != null) {
+      this.restoreFragmentStack();
+    }
     // TODO: restore state
+  }
+
+  private void restoreFragmentStack() {
+    BackStack bsi = getCurrentBackStack();
+
+    if (bsi == null) {
+      bsi = new BackStack(getNextStackTag(), null, null);
+      backStacks.push(bsi);
+    }
+
+    bsi.setFragmentCount(activity.getSupportFragmentManager().getFragments().size());
   }
 
   void onSaveInstanceState(Bundle outState) {
