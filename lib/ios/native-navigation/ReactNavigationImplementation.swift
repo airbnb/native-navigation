@@ -592,7 +592,7 @@ open class DefaultReactNavigationImplementation: ReactNavigationImplementation {
       }
 
       if let hidden = boolForKey("hidden", next) {
-        navController.setNavigationBarHidden(hidden, animated: true)
+        navController.setNavigationBarHidden(hidden, animated: false)
       }
         
       if let interactivePopGestureEnabled = boolForKey("interactivePopGestureEnabled", next), interactivePopGestureEnabled {
