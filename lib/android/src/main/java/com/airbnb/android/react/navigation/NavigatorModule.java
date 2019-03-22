@@ -104,11 +104,12 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if (activity == null) {
                     return;
                 }
-                ensureCoordinatorComponent(activity);
-                ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
-                        screenName,
-                        ConversionUtil.toBundle(props),
-                        ConversionUtil.toBundle(options));
+                if ((activity instanceof ScreenCoordinatorComponent)) {
+                    ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
+                            screenName,
+                            ConversionUtil.toBundle(props),
+                            ConversionUtil.toBundle(options));
+                }
             }
         });
     }
@@ -124,11 +125,12 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if (activity == null) {
                     return;
                 }
-                ensureCoordinatorComponent(activity);
-                ((ScreenCoordinatorComponent) activity).getScreenCoordinator().resetTo(
-                        screenName,
-                        ConversionUtil.toBundle(props),
-                        ConversionUtil.toBundle(options));
+                if ((activity instanceof ScreenCoordinatorComponent)) {
+                    ((ScreenCoordinatorComponent) activity).getScreenCoordinator().resetTo(
+                            screenName,
+                            ConversionUtil.toBundle(props),
+                            ConversionUtil.toBundle(options));
+                }
             }
         });
     }
@@ -154,12 +156,13 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if (activity == null) {
                     return;
                 }
-                ensureCoordinatorComponent(activity);
-                ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
-                        screenName,
-                        ConversionUtil.toBundle(props),
-                        ConversionUtil.toBundle(options),
-                        promise);
+                if ((activity instanceof ScreenCoordinatorComponent)) {
+                    ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
+                            screenName,
+                            ConversionUtil.toBundle(props),
+                            ConversionUtil.toBundle(options),
+                            promise);
+                }
             }
         });
     }
@@ -201,8 +204,9 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if (activity == null) {
                     return;
                 }
-                ensureCoordinatorComponent(activity);
-                ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
+                if ((activity instanceof ScreenCoordinatorComponent)) {
+                    ((ScreenCoordinatorComponent) activity).getScreenCoordinator().dismiss();
+                }
             }
         });
     }
@@ -225,8 +229,9 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                ensureCoordinatorComponent(activity);
-                ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
+                if ((activity instanceof ScreenCoordinatorComponent)) {
+                    ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pop();
+                }
             }
         });
     }
@@ -273,12 +278,6 @@ class NavigatorModule extends ReactContextBaseJavaModule {
         }
         activity.setResult(getResultCodeFromPayload(payload), intent);
         activity.finish();
-    }
-
-    private void ensureCoordinatorComponent(Activity activity) {
-        if (!(activity instanceof ScreenCoordinatorComponent)) {
-            throw new IllegalStateException("Your activity must implement ScreenCoordinatorComponent.");
-        }
     }
 
     /**

@@ -120,7 +120,8 @@ public class ScreenCoordinator {
             .setReorderingAllowed(true);
     Fragment currentFragment = getCurrentFragment();
     if (currentFragment == null) {
-      throw new IllegalStateException("There is no current fragment. You must present one first.");
+      Log.w(TAG, "There is no current fragment. You must present one first.");
+      return;
     }
 
     if (ViewUtils.isAtLeastLollipop() && options != null && options.containsKey(TRANSITION_GROUP)) {
@@ -238,7 +239,8 @@ public class ScreenCoordinator {
 
   public void presentScreen(Fragment fragment, PresentAnimation anim, @Nullable Promise promise) {
     if (fragment == null) {
-      throw new IllegalArgumentException("Fragment must not be null.");
+      Log.w(TAG, "Fragment must not be null.");
+      return;
     }
 
     BackStack bsi = new BackStack(getNextStackTag(), anim, promise);
