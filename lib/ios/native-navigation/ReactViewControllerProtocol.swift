@@ -320,8 +320,8 @@ extension UINavigationController {
   func getResetTransition() -> CATransition {
     let transition = CATransition.init()
     transition.duration = 0.3
-    transition.type = kCATransitionFade
-    transition.subtype = kCATransitionFromTop
+    transition.type = CATransitionType.fade
+    transition.subtype = CATransitionSubtype.fromTop
     
     return transition
   }

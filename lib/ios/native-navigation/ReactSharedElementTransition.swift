@@ -123,7 +123,7 @@ final public class ReactSharedElementTransition: NSObject,
   public func navigationController(
     _ navigationController: UINavigationController,
     animationControllerFor
-    operation: UINavigationControllerOperation, from
+    operation: UINavigationController.Operation, from
     fromVC: UIViewController, to
     toVC: UIViewController) -> UIViewControllerAnimatedTransitioning?
   {

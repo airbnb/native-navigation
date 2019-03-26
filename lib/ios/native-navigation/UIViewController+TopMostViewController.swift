@@ -22,7 +22,7 @@ public extension UIViewController {
       return tabBarSelected.topMostViewController()
     } else if let navVisible = (self as? UINavigationController)?.visibleViewController {
       return navVisible.topMostViewController()
-    } else if let lastChild = self.childViewControllers.last {
+    } else if let lastChild = self.children.last {
       return lastChild.topMostViewController()
     } else {
       return self

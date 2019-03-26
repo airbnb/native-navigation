@@ -90,8 +90,8 @@ open class SharedElementTransitionController<AnimationType>: NSObject,
             if self.isPresenting {
               toViewController.view.isHidden = true
               fromViewController.view.isUserInteractionEnabled = false
-              containerView.bringSubview(toFront: toViewController.view)
-              containerView.bringSubview(toFront: animationContainer)
+              containerView.bringSubviewToFront(toViewController.view)
+              containerView.bringSubviewToFront(animationContainer)
             } else {
               fromViewController.view.removeFromSuperview()
             }

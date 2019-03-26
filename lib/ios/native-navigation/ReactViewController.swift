@@ -202,7 +202,7 @@ open class ReactViewController: UIViewController {
 
   override open func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
-    if (self.isMovingFromParentViewController) {
+    if (self.isMovingFromParent) {
       // viewController is being popped
       finish(.ok, payload: dismissPayload)
       transition = nil
@@ -465,7 +465,7 @@ extension ReactViewController : ReactAnimationFromContentVendor {
 
   public func reactAnimationFromContent(_ animationContainer: UIView, transitionGroup: String, options: [String: Any]) -> ReactAnimationFromContent {
     let snapshot = self.snapshotForAnimationContainer(animationContainer, transitionGroup: transitionGroup)
-    animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
+    animationContainer.sendSubviewToBack(snapshot.screenWithoutElements.view)
     return ReactAnimationFromContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
       sharedElements: snapshot.sharedElements.mapValues { $0.view }
@@ -482,7 +482,7 @@ extension ReactViewController : ReactAnimationFromContentVendor {
 extension ReactViewController : ReactAnimationToContentVendor {
   public func reactAnimationToContent(_ animationContainer: UIView) -> ReactAnimationToContent {
     let snapshot = self.snapshotForAnimationContainer(animationContainer)
-    animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
+    animationContainer.sendSubviewToBack(snapshot.screenWithoutElements.view)
     return ReactAnimationToContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
       sharedElements: snapshot.sharedElements.mapValues { $0.view }

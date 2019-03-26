@@ -169,7 +169,7 @@ open class ReactTabBarController: UITabBarController {
     tabViews = next
 
     let nullableViewControllers = tabViews.map { $0.getViewController() }
-    let viewControllers = nullableViewControllers.flatMap { $0 }
+    let viewControllers = nullableViewControllers.compactMap { $0 }
     self.setViewControllers(viewControllers, animated: true)
   }
 }
