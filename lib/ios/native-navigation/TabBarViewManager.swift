@@ -15,13 +15,13 @@ final class TabBar: RCTView {
 
   // MARK: Internal
 
-  func setConfig(_ config: [String: AnyObject]) {
+  @objc func setConfig(_ config: [String: AnyObject]) {
     self.prevConfig = self.renderedConfig
     self.renderedConfig = config
     refresh()
   }
 
-  func refresh() {
+  @objc func refresh() {
     if let tabBar = tabBar {
       implementation.reconcileTabBarConfig(
         tabBar: tabBar,
@@ -34,7 +34,7 @@ final class TabBar: RCTView {
   // MARK: Private
 
   private var implementation: ReactNavigationImplementation = ReactNavigationCoordinator.sharedInstance.navigation
-  var tabBar: UITabBar?
+  @objc var tabBar: UITabBar?
   private var prevConfig: [String: AnyObject] = [:]
   private var renderedConfig: [String: AnyObject] = [:]
   

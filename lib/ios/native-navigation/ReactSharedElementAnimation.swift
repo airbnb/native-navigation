@@ -97,7 +97,7 @@ public final class ReactSharedElementAnimation: TransitionAnimation {
     completion: @escaping ()->())
   {
     // we want the "fromContent" to be below the "toContent"
-    container.sendSubview(toBack: fromContent.screenWithoutElements)
+    container.sendSubviewToBack(fromContent.screenWithoutElements)
 
     let fromScreen = fromContent.screenWithoutElements
 
@@ -258,7 +258,7 @@ public final class ReactSharedElementAnimation: TransitionAnimation {
     element: UIView,
     isPresenting: Bool) -> (() -> ())
   {
-    container.bringSubview(toFront: element)
+    container.bringSubviewToFront(element)
 
     if isPresenting {
       element.alpha = 0
@@ -276,7 +276,7 @@ public final class ReactSharedElementAnimation: TransitionAnimation {
   fileprivate func getForceFadeInElements(_ toContent: ToContent) -> [UIView] {
     guard let fadeInElementIds = options["forceFadeInElementIds"] as? [String] else { return [] }
     let elementIds = Set(fadeInElementIds).intersection(toContent.sharedElements.keys)
-    return elementIds.flatMap { toContent.sharedElements[$0] }
+    return elementIds.compactMap { toContent.sharedElements[$0] }
   }
 
   fileprivate func getSharedElementPairs(_ fromContent: FromContent, toContent: ToContent) -> [SharedElementPair] {

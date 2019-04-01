@@ -49,28 +49,28 @@ open class ReactNavigationCoordinator: NSObject {
 
   // MARK: Public
 
-  open static let sharedInstance = ReactNavigationCoordinator()
+  @objc open static let sharedInstance = ReactNavigationCoordinator()
 
-  open var delegate: ReactNavigationCoordinatorDelegate?
-  open var bridge: RCTBridge?
-  open var navigation: ReactNavigationImplementation = DefaultReactNavigationImplementation()
+  @objc open var delegate: ReactNavigationCoordinatorDelegate?
+  @objc open var bridge: RCTBridge?
+  @objc open var navigation: ReactNavigationImplementation = DefaultReactNavigationImplementation()
 
-  open func topViewController() -> UIViewController? {
+  @objc open func topViewController() -> UIViewController? {
     guard let a = delegate?.rootViewController(forCoordinator: self) else {
       return nil
     }
     return a.topMostViewController()
   }
 
-  open func topNavigationController() -> UINavigationController? {
+  @objc open func topNavigationController() -> UINavigationController? {
     return topViewController()?.navigationController
   }
 
-  open func topTabBarController() -> UITabBarController? {
+  @objc open func topTabBarController() -> UITabBarController? {
     return topViewController()?.tabBarController
   }
 
-  open func startFlow(fromName name: String, withProps props: [String: AnyObject], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  @objc open func startFlow(fromName name: String, withProps props: [String: AnyObject], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     guard let flow = delegate?.flowCoordinatorForId?(name) else {
       return
     }
@@ -78,7 +78,7 @@ open class ReactNavigationCoordinator: NSObject {
     flow.start(props)
   }
 
-  open func register(_ flow: ReactFlowCoordinator, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  @objc open func register(_ flow: ReactFlowCoordinator, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     let newId = getUuid()
     flow.reactFlowId = newId
     promises[newId] = ReactPromise(resolve: resolve, reject: reject)
@@ -90,18 +90,18 @@ open class ReactNavigationCoordinator: NSObject {
     return viewControllers[id]?.viewController
   }
 
-  open func moduleNameForDeepLinkUrl(_ deepLinkUrl: String) -> String? {
+  @objc open func moduleNameForDeepLinkUrl(_ deepLinkUrl: String) -> String? {
     return deepLinkMapping[deepLinkUrl]
   }
 
-  open func registerDeepLinkUrl(_ sceneName: String, deepLinkUrl: String) {
+  @objc open func registerDeepLinkUrl(_ sceneName: String, deepLinkUrl: String) {
     deepLinkMapping[deepLinkUrl] = sceneName
     delegate?.registerReactDeepLinkUrl?(deepLinkUrl)
   }
 
   // MARK: Internal
 
-  func registerFlow(_ viewController: ReactViewController, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  @objc func registerFlow(_ viewController: ReactViewController, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     let newId = getUuid()
     viewController.reactFlowId = newId
     promises[newId] = ReactPromise(resolve: resolve, reject: reject)
@@ -112,21 +112,21 @@ open class ReactNavigationCoordinator: NSObject {
     viewControllers[nativeNavigationInstanceId] = ViewControllerHolder(viewController: viewController)
   }
 
-  func unregisterViewController(_ nativeNavigationInstanceId: String) {
+  @objc func unregisterViewController(_ nativeNavigationInstanceId: String) {
     viewControllers[nativeNavigationInstanceId] = nil
   }
 
-  var sceneInitialPropertiesMap: [String: [String: AnyObject]] = [:]
+  @objc var sceneInitialPropertiesMap: [String: [String: AnyObject]] = [:]
 
-  open func registerScreenProperties(_ sceneName: String, properties: [String: AnyObject]) {
+  @objc open func registerScreenProperties(_ sceneName: String, properties: [String: AnyObject]) {
     sceneInitialPropertiesMap[sceneName] = properties
   }
 
-  func getScreenProperties(_ sceneName: String) -> [String: AnyObject]? {
+  @objc func getScreenProperties(_ sceneName: String) -> [String: AnyObject]? {
     return sceneInitialPropertiesMap[sceneName]
   }
 
-  func dismissViewController(_ nativeNavigationInstanceId: String, payload: [String: AnyObject]) {
+  @objc func dismissViewController(_ nativeNavigationInstanceId: String, payload: [String: AnyObject]) {
     guard let viewController = viewControllers[nativeNavigationInstanceId]?.viewController else {
       print("Could not find viewController \(nativeNavigationInstanceId)")
       return
@@ -139,7 +139,7 @@ open class ReactNavigationCoordinator: NSObject {
     viewControllers[nativeNavigationInstanceId] = nil
   }
 
-  func onFlowFinish(_ flow: ReactFlowCoordinator, resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
+  @objc func onFlowFinish(_ flow: ReactFlowCoordinator, resultCode: ReactFlowResultCode, payload: [String:AnyObject]?) {
     guard let id = flow.reactFlowId else {
       return
     }

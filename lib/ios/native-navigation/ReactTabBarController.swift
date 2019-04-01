@@ -14,20 +14,20 @@ import UIKit
 
 open class ReactTabBarController: UITabBarController {
 
-  open weak var reactViewControllerDelegate: ReactViewControllerDelegate?
+  @objc open weak var reactViewControllerDelegate: ReactViewControllerDelegate?
 
-  let nativeNavigationInstanceId: String
+  @objc let nativeNavigationInstanceId: String
   var sharedElementsById: [String: WeakViewHolder] = [:]
   var sharedElementGroupsById: [String: WeakViewHolder] = [:]
-  var isPendingNavigationTransition: Bool = false
-  var isCurrentlyTransitioning: Bool = false
-  var onTransitionCompleted: (() -> Void)?
-  var onNavigationBarTypeUpdated: (() -> Void)?
-  var reactViewHasBeenRendered: Bool = false
-  var transition: ReactSharedElementTransition?
-  var eagerNavigationController: UINavigationController?
+  @objc var isPendingNavigationTransition: Bool = false
+  @objc var isCurrentlyTransitioning: Bool = false
+  @objc var onTransitionCompleted: (() -> Void)?
+  @objc var onNavigationBarTypeUpdated: (() -> Void)?
+  @objc var reactViewHasBeenRendered: Bool = false
+  @objc var transition: ReactSharedElementTransition?
+  @objc var eagerNavigationController: UINavigationController?
   var dismissResultCode: ReactFlowResultCode?
-  var dismissPayload: [String: AnyObject]?
+  @objc var dismissPayload: [String: AnyObject]?
   fileprivate let moduleName: String
   fileprivate var props: [String: AnyObject]
   fileprivate let coordinator: ReactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance
@@ -42,11 +42,11 @@ open class ReactTabBarController: UITabBarController {
   fileprivate var tabViews: [TabView] = []
   private var barHeight: CGFloat
 
-  public convenience init(moduleName: String) {
+  @objc public convenience init(moduleName: String) {
     self.init(moduleName: moduleName, props: [:])
   }
 
-  public init(moduleName: String, props: [String: AnyObject] = [:]) {
+  @objc public init(moduleName: String, props: [String: AnyObject] = [:]) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
 
@@ -98,20 +98,20 @@ open class ReactTabBarController: UITabBarController {
     }
   }
 
-  func prepareViewControllerForPresenting() -> UIViewController {
+  @objc func prepareViewControllerForPresenting() -> UIViewController {
     return self
 //    return coordinator.navigation.makeNavigationController(rootViewController: self)
   }
 
-  func realNavigationDidHappen() {
+  @objc func realNavigationDidHappen() {
 
   }
 
-  func startedWaitingForRealNavigation() {
+  @objc func startedWaitingForRealNavigation() {
 
   }
 
-  public func emitEvent(_ eventName: String, body: AnyObject?) {
+  @objc public func emitEvent(_ eventName: String, body: AnyObject?) {
     let name = String(format: "NativeNavigationScreen.%@.%@", eventName, self.nativeNavigationInstanceId)
     let args: [AnyObject]
     if let payload = body {
@@ -123,11 +123,11 @@ open class ReactTabBarController: UITabBarController {
     coordinator.bridge?.enqueueJSCall("RCTDeviceEventEmitter.emit", args: args)
   }
 
-  func setCloseBehavior(_ closeBehavior: String) {
+  @objc func setCloseBehavior(_ closeBehavior: String) {
 
   }
 
-  func signalFirstRenderComplete() {
+  @objc func signalFirstRenderComplete() {
     reactViewHasBeenRendered = true
     refreshTabViews();
     if (isPendingNavigationTransition) {
@@ -135,11 +135,11 @@ open class ReactTabBarController: UITabBarController {
     }
   }
 
-  func setNavigationBarProperties(props: [String : AnyObject]) {
+  @objc func setNavigationBarProperties(props: [String : AnyObject]) {
     // TODO(lmr): not sure what we are supposed to do here for tabbar case...
   }
 
-  public func dismiss(_ payload: [String : AnyObject]) {
+  @objc public func dismiss(_ payload: [String : AnyObject]) {
     
   }
 
@@ -169,12 +169,11 @@ open class ReactTabBarController: UITabBarController {
     tabViews = next
 
     let nullableViewControllers = tabViews.map { $0.getViewController() }
-    let viewControllers = nullableViewControllers.flatMap { $0 }
+    let viewControllers = nullableViewControllers.compactMap { $0 }
     self.setViewControllers(viewControllers, animated: true)
   }
 }
 
-private let DELAY: Int64 = Int64(1.2 * Double(NSEC_PER_SEC))
 private var IN_PROGRESS: Bool = false
 
 extension ReactTabBarController: UITabBarControllerDelegate {
@@ -234,7 +233,7 @@ extension ReactTabBarController: UITabBarControllerDelegate {
     irvc.startedWaitingForRealNavigation()
 
     // we delay pushing the view controller just a little bit (50ms) so that the react view can render
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(DELAY) / Double(NSEC_PER_SEC)) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Constants.TRANSITION_DELAY) / Double(NSEC_PER_SEC)) {
       if (irvc.isPendingNavigationTransition) {
         print("Push Fallback Timer Called!")
         realSelect()

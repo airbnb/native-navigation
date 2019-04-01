@@ -48,7 +48,7 @@ public struct UIViewSnapshot: ViewSnapshot {
 
 public extension UIView {
 
-  public func getScaleRatioToView(_ view: UIView) -> CGSize {
+  @objc public func getScaleRatioToView(_ view: UIView) -> CGSize {
     let width: CGFloat = (frame.width > 0) ? frame.width : 1
     let height: CGFloat = (frame.height > 0) ? frame.height : 1
     return CGSize(
@@ -142,7 +142,7 @@ public extension UIView {
       originallyHidden: isHidden)
   }
 
-  func lazySnapshotInContainerView(_ containerView: UIView) -> UIView {
+  @objc func lazySnapshotInContainerView(_ containerView: UIView) -> UIView {
     // TODO: handle snapshot failure
     let view = snapshotView(afterScreenUpdates: true)!
     view.frame = containerView.convert(bounds, from: self)

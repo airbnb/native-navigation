@@ -13,7 +13,7 @@ public protocol CustomTopMostViewController {
 }
 
 public extension UIViewController {
-  func topMostViewController() -> UIViewController? {
+  @objc func topMostViewController() -> UIViewController? {
     if let custom = (self as? CustomTopMostViewController)?.customTopMostViewController() {
       return custom.topMostViewController()
     } else if let presented = self.presentedViewController {
@@ -22,7 +22,7 @@ public extension UIViewController {
       return tabBarSelected.topMostViewController()
     } else if let navVisible = (self as? UINavigationController)?.visibleViewController {
       return navVisible.topMostViewController()
-    } else if let lastChild = self.childViewControllers.last {
+    } else if let lastChild = self.children.last {
       return lastChild.topMostViewController()
     } else {
       return self

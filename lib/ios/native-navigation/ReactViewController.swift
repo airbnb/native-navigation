@@ -65,21 +65,21 @@ public struct WeakViewHolder {
 
 open class ReactViewController: UIViewController {
 
-  let nativeNavigationInstanceId: String
+  @objc let nativeNavigationInstanceId: String
   var sharedElementsById: [String: WeakViewHolder] = [:]
   var sharedElementGroupsById: [String: WeakViewHolder] = [:]
-  var isPendingNavigationTransition: Bool = false
-  var isCurrentlyTransitioning: Bool = false
-  var onTransitionCompleted: (() -> Void)?
-  var onNavigationBarTypeUpdated: (() -> Void)?
-  var reactViewHasBeenRendered: Bool = false
-  var transition: ReactSharedElementTransition?
-  var eagerNavigationController: UINavigationController?
+  @objc var isPendingNavigationTransition: Bool = false
+  @objc var isCurrentlyTransitioning: Bool = false
+  @objc var onTransitionCompleted: (() -> Void)?
+  @objc var onNavigationBarTypeUpdated: (() -> Void)?
+  @objc var reactViewHasBeenRendered: Bool = false
+  @objc var transition: ReactSharedElementTransition?
+  @objc var eagerNavigationController: UINavigationController?
   open var reactFlowId: String?
-  open var showTabBar: Bool = false // TODO(lmr): showTabBar? is this needed?
-  open weak var delegate: ReactViewControllerDelegate?
+  @objc open var showTabBar: Bool = false // TODO(lmr): showTabBar? is this needed?
+  @objc open weak var delegate: ReactViewControllerDelegate?
   var dismissResultCode: ReactFlowResultCode?
-  var dismissPayload: [String: AnyObject]?
+  @objc var dismissPayload: [String: AnyObject]?
   fileprivate let moduleName: String
   fileprivate var props: [String: AnyObject]
   fileprivate let coordinator: ReactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance
@@ -97,15 +97,15 @@ open class ReactViewController: UIViewController {
 
   // MARK: Lifecycle
 
-  public convenience init(moduleName: String) {
+  @objc public convenience init(moduleName: String) {
     self.init(moduleName: moduleName, props: [:], title: nil, hidesBottomBarWhenPushed: false)
   }
 
-  public convenience init(moduleName: String, props: [String: AnyObject]) {
+  @objc public convenience init(moduleName: String, props: [String: AnyObject]) {
     self.init(moduleName: moduleName, props: props, title: nil, hidesBottomBarWhenPushed: false)
   }
 
-  public init(moduleName: String, props: [String: AnyObject], title: String?, hidesBottomBarWhenPushed: Bool) {
+  @objc public init(moduleName: String, props: [String: AnyObject], title: String?, hidesBottomBarWhenPushed: Bool) {
     self.nativeNavigationInstanceId = generateId(moduleName)
     self.moduleName = moduleName
 
@@ -202,7 +202,7 @@ open class ReactViewController: UIViewController {
 
   override open func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
-    if (self.isMovingFromParentViewController) {
+    if (self.isMovingFromParent) {
       // viewController is being popped
       finish(.ok, payload: dismissPayload)
       transition = nil
@@ -239,46 +239,46 @@ open class ReactViewController: UIViewController {
     })
   }
 
-  open func getOrientation() -> UIInterfaceOrientationMask {
+  @objc open func getOrientation() -> UIInterfaceOrientationMask {
     return self.orientation
   }
 
   // MARK: Public Setters
 
-  open func setStatusBarStyle(_ style: UIStatusBarStyle) {
+  @objc open func setStatusBarStyle(_ style: UIStatusBarStyle) {
     if (statusBarStyle != style) {
       statusBarStyle = style
       statusBarIsDirty = true
     }
   }
 
-  open func setStatusBarHidden(_ hidden: Bool) {
+  @objc open func setStatusBarHidden(_ hidden: Bool) {
     if (statusBarHidden != hidden) {
       statusBarHidden = hidden
       statusBarIsDirty = true
     }
   }
 
-  open func setStatusBarAnimation(_ animation: UIStatusBarAnimation) {
+  @objc open func setStatusBarAnimation(_ animation: UIStatusBarAnimation) {
     statusBarAnimation = animation
   }
 
-  public func setOrientation(orientation: UIInterfaceOrientationMask) {
+  @objc public func setOrientation(orientation: UIInterfaceOrientationMask) {
     self.orientation = orientation
   }
 
-  func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
+  @objc func setLeadingButtonVisible(_ leadingButtonVisible: Bool) {
     // TODO(lmr): does this belong in navigation implementation
     self.leadingButtonVisible = leadingButtonVisible
     handleLeadingButtonVisibleChange()
   }
 
-  public func setCloseBehavior(_ closeBehavior: String) {
+  @objc public func setCloseBehavior(_ closeBehavior: String) {
     // TODO(lmr): does this belong in navigation implementation?
     // TODO(spike)
   }
 
-  func setNavigationBarProperties(props: [String: AnyObject]) {
+  @objc func setNavigationBarProperties(props: [String: AnyObject]) {
     if (isCurrentlyTransitioning) {
       onTransitionCompleted = {
         self.updateNavigationImpl(props: props)
@@ -292,7 +292,7 @@ open class ReactViewController: UIViewController {
 
   // MARK: Public Events
 
-  func signalFirstRenderComplete() {
+  @objc func signalFirstRenderComplete() {
     reactViewHasBeenRendered = true
     if (isPendingNavigationTransition) {
       onNavigationBarTypeUpdated?()
@@ -300,13 +300,13 @@ open class ReactViewController: UIViewController {
   }
 
   // this gets fired right after the first real navigation action gets called (push or present)
-  func realNavigationDidHappen() {
+  @objc func realNavigationDidHappen() {
 
   }
 
   // this gets fired after things are set up and we are now waiting for the first navigation config from JS
   // to get passed back
-  func startedWaitingForRealNavigation() {
+  @objc func startedWaitingForRealNavigation() {
     // TODO: know why this was here
     // This was commented because otherwise, when moving to a transparent navbar, the navbar becomes black
     // reconcileScreenConfig()
@@ -324,11 +324,11 @@ open class ReactViewController: UIViewController {
    * This is meant to be called by the ReactNavigationCoordinator. The intention is to
    * tell the coordinator that presented us to dismiss us.
    */
-  public func dismiss(_ payload: [String: AnyObject]) {
+  @objc public func dismiss(_ payload: [String: AnyObject]) {
     delegate?.didDismiss(self, withPayload: payload)
   }
 
-  func prepareViewControllerForPresenting() -> UIViewController {
+  @objc func prepareViewControllerForPresenting() -> UIViewController {
     let navigationController = coordinator.navigation.makeNavigationController(rootViewController: self)
     if let screenColor = colorForKey("screenColor", initialConfig) {
       if (screenColor.cgColor.alpha < 1.0) {
@@ -348,7 +348,7 @@ open class ReactViewController: UIViewController {
     )
   }
 
-  public func emitEvent(_ eventName: String, body: AnyObject?) {
+  @objc public func emitEvent(_ eventName: String, body: AnyObject?) {
     let name = String(format: "NativeNavigationScreen.%@.%@", eventName, self.nativeNavigationInstanceId)
     let args: [AnyObject]
     if let payload = body {
@@ -370,7 +370,7 @@ open class ReactViewController: UIViewController {
     navigationController?.interactivePopGestureRecognizer!.isEnabled = leadingButtonVisible
   }
 
-  func updateStatusBarIfNeeded() {
+  @objc func updateStatusBarIfNeeded() {
     if (statusBarIsDirty) {
       statusBarIsDirty = false
       let duration = statusBarAnimation != .none ? 0.2 : 0
@@ -391,7 +391,7 @@ open class ReactViewController: UIViewController {
     updateBarHeightIfNeeded()
   }
 
-  func updateBarHeightIfNeeded() {
+  @objc func updateBarHeightIfNeeded() {
     let newHeight = coordinator.navigation.getBarHeight(
       viewController: self,
       navigationController: navigationController ?? eagerNavigationController,
@@ -465,14 +465,14 @@ extension ReactViewController : ReactAnimationFromContentVendor {
 
   public func reactAnimationFromContent(_ animationContainer: UIView, transitionGroup: String, options: [String: Any]) -> ReactAnimationFromContent {
     let snapshot = self.snapshotForAnimationContainer(animationContainer, transitionGroup: transitionGroup)
-    animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
+    animationContainer.sendSubviewToBack(snapshot.screenWithoutElements.view)
     return ReactAnimationFromContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
       sharedElements: snapshot.sharedElements.mapValues { $0.view }
     )
   }
 
-  public func containerView() -> UIView {
+  @objc public func containerView() -> UIView {
     return view
   }
 }
@@ -482,7 +482,7 @@ extension ReactViewController : ReactAnimationFromContentVendor {
 extension ReactViewController : ReactAnimationToContentVendor {
   public func reactAnimationToContent(_ animationContainer: UIView) -> ReactAnimationToContent {
     let snapshot = self.snapshotForAnimationContainer(animationContainer)
-    animationContainer.sendSubview(toBack: snapshot.screenWithoutElements.view)
+    animationContainer.sendSubviewToBack(snapshot.screenWithoutElements.view)
     return ReactAnimationToContent(
       screenWithoutElements: snapshot.screenWithoutElements.view,
       sharedElements: snapshot.sharedElements.mapValues { $0.view }

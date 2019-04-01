@@ -40,19 +40,19 @@ import UIKit
 
 // this is a convenience class to allow us to easily assign lambdas as press handlers
 class BlockBarButtonItem: UIBarButtonItem {
-  var actionHandler: ((Void) -> Void)?
+  @objc var actionHandler: (() -> Void)?
 
-  convenience init(title: String?, style: UIBarButtonItemStyle) {
+  @objc convenience init(title: String?, style: UIBarButtonItem.Style) {
     self.init(title: title, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
   }
 
-  convenience init(image: UIImage?, style: UIBarButtonItemStyle) {
+  @objc convenience init(image: UIImage?, style: UIBarButtonItem.Style) {
     self.init(image: image, style: style, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
   }
 
-  convenience init(barButtonSystemItem: UIBarButtonSystemItem) {
+  @objc convenience init(barButtonSystemItem: UIBarButtonItem.SystemItem) {
     self.init(barButtonSystemItem: barButtonSystemItem, target: nil, action: #selector(barButtonItemPressed))
     self.target = self
   }
@@ -60,11 +60,11 @@ class BlockBarButtonItem: UIBarButtonItem {
   convenience init(
     title: String?,
     image: UIImage?,
-    barButtonSystemItem: UIBarButtonSystemItem?,
-    style: UIBarButtonItemStyle,
+    barButtonSystemItem: UIBarButtonItem.SystemItem?,
+    style: UIBarButtonItem.Style,
     enabled: Bool?,
     tintColor: UIColor?,
-    titleTextAttributes: [String: Any]?
+    titleTextAttributes: [NSAttributedString.Key: Any]?
   ) {
     if let barButtonSystemItem = barButtonSystemItem {
       self.init(barButtonSystemItem: barButtonSystemItem)
@@ -86,7 +86,7 @@ class BlockBarButtonItem: UIBarButtonItem {
     }
   }
 
-  func barButtonItemPressed(sender: UIBarButtonItem) {
+  @objc func barButtonItemPressed(sender: UIBarButtonItem) {
     actionHandler?()
   }
 }
@@ -195,14 +195,14 @@ func imageForKey(_ key: String, _ props: [String: AnyObject]) -> UIImage? {
   return nil
 }
 
-func barButtonStyleFromString(_ string: String?) -> UIBarButtonItemStyle {
+func barButtonStyleFromString(_ string: String?) -> UIBarButtonItem.Style {
   switch(string) {
   case .some("done"): return .done
   default: return .plain
   }
 }
 
-func barButtonSystemItemFromString(_ string: String?) -> UIBarButtonSystemItem? {
+func barButtonSystemItemFromString(_ string: String?) -> UIBarButtonItem.SystemItem? {
   switch string {
   case .some("done"): return .done
   case .some("cancel"): return .cancel
@@ -250,19 +250,19 @@ func statusBarAnimationFromString(_ string: String?) -> UIStatusBarAnimation {
 func textAttributesFromPrefix(
   _ prefix: String,
   _ props: [String: AnyObject]
-) -> [String: Any]? {
-  var attributes: [String: Any] = [:]
+) -> [NSAttributedString.Key: Any]? {
+  var attributes: [NSAttributedString.Key: Any] = [:]
   if let color = colorForKey("\(prefix)Color", props) {
-    attributes[NSForegroundColorAttributeName] = color
+    attributes[NSAttributedString.Key.foregroundColor] = color
   } else if let color = colorForKey("foregroundColor", props) {
-    attributes[NSForegroundColorAttributeName] = color
+    attributes[NSAttributedString.Key.foregroundColor] = color
   }
   let fontName = stringForKey("\(prefix)FontName", props)
   let fontSize = floatForKey("\(prefix)FontSize", props)
   // TODO(lmr): use system font if no fontname is given
   if let name = fontName, let size = fontSize {
     if let font = UIFont(name: name, size: size) {
-      attributes[NSFontAttributeName] = font
+      attributes[NSAttributedString.Key.font] = font
     }
   }
   return attributes.count == 0 ? nil : attributes
