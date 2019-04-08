@@ -1,5 +1,8 @@
 package com.airbnb.android.react.navigation;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.ViewTreeObserver;
@@ -7,15 +10,19 @@ import android.view.ViewTreeObserver;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.PermissionAwareActivity;
+import com.facebook.react.modules.core.PermissionListener;
 
 public abstract class ReactAwareActivity extends AppCompatActivity
-        implements ReactAwareActivityFacade, DefaultHardwareBackBtnHandler {
+        implements ReactAwareActivityFacade, DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
     private DoubleTapReloadRecognizer mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
 
     ReactNavigationCoordinator reactNavigationCoordinator = ReactNavigationCoordinator.sharedInstance;
 
     ReactInstanceManager reactInstanceManager = reactNavigationCoordinator.getReactInstanceManager();
+
+    @Nullable private PermissionListener mPermissionListener;
 
     @Override
     protected void onPause() {
@@ -83,5 +90,17 @@ public abstract class ReactAwareActivity extends AppCompatActivity
         }
 
         return super.onKeyUp(keyCode, event);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
+        mPermissionListener = listener;
+        requestPermissions(permissions, requestCode);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            mPermissionListener = null;
+        }
     }
 }
