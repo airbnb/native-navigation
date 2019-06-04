@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -107,8 +108,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if ((activity instanceof ScreenCoordinatorComponent)) {
                     ((ScreenCoordinatorComponent) activity).getScreenCoordinator().pushScreen(
                             screenName,
-                            ConversionUtil.toBundle(props),
-                            ConversionUtil.toBundle(options));
+                            Arguments.toBundle(props),
+                            Arguments.toBundle(options));
                 }
             }
         });
@@ -128,8 +129,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if ((activity instanceof ScreenCoordinatorComponent)) {
                     ((ScreenCoordinatorComponent) activity).getScreenCoordinator().resetTo(
                             screenName,
-                            ConversionUtil.toBundle(props),
-                            ConversionUtil.toBundle(options));
+                            Arguments.toBundle(props),
+                            Arguments.toBundle(options));
                 }
             }
         });
@@ -159,8 +160,8 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                 if ((activity instanceof ScreenCoordinatorComponent)) {
                     ((ScreenCoordinatorComponent) activity).getScreenCoordinator().presentScreen(
                             screenName,
-                            ConversionUtil.toBundle(props),
-                            ConversionUtil.toBundle(options),
+                            Arguments.toBundle(props),
+                            Arguments.toBundle(options),
                             promise);
                 }
             }
@@ -178,7 +179,7 @@ class NavigatorModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                ReactNativeUtils.presentScreen(getCurrentActivity(), screenName, ConversionUtil.toBundle(props));
+                ReactNativeUtils.presentScreen(getCurrentActivity(), screenName, Arguments.toBundle(props));
             }
         });
     }

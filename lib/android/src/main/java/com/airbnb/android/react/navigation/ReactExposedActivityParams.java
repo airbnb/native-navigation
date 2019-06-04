@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,7 +50,7 @@ public class ReactExposedActivityParams {
     Intent toIntent(Context context, ReadableMap arguments) {
         Intent intent = new Intent(context, klass);
         if (argumentType.equals(DEFAULT_CLASS)) {
-            intent.putExtras(ConversionUtil.toBundle(arguments));
+            intent.putExtras(Arguments.toBundle(arguments));
         } else {
             intent.putExtra(KEY_ARGUMENT, ConversionUtil.toType(objectMapper, arguments, argumentType));
         }

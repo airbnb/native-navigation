@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 
 /**
@@ -37,7 +38,7 @@ public class TabView extends View {
     }
 
     public void setProps(ReadableMap props) {
-        this.props = ConversionUtil.toBundle(props);
+        this.props = Arguments.toBundle(props);
     }
 
     public void setConfig(ReadableMap config) {

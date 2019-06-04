@@ -154,54 +154,6 @@ final class ConversionUtil {
         return result;
     }
 
-    static Bundle toBundle(ReadableMap readableMap) {
-        Bundle result = new Bundle();
-        if (readableMap == null) {
-            return result;
-        }
-        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
-        while (iterator.hasNextKey()) {
-            String key = iterator.nextKey();
-            ReadableType type = readableMap.getType(key);
-            switch (type) {
-                case Null:
-                    result.putString(key, null);
-                    break;
-                case Boolean:
-                    result.putBoolean(key, readableMap.getBoolean(key));
-                    break;
-                case Number:
-                    try {
-                        // NOTE(lmr):
-                        // this is a bit of a hack right now to prefer integer types in cases where the
-                        // number can be a valid int,
-                        // and fall back to doubles in every other case. Long-term we will figure out a
-                        // reliable way to add this meta
-                        // data.
-                        result.putInt(key, readableMap.getInt(key));
-                    } catch (Exception e) {
-                        result.putDouble(key, readableMap.getDouble(key));
-                    }
-                    break;
-                case String:
-                    result.putString(key, readableMap.getString(key));
-                    break;
-                case Map:
-                    result.putBundle(key, toBundle(readableMap.getMap(key)));
-                    break;
-                case Array:
-                    // NOTE(lmr): This is a limitation of the Bundle class. Wonder if there is a clean way
-                    // for us
-                    // to get around it. For now i'm just skipping...
-                    Log.e(TAG, "Cannot put arrays of objects into bundles. Failed on: " + key + ".");
-                    break;
-                default:
-                    Log.e(TAG, "Could not convert object with key: " + key + ".");
-            }
-        }
-        return result;
-    }
-
     static void merge(WritableMap target, ReadableMap map) {
         ReadableMapKeySetIterator iterator = map.keySetIterator();
         while (iterator.hasNextKey()) {
