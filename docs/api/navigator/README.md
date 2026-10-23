@@ -40,7 +40,7 @@
 
 ### `TabBar`
 
-[View Documentation](/docs/api/navigator-tab-bat.md)
+[View Documentation](/docs/api/navigator-tab-bar.md)
 
 ### `Tab`
 

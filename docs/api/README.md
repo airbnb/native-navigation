@@ -8,7 +8,7 @@ import Navigator from 'native-navigation';
 
 ### `Navigator`
 
-[View Documentation](/docs/api/navigator.md)
+[View Documentation](/docs/api/navigator/README.md)
 
 ### `<Navigator.Config />`
 
@@ -20,7 +20,7 @@ import Navigator from 'native-navigation';
 
 ### `<Navigator.TabBar />`
 
-[View Documentation](/docs/api/navigator-tab-bat.md)
+[View Documentation](/docs/api/navigator-tab-bar.md)
 
 ### `<Navigator.Tab />`
 
